@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Intex2025.API.props" />
+</Project>
