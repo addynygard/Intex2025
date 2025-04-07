@@ -37,7 +37,7 @@ public class MovieController : ControllerBase
 
     // POST: api/movie (Admin only)
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "admin")]
     public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
     {
         _movieContext.movies_titles.Add(movie);
@@ -48,7 +48,7 @@ public class MovieController : ControllerBase
 
     // PUT: api/movie/{id} (Admin only)
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "admin")]
     public async Task<IActionResult> UpdateMovie(string id, movies_title updatedMovie)
     {
         if (id != updatedMovie.show_id)
@@ -72,7 +72,7 @@ public class MovieController : ControllerBase
 
     // DELETE: api/movie/{id} (Admin only)
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteMovie(string id)
     {
         var movie = await _movieContext.movies_titles.FindAsync(id);
@@ -84,4 +84,37 @@ public class MovieController : ControllerBase
 
         return NoContent();
     }
+
+    //// GET: api/movie/user/role
+    //[HttpGet("user/role")]
+    //[Authorize] // Ensure the user is authenticated
+    //public async Task<ActionResult<string>> GetUserRole()
+    //{
+    //    // Extract the user ID from claims
+    //    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+    //    if (userIdClaim == null)
+    //    {
+    //        return Unauthorized(new { error = "User not authenticated" });
+    //    }
+
+    //    // Convert user ID to int
+    //    if (!int.TryParse(userIdClaim, out var parsedUserId))
+    //    {
+    //        return BadRequest(new { error = "Invalid user ID format" });
+    //    }
+
+    //    // Fetch the user's role from the database
+    //    var role = await _movieContext.movies_users
+    //        .Where(mu => mu.user_id == parsedUserId)
+    //        .Select(mu => mu.role)
+    //        .FirstOrDefaultAsync();
+
+    //    if (role == null)
+    //    {
+    //        return NotFound(new { error = "User role not found" });
+    //    }
+
+    //    return Ok(new { role });
+    //}
+
 }

@@ -7,7 +7,7 @@ namespace Intex2025.API.Models;
 public partial class movies_user
 {
     [Key]
-    public int? user_id { get; set; }
+    public int user_id { get; set; }
 
     public string? name { get; set; }
 
@@ -40,4 +40,6 @@ public partial class movies_user
     public string? state { get; set; }
 
     public int? zip { get; set; }
+
+    public string? role { get; set; }
 }

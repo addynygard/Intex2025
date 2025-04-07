@@ -7,7 +7,7 @@ namespace Intex2025.API.Models;
 public partial class movies_title
 {
     [Key]
-    public string? show_id { get; set; }
+    public string show_id { get; set; } = null!;
 
     public string? type { get; set; }
 
