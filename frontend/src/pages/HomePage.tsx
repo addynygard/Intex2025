@@ -1,7 +1,7 @@
 function HomePage() {
   return (
     <div>
-      <h1>CineNiche</h1>
+      <h1>CinaNiche</h1>
       <p>Welcome to CineNiche, your personalized movie platform!</p>
       <p>
         Discover movies tailored to your taste, explore niche genres, and
