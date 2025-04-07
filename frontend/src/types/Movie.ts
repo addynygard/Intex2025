@@ -1,0 +1,45 @@
+export interface Movie {
+  // all the information about a movie that is in the table movies_titles
+  show_id: string;
+  type: string;
+  title: string;
+  director: string;
+  cast: string;
+  country: string;
+  release_year: number;
+  rating: string;
+  duration: string;
+  description: string;
+  action: boolean;
+  adventure: boolean;
+  anime_Series_International_TV_Shows: boolean;
+  british_TV_Shows_Docuseries_International_TV_Shows: boolean;
+  children: boolean;
+  comedies: boolean;
+  comedies_Dramas_International_Movies: boolean;
+  comedies_International_Movies: boolean;
+  comedies_Romantic_Movies: boolean;
+  crime_TV_Shows_Docuseries: boolean;
+  documentaries: boolean;
+  documentaries_International_Movies: boolean;
+  docuseries: boolean;
+  dramas: boolean;
+  dramas_International_Movies: boolean;
+  dramas_Romantic_Movies: boolean;
+  family_Movies: boolean;
+  fantasy: boolean;
+  horror_Movies: boolean;
+  international_Movies_Thrillers: boolean;
+  international_TV_Shows_Romantic_TV_Shows_TV_Dramas: boolean;
+  kids_TV: boolean;
+  language_TV_Shows: boolean;
+  musicals: boolean;
+  nature_TV: boolean;
+  reality_TV: boolean;
+  spirituality: boolean;
+  tV_Action: boolean;
+  tV_Comedies: boolean;
+  tV_Dramas: boolean;
+  talk_Shows_TV_Comedies: boolean;
+  thrillers: boolean;
+}
