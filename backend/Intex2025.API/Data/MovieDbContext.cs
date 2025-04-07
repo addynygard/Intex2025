@@ -30,11 +30,12 @@ public partial class MovieDbContext : DbContext
     {
         modelBuilder.Entity<movies_rating>(entity =>
         {
-            entity.HasKey(e => new { e.user_id, e.show_id });
+            entity.HasNoKey();
         });
 
         modelBuilder.Entity<movies_title>(entity =>
         {
+            entity.HasKey(e => e.show_id);
 
             entity.Property(e => e.Anime_Series_International_TV_Shows).HasColumnName("Anime Series International TV Shows");
             entity.Property(e => e.British_TV_Shows_Docuseries_International_TV_Shows).HasColumnName("British TV Shows Docuseries International TV Shows");
@@ -61,7 +62,9 @@ public partial class MovieDbContext : DbContext
 
         modelBuilder.Entity<movies_user>(entity =>
         {
+            entity.HasKey(e => e.user_id);
 
+            entity.Property(e => e.user_id).ValueGeneratedNever();
             entity.Property(e => e.Amazon_Prime).HasColumnName("Amazon Prime");
             entity.Property(e => e.Apple_TV_).HasColumnName("Apple TV+");
             entity.Property(e => e.Disney_).HasColumnName("Disney+");
