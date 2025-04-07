@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './MoviePage.css'; // Your main page CSS file
 import { Movie } from '../types/Movie';
 import Carousel from '../components/Carousel'; // Import the Carousel component
-import Header from '../components/Header'; // Import your header component
-import Footer from '../components/Footer'; // Import your footer component
+import TopCarousel from '../components/TopCarousel';
 
 const MoviePage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -26,7 +25,7 @@ const MoviePage = () => {
 
   return (
     <>
-      <Header />
+      <TopCarousel />
       <div className="movie-page">
         <h1>Welcome to Your Movie Library</h1>
 
@@ -37,7 +36,6 @@ const MoviePage = () => {
 
         {/* Add more carousels as needed */}
       </div>
-      <Footer />
     </>
   );
 };
