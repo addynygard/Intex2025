@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <div className="main-container home-layout">
       <div className="home-left">
@@ -17,9 +21,9 @@ function HomePage() {
 
         <div className="card home-actions">
           <p className="text-center">Join us now and start your cinematic journey!</p>
-          <button className="btn btn-primary">Get Started</button>
+          <button className="btn btn-primary" onClick={() => navigate('/CreateAccount')}>Get Started</button>
           <p>Already have an account?</p>
-          <button className="btn btn-secondary">Login</button>
+          <button className="btn btn-secondary" onClick={() => navigate('/Login')}>Login</button>
         </div>
       </div>
 
