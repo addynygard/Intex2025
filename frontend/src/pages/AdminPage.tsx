@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import AddMovieForm from '../components/AddMovieForm';
+import MovieListItem from '../components/MovieListItem';
 import Pagination from '../components/pagination';
+
 import {
   fetchMovies,
   addMovie,
@@ -7,6 +10,7 @@ import {
   deleteMovie,
 } from '../api/movieAPI';
 import { Movie } from '../types/Movie';
+import './AdminPage.css'; // Your main page CSS file
 
 const getDefaultFormData = (): Omit<Movie, 'show_id'> => ({
   type: '',
@@ -75,7 +79,10 @@ const useConfirmation = () => {
 
   const ConfirmationDialog = () =>
     isVisible ? (
-      <div className="confirmation-dialog" style={{ background: '#eee', padding: '1rem', margin: '1rem 0' }}>
+      <div
+        className="confirmation-dialog"
+        style={{ background: '#eee', padding: '1rem', margin: '1rem 0' }}
+      >
         <p>{message}</p>
         <button onClick={handleConfirm}>Yes</button>
         <button onClick={handleCancel}>No</button>
@@ -86,8 +93,10 @@ const useConfirmation = () => {
 };
 
 const AdminPage: React.FC = () => {
+  const [showForm, setShowForm] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [formData, setFormData] = useState<Omit<Movie, 'show_id'>>(getDefaultFormData());
+  const [formData, setFormData] =
+    useState<Omit<Movie, 'show_id'>>(getDefaultFormData());
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const { requestConfirmation, ConfirmationDialog } = useConfirmation();
@@ -106,7 +115,9 @@ const AdminPage: React.FC = () => {
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value, type } = e.target;
 
@@ -128,12 +139,15 @@ const AdminPage: React.FC = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        requestConfirmation('Are you sure you want to update this movie?', async () => {
-          await updateMovie(editingId, { ...formData, show_id: editingId });
-          setFormData(getDefaultFormData());
-          setEditingId(null);
-          fetchMovieData();
-        });
+        requestConfirmation(
+          'Are you sure you want to update this movie?',
+          async () => {
+            await updateMovie(editingId, { ...formData, show_id: editingId });
+            setFormData(getDefaultFormData());
+            setEditingId(null);
+            fetchMovieData();
+          },
+        );
       } else {
         await addMovie({ ...formData, show_id: Date.now().toString() });
         setFormData(getDefaultFormData());
@@ -153,108 +167,107 @@ const AdminPage: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    requestConfirmation('Are you sure you want to delete this movie?', async () => {
-      try {
-        await deleteMovie(id);
-        fetchMovieData();
-      } catch (err) {
-        console.error('Delete failed:', err);
-      }
-    });
+    requestConfirmation(
+      'Are you sure you want to delete this movie?',
+      async () => {
+        try {
+          await deleteMovie(id);
+          fetchMovieData();
+        } catch (err) {
+          console.error('Delete failed:', err);
+        }
+      },
+    );
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>{editingId ? 'Edit Movie' : 'Add New Movie'}</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="title" placeholder="Title" value={formData.title} onChange={handleChange} required />
-        <input name="type" placeholder="Type" value={formData.type} onChange={handleChange} required />
-        <input name="director" placeholder="Director" value={formData.director} onChange={handleChange} />
-        <input name="cast" placeholder="Cast" value={formData.cast} onChange={handleChange} />
-        <input name="country" placeholder="Country" value={formData.country} onChange={handleChange} />
-        <input name="release_year" type="number" placeholder="Release Year" value={formData.release_year} onChange={handleChange} />
-        <input name="rating" placeholder="Rating" value={formData.rating} onChange={handleChange} />
-        <input name="duration" placeholder="Duration" value={formData.duration} onChange={handleChange} />
-        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} />
+    <div className="admin-layout">
+      {/* Sidebar for Filters */}
+      <aside className="admin-sidebar">
+        <h3>Filter by Genre</h3>
+        {Object.entries(formData)
+          .filter(([_, value]) => typeof value === 'boolean')
+          .map(([key, value]) => (
+            <label key={key} className="filter-checkbox">
+              <input
+                type="checkbox"
+                name={key}
+                checked={value as boolean}
+                onChange={handleChange}
+              />
+              {key.replace(/_/g, ' ')}
+            </label>
+          ))}
+      </aside>
 
-        <fieldset>
-          <legend>Genres</legend>
-          {Object.entries(formData)
-            .filter(([_, value]) => typeof value === 'boolean')
-            .map(([key, value]) => (
-              <label key={key} style={{ marginRight: '1rem' }}>
-                <input
-                  type="checkbox"
-                  name={key}
-                  checked={value as boolean}
-                  onChange={handleChange}
-                />
-                {key}
-              </label>
-            ))}
-        </fieldset>
+      {/* Main Content Area */}
+      <main className="admin-content">
+        <button
+          onClick={() => {
+            setShowForm((prev) => !prev);
+            if (editingId) setEditingId(null); // reset edit state if toggling
+          }}
+          style={{ marginBottom: '1rem' }}
+        >
+          {showForm ? 'Cancel' : 'Add Movie'}
+        </button>
 
-        <button type="submit">{editingId ? 'Update' : 'Add'} Movie</button>
-      </form>
+        {showForm && (
+          <AddMovieForm
+            formData={formData}
+            editingId={editingId}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+          />
+        )}
 
-      <h3>Movie List</h3>
-      {movies.length > 0 ? (
-        <Pagination data={movies}>
-          {(paginatedMovies) => (
-            <div className="overflow-x-auto border border-gray-700 rounded-lg max-h-[600px] overflow-y-scroll mt-4">
-              <table className="min-w-[1000px] table-auto text-sm w-full text-white">
-                <thead className="bg-gray-900 sticky top-0 z-10">
-                  <tr>
-                    <th className="px-3 py-2 text-left">Title</th>
-                    <th className="px-3 py-2 text-left">Type</th>
-                    <th className="px-3 py-2 text-left">Year</th>
-                    <th className="px-3 py-2 text-left">Director</th>
-                    <th className="px-3 py-2 text-left">Cast</th>
-                    <th className="px-3 py-2 text-left">Country</th>
-                    <th className="px-3 py-2 text-left">Rating</th>
-                    <th className="px-3 py-2 text-left">Duration</th>
-                    <th className="px-3 py-2 text-left">Description</th>
-                    <th className="px-3 py-2 text-left">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-black">
-                  {paginatedMovies.map((movie) => (
-                    <tr key={movie.show_id} className="border-b border-gray-700 hover:bg-gray-800">
-                      <td className="px-3 py-2">{movie.title}</td>
-                      <td className="px-3 py-2">{movie.type}</td>
-                      <td className="px-3 py-2">{movie.release_year}</td>
-                      <td className="px-3 py-2">{movie.director}</td>
-                      <td className="px-3 py-2">{movie.cast}</td>
-                      <td className="px-3 py-2">{movie.country}</td>
-                      <td className="px-3 py-2">{movie.rating}</td>
-                      <td className="px-3 py-2">{movie.duration}</td>
-                      <td className="px-3 py-2">{movie.description}</td>
-                      <td className="px-3 py-2 space-x-2">
-                        <button
-                          onClick={() => handleEdit(movie)}
-                          className="px-2 py-1 text-xs bg-yellow-500 text-black rounded hover:bg-yellow-400"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(movie.show_id)}
-                          className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-500"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Pagination>
-      ) : (
-        <p>No movies found.</p>
-      )}
+        <h3>Movie List</h3>
+        <table className="admin-movie-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Year</th>
+              <th>Type</th>
+              <th>Rating</th>
+              <th>Duration</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {movies.length > 0 ? (
+              movies.map((movie) => (
+                <tr key={movie.show_id}>
+                  <td>{movie.title}</td>
+                  <td>{movie.release_year}</td>
+                  <td>{movie.type}</td>
+                  <td>{movie.rating}</td>
+                  <td>{movie.duration}</td>
+                  <td className="action-buttons">
+                    <button
+                      className="edit-btn"
+                      onClick={() => handleEdit(movie)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(movie.show_id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6}>No movies found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      <ConfirmationDialog />
+        <ConfirmationDialog />
+      </main>
     </div>
   );
 };
