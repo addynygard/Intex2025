@@ -24,30 +24,37 @@ function HomePage() {
 
   // ⏳ Controls auto-slide timing
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-  
-    const scheduleNext = () => {
-      timeoutId = setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
-        scheduleNext(); // schedule the next slide
-      }, 4000);
+    timeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
+      resetAutoAdvance(); // Continue auto-advancing after first run
+    }, 4000);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  
-    scheduleNext();
-  
-    return () => clearTimeout(timeoutId);
   }, []);
-  
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const resetAutoAdvance = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
+      resetAutoAdvance(); // keep it going
+    }, 6000); // <- delay after user clicks before auto-advance resumes
+  };
+
   const goLeft = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? testMovieTitles.length - 1 : prevIndex - 1,
     );
-    lastInteractionTime.current = Date.now(); // update interaction time
+    resetAutoAdvance();
   };
 
   const goRight = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
-    lastInteractionTime.current = Date.now(); // update interaction time
+    resetAutoAdvance();
   };
 
   const currentTitle = testMovieTitles[currentIndex];
