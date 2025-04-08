@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ib+gXaUyxGM=",
+  "dgSpecHash": "6Q2MKO2Epok=",
   "success": true,
-  "projectFilePath": "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj",
+  "projectFilePath": "C:\\Intex\\program\\Intex2025\\backend\\INtex2025.API\\Intex2025.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\drewc\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\drewc\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj": {}
+    "C:\\Intex\\program\\Intex2025\\backend\\INtex2025.API\\Intex2025.API.csproj": {}
   },
   "projects": {
-    "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj": {
+    "C:\\Intex\\program\\Intex2025\\backend\\INtex2025.API\\Intex2025.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj",
+        "projectUniqueName": "C:\\Intex\\program\\Intex2025\\backend\\INtex2025.API\\Intex2025.API.csproj",
         "projectName": "Intex2025.API",
-        "projectPath": "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj",
+        "projectPath": "C:\\Intex\\program\\Intex2025\\backend\\INtex2025.API\\Intex2025.API.csproj",
         "packagesPath": "C:\\Users\\drewc\\.nuget\\packages\\",
-        "outputPath": "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\obj\\",
+        "outputPath": "C:\\Intex\\program\\Intex2025\\backend\\INtex2025.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

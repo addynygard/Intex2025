@@ -14,20 +14,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("AllowReactDev", policy =>
-//     {
-//         policy.WithOrigins("http://localhost:5173") // or 3000 depending on your frontend port
-//               .AllowAnyHeader()
-//               .AllowAnyMethod();
-//     });
-// });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalFrontend",
+        policy => policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseCors("AllowLocalFrontend");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
