@@ -30,9 +30,9 @@ const MoviePage = () => {
         <h1>Welcome to Your Movie Library</h1>
 
         {/* Use the Carousel component */}
-        <Carousel genre="Action" movies={actionMovies} />
-        <Carousel genre="Comedy" movies={comedyMovies} />
-        <Carousel genre="Drama" movies={dramaMovies} />
+        <Carousel genre="Recommended For You" movies={actionMovies} />
+        <Carousel genre="Newly Added" movies={comedyMovies} />
+        <Carousel genre="Continue Watching" movies={dramaMovies} />
 
         {/* Add more carousels as needed */}
       </div>

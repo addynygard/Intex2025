@@ -16,6 +16,8 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import { useEffect, useState } from 'react';
 import UserAccountPage from './pages/UserAccountPage';
+import MovieCollection from './pages/MovieCollection';
+import ShowCollection from './pages/ShowCollection';
 
 function App() {
   const [role, setRole] = useState<string | null>(null);
@@ -58,6 +60,8 @@ function App() {
         <Route path="/MovieDetail" element={<MovieDetailPage />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
         <Route path="/account" element={<UserAccountPage />} />
+        <Route path="/MovieCollection" element={<MovieCollection />} />
+        <Route path="/ShowCollection" element={<ShowCollection />} />
         <Route path="/adminpage" element={<AdminPage />} />
       </Routes>
       <Footer />
