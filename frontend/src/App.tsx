@@ -18,6 +18,7 @@ function App() {
           <Route path="/Movie" element={<MoviePage />} />
           <Route path="/MovieDetail" element={<MovieDetailPage />} />
           <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
+
         </Routes>
       </Router>
     </>

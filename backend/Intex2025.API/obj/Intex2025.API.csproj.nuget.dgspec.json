@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\spenc\\Source\\Repos\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj": {}
+    "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\spenc\\Source\\Repos\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj": {
+    "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\spenc\\Source\\Repos\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj",
+        "projectUniqueName": "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj",
         "projectName": "Intex2025.API",
-        "projectPath": "C:\\Users\\spenc\\Source\\Repos\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj",
-        "packagesPath": "C:\\Users\\spenc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\spenc\\Source\\Repos\\Intex2025\\backend\\Intex2025.API\\obj\\",
+        "projectPath": "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\Intex2025.API.csproj",
+        "packagesPath": "C:\\Users\\drewc\\.nuget\\packages\\",
+        "outputPath": "C:\\Intex\\program\\Intex2025\\backend\\Intex2025.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\spenc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\drewc\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -94,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
