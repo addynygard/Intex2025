@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './TopCarousel.css';
 import { Movie } from '../types/Movie';
 import ImageLink from './ImageLink';
+import { Link } from 'react-router-dom';
 
 interface TopCarouselProps {
   items: Movie[]; // Accepts real movie data
@@ -11,9 +12,9 @@ const TopCarousel: React.FC<TopCarouselProps> = ({ items }) => {
   const visibleSlides = 3;
   const totalSlides = items.length;
   const extendedItems = [
-    ...items.slice(-visibleSlides), // Clone end
+    ...items.slice(-visibleSlides),
     ...items,
-    ...items.slice(0, visibleSlides), // Clone start
+    ...items.slice(0, visibleSlides),
   ];
 
   const [currentIndex, setCurrentIndex] = useState(visibleSlides);
@@ -86,8 +87,10 @@ const TopCarousel: React.FC<TopCarouselProps> = ({ items }) => {
         >
           {extendedItems.map((movie, i) => (
             <div className="carousel-slide" key={i}>
-              <ImageLink movieTitle={movie.title} size="large" />
-              <div className="carousel-movie-title">{movie.title}</div>
+              <Link to={`/movie/${movie.show_id}`}>
+                <ImageLink movieTitle={movie.title} size="large" />
+                <div className="carousel-movie-title">{movie.title}</div>
+              </Link>
             </div>
           ))}
         </div>
