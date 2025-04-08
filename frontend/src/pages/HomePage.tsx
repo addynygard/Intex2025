@@ -104,7 +104,7 @@ function HomePage() {
 
           <div className="featured-movie-content">
             <ImageLink movieTitle={currentTitle} size="large" />
-            <p className="movie-title-text">{currentTitle}</p>
+            {/* <p className="movie-title-text">{currentTitle}</p> */}
           </div>
 
           <button className="arrow-btn" onClick={goRight}>
