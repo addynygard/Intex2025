@@ -11,10 +11,14 @@ import MoviePage from './pages/MoviePage';
 import LoginPage from './pages/LoginPage';
 import MovieDetailPage from './pages/MovieDetailPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import AdminPage from './pages/AdminPage';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import { useEffect, useState } from 'react';
 import UserAccountPage from './pages/UserAccountPage';
+import MovieCollection from './pages/MovieCollection';
+import ShowCollection from './pages/ShowCollection';
+import { UserContext } from './context/UserContext';
 
 function App() {
   const [role, setRole] = useState<string | null>(null);
@@ -47,19 +51,25 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <ConditionalHeader role={role} /> {/* Conditionally render the Header */}
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/CreateAccount" element={<CreateAccountPage />} />
-        <Route path="/Login" element={<LoginPage />} />
-        <Route path="/Movie" element={<MoviePage />} />
-        <Route path="/MovieDetail" element={<MovieDetailPage />} />
-        <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
-        <Route path="/account" element={<UserAccountPage />} />
-      </Routes>
-      <Footer />
-    </Router>
+    <UserContext.Provider value={{ userId: 42 }}>
+      <Router>
+        <ConditionalHeader role={role} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/CreateAccount" element={<CreateAccountPage />} />
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/Movie" element={<MoviePage />} />
+          <Route path="/MovieDetail" element={<MovieDetailPage />} />
+          <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
+          <Route path="/account" element={<UserAccountPage />} />
+          <Route path="/MovieCollection" element={<MovieCollection />} />
+          <Route path="/ShowCollection" element={<ShowCollection />} />
+          <Route path="/adminpage" element={<AdminPage />} />
+          <Route path="/movie/:id" element={<MovieDetailPage />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </UserContext.Provider>
   );
 }
 

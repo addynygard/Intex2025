@@ -85,6 +85,8 @@ public class MovieController : ControllerBase
         return NoContent();
     }
 
+    
+
     //// GET: api/movie/user/role
     //[HttpGet("user/role")]
     //[Authorize] // Ensure the user is authenticated
@@ -116,5 +118,39 @@ public class MovieController : ControllerBase
 
     //    return Ok(new { role });
     //}
+
+    [HttpPost("rate-movie")]
+    public async Task<IActionResult> RateMovie([FromBody] movies_rating newRating)
+    {
+        if (newRating.user_id == null || newRating.show_id == null || newRating.rating == null)
+        {
+            return BadRequest("user_id, show_id, and rating are required.");
+        }
+
+        try
+        {
+            var existingRating = await _movieContext.movies_ratings
+                .FirstOrDefaultAsync(r => r.user_id == newRating.user_id && r.show_id == newRating.show_id);
+
+            if (existingRating != null)
+            {
+                existingRating.rating = newRating.rating;
+                _movieContext.movies_ratings.Update(existingRating);
+            }
+            else
+            {
+                _movieContext.movies_ratings.Add(newRating);
+            }
+
+            await _movieContext.SaveChangesAsync();
+            return Ok(new { message = "Rating saved successfully" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+
 
 }

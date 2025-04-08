@@ -14,16 +14,38 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalFrontend",
+        policy => policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
+// Your services
+builder.Services.AddScoped<IMovieService, MovieService>();
+// ✅ THIS IS THE MISSING PIECE
+builder.Services.AddHttpClient<IRecommendationService, RecommendationService>();
+
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseCors("AllowLocalFrontend");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
+
+
+// app.UseCors("AllowReactDev");
+
 
 app.UseAuthorization();
 
