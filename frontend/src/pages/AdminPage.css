@@ -75,7 +75,7 @@
 }
 
 .admin-page-container button:hover {
-  background-color: var(--primary-light);
+  background-color: var(--primary-dark);
 }
 
 .admin-page-container ul {
@@ -203,22 +203,92 @@
   transition: background-color 0.2s ease;
 }
 
-/* Edit button - styled to match site theme */
 .admin-movie-table .action-buttons .edit-btn {
   background-color: var(--primary-color);
   color: white;
 }
 
-.admin-movie-table .action-buttons .edit-btn:hover {
-  background-color: var(--primary-light);
+.admin-movie-table .action-buttons :hover {
+  background-color: var(--primary-dark);
 }
 
-/* Delete button - subtle warning, not harsh red */
-.admin-movie-table .action-buttons .delete-btn {
+/* === Pagination Container === */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* === Pagination Buttons === */
+.pagination-button {
+  padding: 0.5rem 1rem;
+  margin: 0 5px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Active (current page) button */
+.pagination-button.active {
   background-color: var(--primary-color);
   color: white;
+  cursor: not-allowed;
 }
 
-.admin-movie-table .action-buttons .delete-btn:hover {
-  background-color: var(--primary-light);
+/* Hover effect for non-disabled buttons */
+.pagination-button:hover:not(:disabled):not(.active) {
+  background-color: var(--primary-dark);
+}
+
+/* Disabled buttons (includes active for consistent cursor) */
+.pagination-button:disabled {
+  background-color: #2c2c2c;
+  color: #777;
+  border-color: #444;
+  cursor: not-allowed;
+}
+
+/* Remove hover effects for disabled buttons */
+.pagination-button:disabled:hover {
+  background-color: #2c2c2c;
+  color: #777;
+  border-color: #444;
+}
+
+/* === Results Per Page Dropdown === */
+.pagination-options select {
+  margin-left: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.pagination-options select:hover {
+  border-color: var(--primary-light);
+  background-color: var(--surface-color);
+}
+
+.pagination-options select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.form-message {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  border-radius: 6px;
+  font-weight: 500;
 }
