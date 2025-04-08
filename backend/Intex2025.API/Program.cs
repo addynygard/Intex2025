@@ -28,7 +28,6 @@ var app = builder.Build();
 
 app.UseCors("AllowLocalFrontend");
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
