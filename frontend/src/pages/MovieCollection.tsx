@@ -3,22 +3,36 @@ import React from 'react';
 import './MovieCollectionPage.css';
 
 const categories = [
-    "Featured", // Optional: manually keep this first
-    "Action", "Adventure", "Anime Series", "Docuseries", "Children", "Comedies",
-    "Comedies Dramas", "Comedies International Movies", "Comedies Romantic Movies",
-    "Documentaries", "Documentaries International Movies", "Dramas",
-    "Dramas International Movies", "Dramas Romantic Movies", "Family Movies",
-    "Fantasy", "Horror Movies", "International Movies Thrillers", "Musicals",
-    "Spirituality", "Thrillers"
-  ];
-  
+  'Featured', // Optional: manually keep this first
+  'Action',
+  'Adventure',
+  'Anime Series',
+  'Docuseries',
+  'Children',
+  'Comedies',
+  'Comedies Dramas',
+  'Comedies International Movies',
+  'Comedies Romantic Movies',
+  'Documentaries',
+  'Documentaries International Movies',
+  'Dramas',
+  'Dramas International Movies',
+  'Dramas Romantic Movies',
+  'Family Movies',
+  'Fantasy',
+  'Horror Movies',
+  'International Movies Thrillers',
+  'Musicals',
+  'Spirituality',
+  'Thrillers',
+];
 
 const movies = [
-  { title: "Moana 2", image: "/assets/moana2.jpg" },
-  { title: "Jumanji", image: "/assets/jumanji.jpg" },
-  { title: "The Space Race", image: "/assets/space.jpg" },
-  { title: "Dr. Pol", image: "/assets/drpol.jpg" },
-  { title: "Jurassic Park", image: "/assets/jurassic.jpg" },
+  { title: 'Moana 2', image: '/assets/moana2.jpg' },
+  { title: 'Jumanji', image: '/assets/jumanji.jpg' },
+  { title: 'The Space Race', image: '/assets/space.jpg' },
+  { title: 'Dr. Pol', image: '/assets/drpol.jpg' },
+  { title: 'Jurassic Park', image: '/assets/jurassic.jpg' },
   // Add more movie objects...
 ];
 
@@ -29,7 +43,10 @@ const MovieCollection = () => {
 
       <div className="category-bar">
         {categories.map((cat, index) => (
-          <button key={index} className={`category-btn ${index === 0 ? 'active' : ''}`}>
+          <button
+            key={index}
+            className={`category-btn ${index === 0 ? 'active' : ''}`}
+          >
             {cat}
           </button>
         ))}

@@ -5,7 +5,10 @@ type ImageLinkProps = {
   size?: 'small' | 'medium' | 'large';
 };
 
-const ImageLink: React.FC<ImageLinkProps> = ({ movieTitle, size = 'small' }) => {
+const ImageLink: React.FC<ImageLinkProps> = ({
+  movieTitle,
+  size = 'small',
+}) => {
   const encodedTitle = encodeURIComponent(movieTitle);
   const imageUrl = `https://ashleestreamimages.blob.core.windows.net/images/Movie%20Posters/${encodedTitle}.jpg`;
 
