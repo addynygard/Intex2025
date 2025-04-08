@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import ImageLink from '../components/ImageLink'; // adjust path as needed
+import { useEffect, useRef, useState } from 'react';
+import ImageLink from '../components/ImageLink';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 function HomePage() {
@@ -20,23 +20,34 @@ function HomePage() {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const lastInteractionTime = useRef<number>(Date.now());
 
+  // ⏳ Controls auto-slide timing
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
-    }, 5000); // Change image every 5 seconds
-
-    return () => clearInterval(interval);
-  }, [testMovieTitles.length]);
-
+    let timeoutId: NodeJS.Timeout;
+  
+    const scheduleNext = () => {
+      timeoutId = setTimeout(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
+        scheduleNext(); // schedule the next slide
+      }, 4000);
+    };
+  
+    scheduleNext();
+  
+    return () => clearTimeout(timeoutId);
+  }, []);
+  
   const goLeft = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? testMovieTitles.length - 1 : prevIndex - 1,
     );
+    lastInteractionTime.current = Date.now(); // update interaction time
   };
 
   const goRight = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
+    lastInteractionTime.current = Date.now(); // update interaction time
   };
 
   const currentTitle = testMovieTitles[currentIndex];
@@ -85,7 +96,7 @@ function HomePage() {
           </button>
 
           <div className="featured-movie-content">
-            <ImageLink movieTitle={currentTitle} />
+            <ImageLink movieTitle={currentTitle} size="large" />
             <p className="movie-title-text">{currentTitle}</p>
           </div>
 
