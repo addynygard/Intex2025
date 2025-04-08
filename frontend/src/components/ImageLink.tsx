@@ -5,9 +5,16 @@ const ImageLink = ({ movieTitle }: { movieTitle: string }) => {
   return (
     <img
       src={imageUrl}
-      alt="Movie Poster for ${movieTitle}"
-      style={{ width: '500px', height: '700px' }}
+      alt={`Movie Poster for ${movieTitle}`}
+      style={{
+        width: '100%',
+        maxWidth: '300px',
+        height: 'auto',
+        borderRadius: '12px',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
+      }}
     />
   );
 };
+
 export default ImageLink;
