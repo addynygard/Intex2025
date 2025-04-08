@@ -358,3 +358,50 @@ label {
   box-shadow: 0 0 0 2px var(--primary-light);
 }
 
+.featured-movie-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 1.5rem;
+}
+
+.featured-movie-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.movie-title-text {
+  margin-top: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.arrow-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--text-color);
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-btn:hover {
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .featured-movie-wrapper {
+    gap: 1rem;
+  }
+
+  .arrow-btn {
+    font-size: 1.5rem;
+  }
+}
