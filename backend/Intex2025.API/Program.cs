@@ -23,6 +23,12 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod());
 });
 
+// Your services
+builder.Services.AddScoped<IMovieService, MovieService>();
+// ✅ THIS IS THE MISSING PIECE
+builder.Services.AddHttpClient<IRecommendationService, RecommendationService>();
+
+
 
 var app = builder.Build();
 

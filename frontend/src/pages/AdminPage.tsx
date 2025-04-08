@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import AddMovieForm from '../components/AddMovieForm';
-import MovieListItem from '../components/MovieListItem';
+import EditMovie from '../components/EditMovie';
+import DeleteMovie from '../components/DeleteMovie';
+import Pagination from '../components/pagination';
 
 import {
   fetchMovies,
@@ -9,7 +11,7 @@ import {
   deleteMovie,
 } from '../api/movieAPI';
 import { Movie } from '../types/Movie';
-import './AdminPage.css'; // Your main page CSS file
+import './AdminPage.css';
 
 const getDefaultFormData = (): Omit<Movie, 'show_id'> => ({
   type: '',
@@ -55,54 +57,17 @@ const getDefaultFormData = (): Omit<Movie, 'show_id'> => ({
   thrillers: false,
 });
 
-// Confirmation Dialog Hook
-const useConfirmation = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [message, setMessage] = useState('');
-  const [onConfirm, setOnConfirm] = useState<(() => void) | null>(null);
-
-  const requestConfirmation = (msg: string, onConfirmCallback: () => void) => {
-    setMessage(msg);
-    setOnConfirm(() => onConfirmCallback);
-    setIsVisible(true);
-  };
-
-  const handleConfirm = () => {
-    if (onConfirm) onConfirm();
-    setIsVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsVisible(false);
-  };
-
-  const ConfirmationDialog = () =>
-    isVisible ? (
-      <div
-        className="confirmation-dialog"
-        style={{ background: '#eee', padding: '1rem', margin: '1rem 0' }}
-      >
-        <p>{message}</p>
-        <button onClick={handleConfirm}>Yes</button>
-        <button onClick={handleCancel}>No</button>
-      </div>
-    ) : null;
-
-  return { requestConfirmation, ConfirmationDialog };
-};
-
 const AdminPage: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [formData, setFormData] =
     useState<Omit<Movie, 'show_id'>>(getDefaultFormData());
   const [editingId, setEditingId] = useState<string | null>(null);
-
-  const { requestConfirmation, ConfirmationDialog } = useConfirmation();
+  const [message, setMessage] = useState<string | null>(null);
 
   const fetchMovieData = async () => {
     try {
-      const result = await fetchMovies(); // Now returns just Movie[]
+      const result = await fetchMovies();
       setMovies(result);
     } catch (err) {
       console.error('Failed to fetch movies:', err);
@@ -138,50 +103,48 @@ const AdminPage: React.FC = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        requestConfirmation(
-          'Are you sure you want to update this movie?',
-          async () => {
-            await updateMovie(editingId, { ...formData, show_id: editingId });
-            setFormData(getDefaultFormData());
-            setEditingId(null);
-            fetchMovieData();
-          },
-        );
+        await updateMovie(editingId, { ...formData, show_id: editingId });
+        setMessage('Movie updated successfully.');
+        setEditingId(null);
       } else {
         await addMovie({ ...formData, show_id: Date.now().toString() });
-        setFormData(getDefaultFormData());
-        fetchMovieData();
+        setMessage('Movie added successfully.');
+        setShowForm(false); // Hide form after creation
       }
+
+      setFormData(getDefaultFormData());
+      fetchMovieData();
     } catch (error) {
       console.error('Error submitting movie:', error);
+      setMessage('Something went wrong. Please try again.');
     }
+
+    setTimeout(() => setMessage(null), 3000); // Clear message after 3 seconds
   };
 
   const handleEdit = (movie: Movie) => {
-    requestConfirmation('Are you sure you want to edit this movie?', () => {
-      const { show_id, ...rest } = movie;
-      setFormData(rest);
-      setEditingId(show_id);
-    });
+    const { show_id, ...rest } = movie;
+    setFormData(rest);
+    setEditingId(show_id);
+    setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
-    requestConfirmation(
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
       'Are you sure you want to delete this movie?',
-      async () => {
-        try {
-          await deleteMovie(id);
-          fetchMovieData();
-        } catch (err) {
-          console.error('Delete failed:', err);
-        }
-      },
     );
+    if (!confirmed) return;
+
+    try {
+      await deleteMovie(id);
+      fetchMovieData();
+    } catch (err) {
+      console.error('Delete failed:', err);
+    }
   };
 
   return (
     <div className="admin-layout">
-      {/* Sidebar for Filters */}
       <aside className="admin-sidebar">
         <h3>Filter by Genre</h3>
         {Object.entries(formData)
@@ -199,14 +162,12 @@ const AdminPage: React.FC = () => {
           ))}
       </aside>
 
-      {/* Main Content Area */}
       <main className="admin-content">
         <button
           onClick={() => {
             setShowForm((prev) => !prev);
-            if (editingId) setEditingId(null); // reset edit state if toggling
+            if (editingId) setEditingId(null);
           }}
-          style={{ marginBottom: '1rem' }}
         >
           {showForm ? 'Cancel' : 'Add Movie'}
         </button>
@@ -220,52 +181,41 @@ const AdminPage: React.FC = () => {
           />
         )}
 
+        {message && <p className="form-message">{message}</p>}
         <h3>Movie List</h3>
-        <table className="admin-movie-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Year</th>
-              <th>Type</th>
-              <th>Rating</th>
-              <th>Duration</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {movies.length > 0 ? (
-              movies.map((movie) => (
-                <tr key={movie.show_id}>
-                  <td>{movie.title}</td>
-                  <td>{movie.release_year}</td>
-                  <td>{movie.type}</td>
-                  <td>{movie.rating}</td>
-                  <td>{movie.duration}</td>
-                  <td className="action-buttons">
-                    <button
-                      className="edit-btn"
-                      onClick={() => handleEdit(movie)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(movie.show_id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
+        <Pagination data={movies}>
+          {(paginatedMovies) => (
+            <table className="admin-movie-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Year</th>
+                  <th>Type</th>
+                  <th>Rating</th>
+                  <th>Duration</th>
+                  <th>Actions</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6}>No movies found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
-        <ConfirmationDialog />
+              </thead>
+              <tbody>
+                {paginatedMovies.map((movie) => (
+                  <tr key={movie.show_id}>
+                    <td>{movie.title}</td>
+                    <td>{movie.release_year}</td>
+                    <td>{movie.type}</td>
+                    <td>{movie.rating}</td>
+                    <td>{movie.duration}</td>
+                    <td className="action-buttons">
+                      <EditMovie onClick={() => handleEdit(movie)} />
+                      <DeleteMovie
+                        onClick={() => handleDelete(movie.show_id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Pagination>
       </main>
     </div>
   );

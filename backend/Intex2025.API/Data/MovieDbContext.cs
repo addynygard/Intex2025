@@ -30,7 +30,8 @@ public partial class MovieDbContext : DbContext
     {
         modelBuilder.Entity<movies_rating>(entity =>
         {
-            entity.HasNoKey();
+            // ✅ This defines the composite primary key so EF can track it
+            entity.HasKey(e => new { e.user_id, e.show_id });
         });
 
         modelBuilder.Entity<movies_title>(entity =>

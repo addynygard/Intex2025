@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import StarRating from '../components/StarRating';
+import { useParams } from 'react-router-dom';
+import ImageLink from '../components/ImageLink';
 
 interface Movie {
   show_id: string;
@@ -14,29 +16,46 @@ interface Movie {
 }
 
 const MovieDetailPage = () => {
-  const id = 's100'; // Your current show_id
+  const { id } = useParams<{ id: string }>();
   const userId = 1; // Replace with dynamic user ID if needed
   const [movie, setMovie] = useState<Movie | null>(null);
   const [userRating, setUserRating] = useState<number>(0);
+  const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    axios
-      .get<Movie>(`https://localhost:5000/api/movie/${id}`)
-      .then((res) => setMovie(res.data))
-      .catch((err) => console.error('Failed to load movie', err));
+    const fetchMovieDetails = async () => {
+      try {
+        // Fetch movie details
+        const movieResponse = await axios.get<Movie>(
+          `https://localhost:5000/api/movie/${id}`,
+        );
+        setMovie(movieResponse.data);
 
-    // Load existing rating (optional)
-    axios
-      .get(`https://localhost:5000/api/movie/user-rating`, {
-        params: { userId, showId: id },
-      })
-      .then((res) => {
-        setUserRating((res.data as { rating: number }).rating);
-      })
-      .catch(() => {
-        // No existing rating — totally fine
-      });
-  }, [id]);
+        // Fetch user rating
+        const ratingResponse = await axios.get(
+          `https://localhost:5000/api/movie/user-rating`,
+          {
+            params: { userId, showId: id },
+          },
+        );
+        setUserRating((ratingResponse.data as { rating: number }).rating);
+
+        // Fetch similar movies
+        if (movieResponse.data.title) {
+          const similarMoviesResponse = await axios.get<Movie[]>(
+            `https://localhost:5000/api/recommendation/similar/${encodeURIComponent(
+              movieResponse.data.title,
+            )}`,
+          );
+          setSimilarMovies(similarMoviesResponse.data);
+        }
+      } catch (error) {
+        console.error('Error fetching movie details or similar movies:', error);
+      }
+    };
+
+    fetchMovieDetails();
+  }, [id, userId]);
 
   const handleRating = async (rating: number) => {
     try {
@@ -65,11 +84,7 @@ const MovieDetailPage = () => {
     <div className="w-full min-h-screen bg-black text-white px-10 py-10 flex flex-col md:flex-row gap-10 items-start">
       {/* Movie Poster */}
       <div className="w-full md:w-1/3 flex justify-center">
-        <img
-          src="/Beynelmilel.jpg"
-          alt={`${movie.title} Poster`}
-          className="rounded-2xl shadow-lg max-w-xs w-full object-cover"
-        />
+        <ImageLink movieTitle={movie.title} size="large" />
       </div>
 
       {/* Movie Info */}
@@ -96,6 +111,27 @@ const MovieDetailPage = () => {
           <h3 className="text-xl font-bold mb-2">Rate this movie:</h3>
           <StarRating onRate={handleRating} initialRating={userRating} />
         </div>
+
+        {/* 🎯 Recommended Movies */}
+        {similarMovies.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-3xl font-bold mb-4">You May Also Like</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {similarMovies.map((rec) => (
+                <Link to={`/movie/${rec.show_id}`} key={rec.show_id}>
+                  <div className="bg-zinc-900 p-4 rounded-xl shadow hover:shadow-lg transition">
+                    <ImageLink movieTitle={rec.title} size="medium" />
+                    <h3 className="text-xl font-semibold mt-2">{rec.title}</h3>
+                    <p className="text-sm text-gray-400">{rec.release_year}</p>
+                    <p className="text-sm text-gray-500 line-clamp-3">
+                      {rec.description}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
