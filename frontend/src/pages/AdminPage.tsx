@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Pagination from '../components/pagination';
 import {
   fetchMovies,
   addMovie,
@@ -93,7 +94,7 @@ const AdminPage: React.FC = () => {
 
   const fetchMovieData = async () => {
     try {
-      const result = await fetchMovies(); // Now returns just Movie[]
+      const result = await fetchMovies();
       setMovies(result);
     } catch (err) {
       console.error('Failed to fetch movies:', err);
@@ -197,20 +198,61 @@ const AdminPage: React.FC = () => {
       </form>
 
       <h3>Movie List</h3>
-      <ul>
-        {Array.isArray(movies) && movies.length > 0 ? (
-          movies.map((movie) => (
-            <li key={movie.show_id}>
-              <strong>{movie.title}</strong> ({movie.release_year}) - {movie.description}
-              <br />
-              <button onClick={() => handleEdit(movie)}>Edit</button>
-              <button onClick={() => handleDelete(movie.show_id)}>Delete</button>
-            </li>
-          ))
-        ) : (
-          <li>No movies found.</li>
-        )}
-      </ul>
+      {movies.length > 0 ? (
+        <Pagination data={movies}>
+          {(paginatedMovies) => (
+            <div className="overflow-x-auto border border-gray-700 rounded-lg max-h-[600px] overflow-y-scroll mt-4">
+              <table className="min-w-[1000px] table-auto text-sm w-full text-white">
+                <thead className="bg-gray-900 sticky top-0 z-10">
+                  <tr>
+                    <th className="px-3 py-2 text-left">Title</th>
+                    <th className="px-3 py-2 text-left">Type</th>
+                    <th className="px-3 py-2 text-left">Year</th>
+                    <th className="px-3 py-2 text-left">Director</th>
+                    <th className="px-3 py-2 text-left">Cast</th>
+                    <th className="px-3 py-2 text-left">Country</th>
+                    <th className="px-3 py-2 text-left">Rating</th>
+                    <th className="px-3 py-2 text-left">Duration</th>
+                    <th className="px-3 py-2 text-left">Description</th>
+                    <th className="px-3 py-2 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-black">
+                  {paginatedMovies.map((movie) => (
+                    <tr key={movie.show_id} className="border-b border-gray-700 hover:bg-gray-800">
+                      <td className="px-3 py-2">{movie.title}</td>
+                      <td className="px-3 py-2">{movie.type}</td>
+                      <td className="px-3 py-2">{movie.release_year}</td>
+                      <td className="px-3 py-2">{movie.director}</td>
+                      <td className="px-3 py-2">{movie.cast}</td>
+                      <td className="px-3 py-2">{movie.country}</td>
+                      <td className="px-3 py-2">{movie.rating}</td>
+                      <td className="px-3 py-2">{movie.duration}</td>
+                      <td className="px-3 py-2">{movie.description}</td>
+                      <td className="px-3 py-2 space-x-2">
+                        <button
+                          onClick={() => handleEdit(movie)}
+                          className="px-2 py-1 text-xs bg-yellow-500 text-black rounded hover:bg-yellow-400"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(movie.show_id)}
+                          className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-500"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Pagination>
+      ) : (
+        <p>No movies found.</p>
+      )}
 
       <ConfirmationDialog />
     </div>
