@@ -34,20 +34,17 @@ function HomePage() {
 
   // ⏳ Auto-slide logic
   useEffect(() => {
-   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const resetAutoAdvance = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-  const resetAutoAdvance = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setCurrentIndex((prevIndex) =>
+          topRated.length ? (prevIndex + 1) % topRated.length : 0,
+        );
+        resetAutoAdvance(); // keep it going
+      }, 6000); // resume after a 6s pause
+    };
 
-    timeoutRef.current = setTimeout(() => {
-      setCurrentIndex((prevIndex) =>
-        topRated.length ? (prevIndex + 1) % topRated.length : 0
-      );
-      resetAutoAdvance(); // keep it going
-    }, 6000); // resume after a 6s pause
-  };
-
-  useEffect(() => {
     if (topRated.length) {
       resetAutoAdvance(); // start the cycle
     }
@@ -56,7 +53,6 @@ function HomePage() {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [topRated]);
-
 
   const goLeft = () => {
     setCurrentIndex((prevIndex) =>
@@ -126,7 +122,6 @@ function HomePage() {
                 </p>
               </Link>
             )}
-
           </div>
 
           <button className="arrow-btn" onClick={goRight}>

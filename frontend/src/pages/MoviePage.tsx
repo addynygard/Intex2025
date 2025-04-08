@@ -6,84 +6,95 @@ import TopCarousel from '../components/TopCarousel';
 import { useUser } from '../context/UserContext';
 
 const MoviePage = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
   const [topRated, setTopRated] = useState<Movie[]>([]);
   const [userRecs, setUserRecs] = useState<Movie[]>([]);
-  const { userId } = useUser(); // making it dynamic
+  const [actionTop, setActionTop] = useState<Movie[]>([]);
+  const [comedyTop, setComedyTop] = useState<Movie[]>([]);
+  const [thrillerTop, setThrillerTop] = useState<Movie[]>([]);
 
-  // 🔁 Load all regular movies (for genre filters)
+  const { userId } = useUser();
+
+  // ✅ Fetch Top 10 from top_rated_movies
   useEffect(() => {
-    async function fetchMovies() {
-      const response = await fetch('/api/movies');
-      const data = await response.json();
-      setMovies(data);
-    }
-
-    fetchMovies();
-  }, []);
-
-  // 🔥 Fetch Top Rated
-  useEffect(() => {
-    async function fetchTopRated() {
+    const fetchTopRated = async () => {
       try {
-        const response = await fetch(
+        const res = await fetch(
           'https://localhost:5000/api/recommendation/top-rated',
         );
-        const data = await response.json();
+        const data = await res.json();
         setTopRated(data);
-      } catch (error) {
-        console.error('Failed to fetch top rated movies:', error);
+      } catch (err) {
+        console.error('Failed to fetch top rated movies:', err);
       }
-    }
+    };
 
     fetchTopRated();
   }, []);
 
-  // 🎯 Fetch User Recommendations
+  // ✅ Fetch User-Based Recs
   useEffect(() => {
-    async function fetchUserRecs() {
+    const fetchUserRecs = async () => {
       try {
-        const response = await fetch(
+        const res = await fetch(
           `https://localhost:5000/api/recommendation/user/${userId}`,
         );
-        const data = await response.json();
+        const data = await res.json();
         setUserRecs(data);
-      } catch (error) {
-        console.error('Failed to fetch user recommendations:', error);
+      } catch (err) {
+        console.error('Failed to fetch user recs:', err);
       }
-    }
+    };
 
-    fetchUserRecs();
+    if (userId) {
+      fetchUserRecs();
+    }
   }, [userId]);
 
-  // 🎬 Genre filtering
-  const actionMovies = movies.filter((movie) => movie.action);
-  const comedyMovies = movies.filter((movie) => movie.comedies);
-  const dramaMovies = movies.filter((movie) => movie.dramas);
+  // ✅ Fetch Top by Genre from FastAPI
+  useEffect(() => {
+    const fetchGenre = async (
+      genre: string,
+      setter: React.Dispatch<React.SetStateAction<Movie[]>>,
+    ) => {
+      try {
+        const res = await fetch(
+          `https://localhost:5000/api/recommendation/genre/${genre}`,
+        );
+        const data = await res.json();
+        setter(data);
+      } catch (err) {
+        console.error(`Failed to fetch top ${genre} movies:`, err);
+      }
+    };
+
+    fetchGenre('action', setActionTop);
+    fetchGenre('comedies', setComedyTop);
+    fetchGenre('thrillers', setThrillerTop);
+  }, []);
 
   return (
     <>
-      <TopCarousel />
+      {/* 🎯 Top 10 Movies – from top_rated_movies */}
+      {topRated.length > 0 && <TopCarousel items={topRated} />}
+
       <div className="movie-page">
         <h1>Welcome to Your Movie Library</h1>
 
-        {/* 🎯 User-Based Recommendations */}
+        {/* 🎯 Personalized Recommendations */}
         {userRecs.length > 0 && (
           <Carousel genre="Recommended For You" movies={userRecs} />
         )}
 
-        {/* 🏆 Top Rated */}
-        {topRated.length > 0 && (
-          <Carousel genre="Top Rated Movies" movies={topRated} />
+        {/* 🎬 Genre Sections from Recommender Models */}
+        {actionTop.length > 0 && (
+          <Carousel genre="Action Picks" movies={actionTop} />
         )}
-        {/* Use the Carousel component */}
-        <Carousel genre="Newly Added" movies={comedyMovies} />
-        <Carousel genre="Continue Watching" movies={dramaMovies} />
-
-        {/* 🎬 Genre Sections */}
-        <Carousel genre="Action Picks" movies={actionMovies} />
-        <Carousel genre="Laugh Out Loud" movies={comedyMovies} />
-        <Carousel genre="Deep Dramas" movies={dramaMovies} />
+        {comedyTop.length > 0 && (
+          <Carousel genre="Laugh Out Loud" movies={comedyTop} />
+        )}
+        {thrillerTop.length > 0 && (
+          <Carousel genre="Terrific Thrillers" movies={thrillerTop} />
+        )}
       </div>
     </>
   );
