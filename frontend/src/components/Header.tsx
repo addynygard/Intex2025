@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import SearchBar from '../components/SearchBar'; // or '@/components/SearchBar' if using path alias
 
 // The role has been passed from the App.tsx file to the Header component
 // The role is used to conditionally render the admin panel link
@@ -27,12 +28,7 @@ function Header({ role }: { role: string | null }) {
             Account
           </Link>
           {role === 'admin' && (
-            <Link
-              to="/admin"
-              className="text-white hover:text-gray-300 transition"
-            >
-              Admin Panel
-            </Link>
+            <Link to="/adminpage" className="nav-btn">Admin</Link>
           )}
         </nav>
       </div>

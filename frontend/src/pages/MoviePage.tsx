@@ -69,13 +69,16 @@ const MoviePage = () => {
 
         {/* 🎯 User-Based Recommendations */}
         {userRecs.length > 0 && (
-          <Carousel genre="You May Like These" movies={userRecs} />
+          <Carousel genre="Recommended For You" movies={userRecs} />
         )}
 
         {/* 🏆 Top Rated */}
         {topRated.length > 0 && (
           <Carousel genre="Top Rated Movies" movies={topRated} />
         )}
+        {/* Use the Carousel component */}
+        <Carousel genre="Newly Added" movies={comedyMovies} />
+        <Carousel genre="Continue Watching" movies={dramaMovies} />
 
         {/* 🎬 Genre Sections */}
         <Carousel genre="Action Picks" movies={actionMovies} />

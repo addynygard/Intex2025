@@ -19,7 +19,7 @@ function HomePage() {
   const [topRated, setTopRated] = useState<Movie[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const lastInteractionTime = useRef<number>(Date.now());
-
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   // ✅ Fetch top-rated movies on load
   useEffect(() => {
     axios
@@ -34,21 +34,29 @@ function HomePage() {
 
   // ⏳ Auto-slide logic
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const scheduleNext = () => {
-      timeoutId = setTimeout(() => {
-        setCurrentIndex((prevIndex) =>
-          topRated.length ? (prevIndex + 1) % topRated.length : 0,
-        );
-        scheduleNext(); // schedule the next slide
-      }, 4000);
+  const resetAutoAdvance = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prevIndex) =>
+        topRated.length ? (prevIndex + 1) % topRated.length : 0
+      );
+      resetAutoAdvance(); // keep it going
+    }, 6000); // resume after a 6s pause
+  };
+
+  useEffect(() => {
+    if (topRated.length) {
+      resetAutoAdvance(); // start the cycle
+    }
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-
-    scheduleNext();
-
-    return () => clearTimeout(timeoutId);
   }, [topRated]);
+
 
   const goLeft = () => {
     setCurrentIndex((prevIndex) =>
@@ -118,6 +126,7 @@ function HomePage() {
                 </p>
               </Link>
             )}
+
           </div>
 
           <button className="arrow-btn" onClick={goRight}>
