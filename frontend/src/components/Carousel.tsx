@@ -1,7 +1,9 @@
 import React, { useRef } from 'react';
 import { Movie } from '../types/Movie';
-import './Carousel.css'; // Create a new CSS file for carousel-specific styles
+import './Carousel.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import ImageLink from './ImageLink';
+import { Link } from 'react-router-dom';
 
 interface CarouselProps {
   genre: string;
@@ -13,13 +15,13 @@ const Carousel: React.FC<CarouselProps> = ({ genre, movies }) => {
 
   const scrollLeft = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollLeft -= 220; // Adjust this to control the scroll speed
+      carouselRef.current.scrollLeft -= 220;
     }
   };
 
   const scrollRight = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollLeft += 220; // Adjust this to control the scroll speed
+      carouselRef.current.scrollLeft += 220;
     }
   };
 
@@ -29,19 +31,17 @@ const Carousel: React.FC<CarouselProps> = ({ genre, movies }) => {
       <div className="carousel-controls">
         <button className="carousel-arrow left" onClick={scrollLeft}>
           <FaChevronLeft />
-        </button>{' '}
+        </button>
         <div className="carousel-container" ref={carouselRef}>
           {movies.map((movie) => (
-            <div key={movie.show_id} className="movie-item">
-              <div className="movie-image-placeholder">
-                {/* Placeholder image */}
-                <img
-                  src="https://via.placeholder.com/200x300"
-                  alt={movie.title}
-                />
+            <Link to={`/movie/${movie.show_id}`} key={movie.show_id}>
+              <div className="movie-item">
+                <div className="movie-image">
+                  <ImageLink movieTitle={movie.title} size="medium" />
+                </div>
+                <div className="movie-title">{movie.title}</div>
               </div>
-              <div className="movie-title">{movie.title}</div>
-            </div>
+            </Link>
           ))}
         </div>
         <button className="carousel-arrow right" onClick={scrollRight}>

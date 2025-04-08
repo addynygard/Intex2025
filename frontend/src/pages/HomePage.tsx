@@ -1,63 +1,78 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import ImageLink from '../components/ImageLink';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
+interface Movie {
+  show_id: string;
+  title: string;
+  release_year: number;
+  rating: string;
+  duration: string;
+  description: string;
+  type: string;
+}
+
 function HomePage() {
   const navigate = useNavigate();
-
-  const testMovieTitles = [
-    'Animal Crackers',
-    '1 Chance 2 Dance',
-    '1 Mile to You',
-    'Bee Movie',
-    'Pajanimals',
-    'PJ Masks',
-    'Ella Enchanted',
-    'Flushed Away',
-    'Gnomeo & Juliet',
-    "Howl's Moving Castle",
-  ];
-
+  const [topRated, setTopRated] = useState<Movie[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const lastInteractionTime = useRef<number>(Date.now());
-
-  // ⏳ Controls auto-slide timing
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // ✅ Fetch top-rated movies on load
   useEffect(() => {
-    timeoutRef.current = setTimeout(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
-      resetAutoAdvance(); // Continue auto-advancing after first run
-    }, 4000);
-
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
+    axios
+      .get<Movie[]>('https://localhost:5000/api/recommendation/top-rated')
+      .then((res) => {
+        setTopRated(res.data);
+      })
+      .catch((err) => {
+        console.error('Failed to load top rated movies', err);
+      });
   }, []);
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // ⏳ Auto-slide logic
+  useEffect(() => {
+   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const resetAutoAdvance = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
+      setCurrentIndex((prevIndex) =>
+        topRated.length ? (prevIndex + 1) % topRated.length : 0
+      );
       resetAutoAdvance(); // keep it going
-    }, 6000); // <- delay after user clicks before auto-advance resumes
+    }, 6000); // resume after a 6s pause
   };
+
+  useEffect(() => {
+    if (topRated.length) {
+      resetAutoAdvance(); // start the cycle
+    }
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [topRated]);
+
 
   const goLeft = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? testMovieTitles.length - 1 : prevIndex - 1,
+      prevIndex === 0 ? topRated.length - 1 : prevIndex - 1,
     );
-    resetAutoAdvance();
+    lastInteractionTime.current = Date.now();
   };
 
   const goRight = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % testMovieTitles.length);
-    resetAutoAdvance();
+    setCurrentIndex((prevIndex) =>
+      topRated.length ? (prevIndex + 1) % topRated.length : 0,
+    );
+    lastInteractionTime.current = Date.now();
   };
 
-  const currentTitle = testMovieTitles[currentIndex];
+  const currentMovie = topRated[currentIndex];
 
   return (
     <div className="main-container home-layout">
@@ -103,8 +118,15 @@ function HomePage() {
           </button>
 
           <div className="featured-movie-content">
-            <ImageLink movieTitle={currentTitle} size="large" />
-            {/* <p className="movie-title-text">{currentTitle}</p> */}
+            {currentMovie && (
+              <Link to={`/movie/${currentMovie.show_id}`}>
+                <ImageLink movieTitle={currentMovie.title} size="large" />
+                <p className="movie-title-text mt-2 text-white text-xl font-semibold">
+                  {currentMovie.title}
+                </p>
+              </Link>
+            )}
+
           </div>
 
           <button className="arrow-btn" onClick={goRight}>
