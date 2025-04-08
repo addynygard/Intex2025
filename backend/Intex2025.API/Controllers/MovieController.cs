@@ -85,6 +85,8 @@ public class MovieController : ControllerBase
         return NoContent();
     }
 
+    
+
     //// GET: api/movie/user/role
     //[HttpGet("user/role")]
     //[Authorize] // Ensure the user is authenticated
