@@ -1,59 +1,113 @@
 .top-carousel-wrapper {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    max-width: 100vw;
-    margin-bottom: 3rem;
-    background-color: #111;
-  }
-  
-  .top-carousel-track {
-    overflow: hidden;
-    width: 100%;
-  }
-  
-  .top-carousel {
-    display: flex;
-    transition: transform 0.8s ease-in-out;
-    will-change: transform;
-  }
-  
-  .carousel-slide {
-    flex: 0 0 calc(100% / 3); /* 3 visible slides */
-    padding: 0 0.5rem;
-  }
-  
-  .carousel-slide img {
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  }
-  
-  .carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(20, 20, 20, 0.7);
-    border: none;
-    color: #fff;
-    font-size: 2rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    z-index: 2;
-    border-radius: 8px;
-    transition: background-color 0.3s;
-  }
-  
-  .carousel-arrow:hover {
-    background-color: rgba(80, 80, 80, 0.9);
-  }
-  
-  .carousel-arrow.left {
-    left: 1rem;
-  }
-  
-  .carousel-arrow.right {
-    right: 1rem;
-  }
-  
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100vw;
+  margin-bottom: 3rem;
+  background-color: #111;
+  padding: 2rem 0; /* Adds vertical breathing room */
+}
+
+/* Container that clips the slides */
+.top-carousel-track {
+  overflow: hidden;
+  width: 100%;
+  height: 600px; /* 💡 Enough for 700px image + title + margin */
+  position: relative;
+}
+
+
+/* Track that moves the slides */
+.top-carousel {
+  display: flex;
+  transition: transform 0.8s ease-in-out;
+  will-change: transform;
+}
+
+/* Each individual slide */
+.carousel-slide {
+  flex: 0 0 calc(100% / 3); /* Shows 3 at a time */
+  padding: 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease;
+}
+
+/* Slide hover/center emphasis effect */
+/* .carousel-slide:hover {
+  transform: scale(1.05);
+  z-index: 2;
+} */
+
+/* Image styling inside slide */
+.carousel-slide img {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Add a glowing hover effect */
+.carousel-slide:hover img {
+  box-shadow: 0 6px 12px rgba(124, 58, 237, 0.5); /* 👈 slightly lighter */
+}
+
+/* Optional title styling under each image */
+.carousel-movie-title {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #ddd;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 0.5rem;
+}
+
+/* Arrows */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(20, 20, 20, 0.7);
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  z-index: 5;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.carousel-arrow:hover {
+  background-color: rgba(124, 58, 237, 0.8); /* Tailwind-ish purple accent */
+}
+
+.carousel-arrow.left {
+  left: 1rem;
+}
+
+.carousel-arrow.right {
+  right: 1rem;
+}
+
+.carousel-slide-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.4s ease;
+  will-change: transform; /* 🔥 performance boost */
+  transform: translateZ(0);
+}
+
+
+.carousel-slide-content:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}

@@ -12,10 +12,12 @@ namespace Intex2025.API.Controllers
 public class RecommendationController : ControllerBase
 {
     private readonly IRecommendationService _recommendationService;
+    private readonly IMovieService _movieService;
 
-    public RecommendationController(IRecommendationService recommendationService)
+    public RecommendationController(IRecommendationService recommendationService, IMovieService movieService)
     {
         _recommendationService = recommendationService;
+        _movieService = movieService;
     }
 
     [HttpGet("similar/{title}")]
@@ -45,6 +47,18 @@ public class RecommendationController : ControllerBase
         var results = await _recommendationService.GetUserRecommendationsAsync(userId);
         return Ok(results);
     }
+
+    [HttpGet("by-title/{title}")]
+    public async Task<IActionResult> GetMovieByTitle(string title)
+    {
+        var movie = await _movieService.GetMovieByTitleAsync(title);
+        if (movie == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(movie);
+}
 
 }
 
