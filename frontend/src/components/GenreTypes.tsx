@@ -61,8 +61,7 @@ type GenreTypesProps = {
 };
 
 const GenreTypes: React.FC<GenreTypesProps> = ({ formData, setFormData }) => {
-  
-    const selected = GENRES.filter(({ value }) => formData[value] === true);
+  const selected = GENRES.filter(({ value }) => formData[value] === true);
 
   const handleChange = (
     selectedOptions: readonly { value: string; label: string }[] | null,
@@ -89,21 +88,22 @@ const GenreTypes: React.FC<GenreTypesProps> = ({ formData, setFormData }) => {
   };
 
   return (
-    <div style={{ marginBottom: '1rem' }}>
-      <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-        Genres:
-      </label>
-      <Select
-        options={GENRES}
-        isMulti
-        value={selected}
-        onChange={handleChange}
-        placeholder="Select genres..."
-        classNamePrefix="genre-select"
-        closeMenuOnSelect={false} // ✅ Keeps the menu open when selecting
-        hideSelectedOptions={false} // ✅ Keeps selected options in the dropdown too
-        isClearable={false} // Optional: disables the "x" clear button
-      />
+    <div className="form-row genre-form-row">
+      <label htmlFor="genres">Genres:</label>
+      <div className="genre-select__container">
+        <Select
+          inputId="genres"
+          options={GENRES}
+          isMulti
+          value={selected}
+          onChange={handleChange}
+          placeholder="Select genres..."
+          classNamePrefix="genre-select"
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          isClearable={false}
+        />
+      </div>
     </div>
   );
 };

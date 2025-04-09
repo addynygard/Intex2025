@@ -108,6 +108,9 @@ const AddMovieForm: React.FC<Props> = ({
               <option value="TV Show">TV Show</option>
             </select>
           </div>
+          {/* <div className="form-row"> */}
+            <GenreTypes formData={formData} setFormData={setFormData} />
+          {/* </div> */}
           <div className="form-row">
             <label htmlFor="director">Director:</label>
             <input

@@ -1,70 +1,56 @@
-/* Example override */
-.css-13cymwt-control {
-    background-color: #333;
-    border-color: var(--border-color);
-    color: var(--text-color);
+/* === GENRE DROPDOWN STYLES === */
+
+.genre-form-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0.5rem 0;
   }
   
+  .genre-form-row label {
+    min-width: 100px;
+    color: white;
+    font-size: 1rem;
+    text-align: right;
+  }
+  
+  /* Container around the react-select input */
+  .genre-select__container {
+    flex: 1;
+    width: 100%;
+  }
+  
+  /* Main input box */
   .genre-select__control {
-    background-color: #333;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
+    background-color: #333 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    min-height: 2.5rem;
+    padding: 0 0.5rem;
+    color: white !important;
+    font-size: 1rem;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
   }
   
-  .genre-select__control--is-focused {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--primary-color);
+  /* Multi-value pills container */
+  .genre-select__value-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 2px 4px !important;
+    box-sizing: border-box;
   }
   
+  /* Pills */
   .genre-select__multi-value {
-    background-color: var(--primary-light);
-    color: white;
-  }
-  
-  .genre-select__multi-value__label {
-    color: white;
-  }
-  
-  .genre-select__multi-value__remove {
-    color: white;
-  }
-  
-  .genre-select__multi-value__remove:hover {
     background-color: var(--primary-dark);
-  }
-  
-  .genre-select__option {
-    background-color: #333;
-    color: white;
-  }
-  
-  .genre-select__option--is-focused {
-    background-color: #444;
-  }
-  
-  .genre-select__option--is-selected {
-    background-color: var(--primary-color);
-  }
-  
-  .genre-select__menu {
-    background-color: #333;
-    border: 1px solid var(--border-color);
-  }
-  
-  .genre-select__single-value {
-    color: white;
-  }
-  
-  .genre-select__input input {
-    color: white;
-  }
-  
-  .genre-select__multi-value {
-    background-color: var(--primary-light);
-    color: white;
     border-radius: 6px;
-    margin: 2px;
-    padding: 0 4px;
+    padding: 2px 6px;
+    font-size: 0.85rem;
+    color: white;
   }
   
   .genre-select__multi-value__label {
@@ -76,8 +62,35 @@
     color: white;
     cursor: pointer;
   }
-  
   .genre-select__multi-value__remove:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--primary-color);
+  }
+  
+  /* Dropdown menu */
+  .genre-select__menu {
+    background-color: #1e1e1e;
+    color: white;
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 5;
+  }
+  
+  .genre-select__option {
+    background-color: #333;
+    color: white;
+  }
+  .genre-select__option--is-focused {
+    background-color: #444;
+  }
+  .genre-select__option--is-selected {
+    background-color: var(--primary-color);
+  }
+  
+  /* Caret */
+  .genre-select__indicators {
+    color: white;
+  }
+  .genre-select__dropdown-indicator {
+    padding: 0 8px;
   }
   

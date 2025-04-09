@@ -18,8 +18,8 @@
     border-radius: 12px; */
   width: 100%;
   /* max-width: 600px; */
-  /* max-height: 90vh; */
-  /* overflow-y: auto; */
+  max-height: 90vh;
+  overflow-y: auto;
   /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); */
 }
 
@@ -118,7 +118,7 @@ select[multiple] {
   display: block;
   /* margin: 0.5rem 0 0.25rem; */
   color: white;
-  font-size: 0.95rem;
+  font-size: .95rem;
 }
 
 .form-row {
@@ -145,4 +145,22 @@ select[multiple] {
   border-radius: 6px;
   color: white;
   box-sizing: border-box;
+}
+
+.movie-form select {
+  /* appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none; */
+
+  background-color: #333;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  /* padding: 0.5rem 2.5rem 0.5rem 0.5rem;  */
+  /* background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='20' height='20' viewBox='0 0 24 24' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E"); */
+  /* background-repeat: no-repeat; */
+  /* background-position: right 0.75rem center;
+  background-size: 1rem; */
+  box-sizing: border-box;
+  min-height: 2.5rem;
 }
