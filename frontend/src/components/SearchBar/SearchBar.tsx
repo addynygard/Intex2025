@@ -91,7 +91,7 @@ const SearchBar: React.FC = () => {
         onFocus={() => {
           if (results.length > 0) setOpen(true);
         }}
-        placeholder="Search titles..."
+        placeholder="Search Movies..."
       />
 
       {/* 👉 Move this outside the fragment so it always renders inside SearchWrapper */}

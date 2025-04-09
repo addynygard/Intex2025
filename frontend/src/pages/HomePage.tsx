@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ImageLink from '../components/ImageLink';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import './HomePage.css';
+
 
 interface Movie {
   show_id: string;
@@ -72,39 +74,42 @@ function HomePage() {
 
   return (
     <div className="main-container home-layout">
-      <div className="home-left">
-        <h1 className="text-center home-title">🎬 CinaNiche</h1>
-        <p className="text-center home-subtitle">
-          Your personalized movie platform
-        </p>
+<div className="home-left">
+<div className="home-left">
+  <img
+    src="/src/assets/cinenichelogo.png"
+    alt="CineNiche Logo"
+    className="home-logo"
+  />
 
-        <div className="home-description">
-          <p>
-            Discover movies tailored to your taste, explore niche genres, and
-            connect with fellow movie lovers by logging in or creating a free
-            account.
-          </p>
-        </div>
+  <p className="home-subtitle">Your personalized movie platform</p>
 
-        <div className="card home-actions">
-          <p className="text-center">
-            Join us now and start your cinematic journey!
-          </p>
-          <button
-            className="btn btn-primary"
-            onClick={() => navigate('/CreateAccount')}
-          >
-            Get Started
-          </button>
-          <p>Already have an account?</p>
-          <button
-            className="btn btn-secondary"
-            onClick={() => navigate('/Login')}
-          >
-            Login
-          </button>
-        </div>
-      </div>
+  <div className="home-description">
+    <p>
+      Discover movies tailored to your taste, explore niche genres, and
+      connect with fellow movie lovers by logging in or creating a free
+      account.
+    </p>
+  </div>
+
+  <div className="card home-actions">
+    <p>Join us now and start your cinematic journey!</p>
+    <button
+      className="btn btn-primary"
+      onClick={() => navigate('/CreateAccount')}
+    >
+      Get Started
+    </button>
+    <p>Already have an account?</p>
+    <button
+      className="btn btn-secondary"
+      onClick={() => navigate('/Login')}
+    >
+      Login
+    </button>
+  </div>
+</div>
+</div>
 
       <div className="home-right">
         <h2 className="text-center home-image-title">Top Trending Movies</h2>

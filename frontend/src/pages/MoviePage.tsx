@@ -4,6 +4,7 @@ import { Movie } from '../types/Movie';
 import Carousel from '../components/Carousel';
 import TopCarousel from '../components/TopCarousel';
 import { useUser } from '../context/UserContext';
+import PageWrapper from '../components/PageWrapper'; // ✅ Import it
 
 const MoviePage = () => {
   const [topRated, setTopRated] = useState<Movie[]>([]);
@@ -73,13 +74,11 @@ const MoviePage = () => {
   }, []);
 
   return (
-    <>
+    <PageWrapper>
       {/* 🎯 Top 10 Movies – from top_rated_movies */}
       {topRated.length > 0 && <TopCarousel items={topRated} />}
 
       <div className="movie-page">
-        <h1>Welcome to Your Movie Library</h1>
-
         {/* 🎯 Personalized Recommendations */}
         {userRecs.length > 0 && (
           <Carousel genre="Recommended For You" movies={userRecs} />
@@ -87,16 +86,26 @@ const MoviePage = () => {
 
         {/* 🎬 Genre Sections from Recommender Models */}
         {actionTop.length > 0 && (
-          <Carousel genre="Action Picks" movies={actionTop} />
+          <div style={{ marginTop: '2rem' }}>
+            <Carousel genre="Action Picks" movies={actionTop} />
+          </div>
         )}
+
         {comedyTop.length > 0 && (
-          <Carousel genre="Laugh Out Loud" movies={comedyTop} />
+          <div style={{ marginTop: '2rem' }}>
+            <Carousel genre="Laugh Out Loud" movies={comedyTop} />
+          </div>
         )}
+
         {thrillerTop.length > 0 && (
-          <Carousel genre="Terrific Thrillers" movies={thrillerTop} />
+          <div style={{ marginTop: '2rem' }}>
+            <Carousel genre="Terrific Thrillers" movies={thrillerTop} />
+          </div>
         )}
       </div>
-    </>
+
+
+    </PageWrapper>
   );
 };
 

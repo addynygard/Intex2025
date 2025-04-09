@@ -96,13 +96,18 @@
   }
   .movie-info {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     font-size: 0.75rem;
     color: #bbb;
     margin-top: 6px;
-    flex-wrap: wrap;
+  }
+  
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
   }
   
   .movie-rating,
@@ -113,6 +118,7 @@
     padding: 2px 6px;
     line-height: 1;
   }
+  
   
   .movie-stars {
     color: #f5c518;
@@ -148,5 +154,18 @@
     height: 100%;
     background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.6));
     pointer-events: none; /* let clicks go through */
+  }
+  
+  .vertical-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .top-badges {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
   }
   
