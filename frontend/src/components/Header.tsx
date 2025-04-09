@@ -28,7 +28,9 @@ function Header({ role }: { role: string | null }) {
             Account
           </Link>
           {role === 'admin' && (
-            <Link to="/adminpage" className="nav-btn">Admin</Link>
+            <Link to="/adminpage" className="nav-btn">
+              Admin
+            </Link>
           )}
         </nav>
       </div>
