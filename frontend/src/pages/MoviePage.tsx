@@ -4,6 +4,7 @@ import { Movie } from '../types/Movie';
 import Carousel from '../components/Carousel';
 import TopCarousel from '../components/TopCarousel';
 import { useUser } from '../context/UserContext';
+import { API_URL } from '../api/movieAPI';
 
 const MoviePage = () => {
   const [topRated, setTopRated] = useState<Movie[]>([]);
@@ -19,7 +20,7 @@ const MoviePage = () => {
     const fetchTopRated = async () => {
       try {
         const res = await fetch(
-          'https://localhost:5000/api/recommendation/top-rated',
+          `${API_URL}/api/recommendation/top-rated`,
         );
         const data = await res.json();
         setTopRated(data);
@@ -36,7 +37,7 @@ const MoviePage = () => {
     const fetchUserRecs = async () => {
       try {
         const res = await fetch(
-          `https://localhost:5000/api/recommendation/user/${userId}`,
+          `${API_URL}/api/recommendation/user/${userId}`,
         );
         const data = await res.json();
         setUserRecs(data);
@@ -58,7 +59,7 @@ const MoviePage = () => {
     ) => {
       try {
         const res = await fetch(
-          `https://localhost:5000/api/recommendation/genre/${genre}`,
+          `${API_URL}/api/recommendation/genre/${genre}`,
         );
         const data = await res.json();
         setter(data);

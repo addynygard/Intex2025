@@ -4,6 +4,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import './MovieCollectionPage.css';
 import ImageLink from '../components/ImageLink';
 import { Movie } from '../types/Movie';
+import { API_URL } from '../api/movieAPI';
 const categories = [
   'Featured',
   'All Movies',
@@ -121,7 +122,7 @@ const MovieCollection = () => {
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       try {
-        let url = 'https://localhost:5000/api/Movie';
+        let url = `${API_URL}/api/Movie`;
         if (selectedGenre === 'Featured' || selectedGenre === 'All Movies') {
           url += '/filter?genre=Featured';
         } else if (selectedGenre === 'No Genre') {

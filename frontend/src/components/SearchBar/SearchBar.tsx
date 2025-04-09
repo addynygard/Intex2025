@@ -41,7 +41,7 @@ const SearchBar: React.FC = () => {
 
     debounceTimeout.current = setTimeout(() => {
       fetch(
-        `http://localhost:8000/api/movie/search?title=${encodeURIComponent(query)}`,
+        `https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/api/movie/search?title=${encodeURIComponent(query)}`,
       )
         .then((res) => res.json())
         .then((data: Movie[]) => {

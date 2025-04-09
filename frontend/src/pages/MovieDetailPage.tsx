@@ -4,6 +4,7 @@ import StarRating from '../components/StarRating';
 import { useParams } from 'react-router-dom';
 import ImageLink from '../components/ImageLink';
 import Carousel from '../components/Carousel';
+import { API_URL } from '../api/movieAPI';
 
 interface Movie {
   show_id: string;
@@ -28,19 +29,19 @@ const MovieDetailPage = () => {
     const fetchMovieDetails = async () => {
       try {
         const movieResponse = await axios.get<Movie>(
-          `https://localhost:5000/api/movie/${id}`,
+          `${API_URL}/api/movie/${id}`,
         );
         setMovie(movieResponse.data);
 
         const ratingResponse = await axios.get(
-          `https://localhost:5000/api/movie/user-rating`,
+          `${API_URL}/api/movie/user-rating`,
           { params: { userId, showId: id } },
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
 
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
-            `https://localhost:5000/api/recommendation/similar/${encodeURIComponent(
+            `${API_URL}/api/recommendation/similar/${encodeURIComponent(
               movieResponse.data.title,
             )}`,
           );
@@ -58,7 +59,7 @@ const MovieDetailPage = () => {
 
   const handleRating = async (rating: number) => {
     try {
-      await axios.post('https://localhost:5000/api/movie/rate-movie', {
+      await axios.post(`${API_URL}/api/movie/rate-movie`, {
         user_id: userId,
         show_id: id,
         rating,
