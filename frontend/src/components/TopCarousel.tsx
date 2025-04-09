@@ -5,12 +5,14 @@ import ImageLink from './ImageLink';
 import { Link } from 'react-router-dom';
 
 interface TopCarouselProps {
-  items: Movie[]; // Accepts real movie data
+  items: Movie[];
 }
 
 const TopCarousel: React.FC<TopCarouselProps> = ({ items }) => {
   const visibleSlides = 3;
   const totalSlides = items.length;
+
+  // Clone extra slides at start and end for infinite loop effect
   const extendedItems = [
     ...items.slice(-visibleSlides),
     ...items,
@@ -20,11 +22,13 @@ const TopCarousel: React.FC<TopCarouselProps> = ({ items }) => {
   const [currentIndex, setCurrentIndex] = useState(visibleSlides);
   const trackRef = useRef<HTMLDivElement>(null);
 
+  // Calculate slide width based on visibleSlides
   const slideWidth = () => {
     const container = trackRef.current?.parentElement;
     return container ? container.offsetWidth / visibleSlides : 0;
   };
 
+  // Slide the carousel to a specific index
   const moveToSlide = (index: number, withTransition: boolean = true) => {
     const track = trackRef.current;
     if (!track) return;
@@ -35,50 +39,57 @@ const TopCarousel: React.FC<TopCarouselProps> = ({ items }) => {
     track.style.transform = `translateX(-${offset}px)`;
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => {
-      const next = prev + 1;
-      moveToSlide(next);
-      return next;
-    });
-  };
-
+  // ⬅ Previous slide
   const prevSlide = () => {
-    setCurrentIndex((prev) => {
-      const next = prev - 1;
-      moveToSlide(next);
-      return next;
-    });
+    const prev = currentIndex - 1;
+    setCurrentIndex(prev);
+    moveToSlide(prev);
   };
 
+  // ➡ Next slide
+  const nextSlide = () => {
+    const next = currentIndex + 1;
+    setCurrentIndex(next);
+    moveToSlide(next);
+  };
+
+  // 🔄 Handle looping logic when transition ends
   const handleTransitionEnd = () => {
     if (currentIndex >= totalSlides + visibleSlides) {
       const resetIndex = visibleSlides;
-      setCurrentIndex(resetIndex);
-      moveToSlide(resetIndex, false);
+      // Use requestAnimationFrame to prevent visual jump
+      requestAnimationFrame(() => {
+        moveToSlide(resetIndex, false);
+        setCurrentIndex(resetIndex);
+      });
     } else if (currentIndex <= visibleSlides - 1) {
       const resetIndex = totalSlides + visibleSlides - 1;
-      setCurrentIndex(resetIndex);
-      moveToSlide(resetIndex, false);
+      requestAnimationFrame(() => {
+        moveToSlide(resetIndex, false);
+        setCurrentIndex(resetIndex);
+      });
     }
   };
 
+  // On mount, set the initial position without animation
   useEffect(() => {
     moveToSlide(currentIndex, false);
   }, []);
 
+  // Set up auto-rotation once (⏱️)
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide();
     }, 4000);
-    return () => clearInterval(interval);
-  }, [currentIndex]);
+    return () => clearInterval(interval); // cleanup
+  }, []); // ← note: empty dependency array!
 
   return (
     <div className="top-carousel-wrapper">
       <button className="carousel-arrow left" onClick={prevSlide}>
         ◀
       </button>
+
       <div className="top-carousel-track">
         <div
           className="top-carousel"
@@ -88,13 +99,16 @@ const TopCarousel: React.FC<TopCarouselProps> = ({ items }) => {
           {extendedItems.map((movie, i) => (
             <div className="carousel-slide" key={i}>
               <Link to={`/movie/${movie.show_id}`}>
-                <ImageLink movieTitle={movie.title} size="large" />
-                <div className="carousel-movie-title">{movie.title}</div>
+                <div className="carousel-slide-content">
+                  <ImageLink movieTitle={movie.title} size="large" />
+                  <div className="carousel-movie-title">{movie.title}</div>
+                </div>
               </Link>
             </div>
           ))}
         </div>
       </div>
+
       <button className="carousel-arrow right" onClick={nextSlide}>
         ▶
       </button>
