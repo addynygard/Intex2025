@@ -4,18 +4,18 @@ import {
   SearchIcon,
   Input,
   ResultsWrapper,
-  ResultItem
+  ResultItem,
 } from './SearchBar.styles';
 import { Movie } from '../../types/Movie';
 
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState<string>('');
   const [results, setResults] = useState<Movie[]>([]);
-  const [open, setOpen] = useState<boolean>(false); // toggle state
+  const [open, setOpen] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Close when clicking outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -37,9 +37,14 @@ const SearchBar: React.FC = () => {
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
     debounceTimeout.current = setTimeout(() => {
-      fetch(`/api/movie/search?title=${encodeURIComponent(query)}`)
+      fetch(
+        `http://localhost:8000/api/movie/search?title=${encodeURIComponent(
+          query,
+        )}`,
+      )
         .then((res) => res.json())
         .then((data: Movie[]) => {
+          console.log('Search results:', data); // Debug: log to console
           setResults(data.slice(0, 5));
         })
         .catch((err) => console.error('Error fetching movies:', err));
@@ -70,17 +75,19 @@ const SearchBar: React.FC = () => {
           <Input
             type="text"
             value={query}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setQuery(e.target.value)
+            }
             autoFocus
             placeholder="Search titles..."
           />
-          {results.length > 0 && (
-            <ResultsWrapper>
-              {results.map((movie) => (
-                <ResultItem key={movie.show_id}>{movie.title}</ResultItem>
-              ))}
-            </ResultsWrapper>
-          )}
+          <ResultsWrapper>
+            {results.length > 0
+              ? results.map((movie) => (
+                  <ResultItem key={movie.show_id}>{movie.title}</ResultItem>
+                ))
+              : query && <ResultItem>No matches found</ResultItem>}
+          </ResultsWrapper>
         </>
       )}
     </SearchWrapper>

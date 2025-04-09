@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import './MovieCollectionPage.css';
+import './Movie_Collection_Page.css';
 import ImageLink from '../components/ImageLink';
 import { Movie } from '../types/Movie';
 const categories = [
@@ -193,4 +193,5 @@ const MovieCollection = () => {
     </div>
   );
 };
+
 export default MovieCollection;
