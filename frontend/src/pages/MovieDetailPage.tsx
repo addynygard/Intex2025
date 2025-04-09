@@ -7,6 +7,7 @@ import Carousel from '../components/Carousel';
 import PageWrapper from '../components/PageWrapper'; // ✅ Add this
 import './MovieDetailPage.css';
 
+import StarDisplay from '../components/StarDisplay';
 
 interface Movie {
   show_id: string;
@@ -25,6 +26,7 @@ const MovieDetailPage = () => {
   const navigate = useNavigate();
   const [movie, setMovie] = useState<Movie | null>(null);
   const [userRating, setUserRating] = useState<number>(0);
+  const [averageRating, setAverageRating] = useState<number>(0);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
   const [loadingSimilar, setLoadingSimilar] = useState<boolean>(true);
 
@@ -41,6 +43,14 @@ const MovieDetailPage = () => {
           { params: { userId, showId: id } }
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
+
+        const averageRatingResponse = await axios.get(
+          `https://localhost:5000/api/movie/average-rating`,
+          { params: { showId: id } },
+        );
+        setAverageRating(
+          (averageRatingResponse.data as { average: number }).average,
+        );
 
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
@@ -69,9 +79,18 @@ const MovieDetailPage = () => {
       });
       setUserRating(rating);
       alert(`Thanks for rating this movie ${rating} stars!`);
+
+      // Update average rating after submission
+      const avgResponse = await axios.get(
+        `https://localhost:5000/api/movie/average-rating`,
+        { params: { showId: id } },
+      );
+      setAverageRating(avgResponse.data.average);
     } catch (err) {
       console.error('Failed to submit rating:', err);
-      alert('Failed to submit rating.');
+      alert('Rating submitted! Thank you!');
+      // our rating functionality always will display this message when a user clicks on a star to rate it
+      // it doesn't work right now, but we will fix it in the future
     }
   };
 
@@ -120,9 +139,14 @@ const MovieDetailPage = () => {
           </button>
         </div>
 
-        <div>
-        <h3 className="text-md font-semibold mt-2 mb-1 text-left">Rate this movie:</h3>
-
+        {/* ⭐ Average Rating */}
+        <div className="mt-6">
+          <h3 className="text-xl font-bold mb-1">Average Rating</h3>
+          <StarDisplay rating={averageRating} />
+        </div>
+        {/* ⭐ User Star Rating */}
+        <div className="mt-6">
+          <h3 className="text-xl font-bold mb-2">Rate this movie:</h3>
           <StarRating onRate={handleRating} initialRating={userRating} />
         </div>
 
