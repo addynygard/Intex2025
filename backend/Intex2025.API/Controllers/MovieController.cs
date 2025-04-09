@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Intex2025.API.Data;
 using Intex2025.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Intex2025.API.Data;
 
-namespace Intex2025.API.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class MovieController : ControllerBase
+namespace Intex2025.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MovieController : ControllerBase
     private readonly MovieDbContext _movieContext;
 
     public MovieController(MovieDbContext context)
@@ -23,7 +21,6 @@ public class MovieController : ControllerBase
     {
         return await _movieContext.movies_titles.ToListAsync();
     }
-
 
 [HttpGet("filter")]
 public async Task<IActionResult> GetMoviesByGenre([FromQuery] string? genre)
@@ -77,7 +74,6 @@ public async Task<IActionResult> GetMoviesByGenre([FromQuery] string? genre)
 
     return Ok(filtered);
 }
-
 
 var genreMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 {
@@ -231,9 +227,7 @@ switch (columnName)
 
 
 
-
 var filtered = await query.ToListAsync();
-
 
 
         Console.WriteLine($"Found {filtered.Count} movies for genre: {columnName}");
@@ -264,34 +258,21 @@ var filtered = await query.ToListAsync();
     [HttpPost]
     //[Authorize(Roles = "admin")]
     public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
+
     {
-        _movieContext.movies_titles.Add(movie);
-        await _movieContext.SaveChangesAsync();
+        private readonly MovieDbContext _movieContext;
 
-        return CreatedAtAction(nameof(GetMovie), new { id = movie.show_id }, movie);
-    }
-
-    // PUT: api/movie/{id} (Admin only)
-    [HttpPut("{id}")]
-    //[Authorize(Roles = "admin")]
-    public async Task<IActionResult> UpdateMovie(string id, movies_title updatedMovie)
-    {
-        if (id != updatedMovie.show_id)
-            return BadRequest();
-
-        _movieContext.Entry(updatedMovie).State = EntityState.Modified;
-
-        try
+        public MovieController(MovieDbContext movieContext)
         {
-            await _movieContext.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_movieContext.movies_titles.Any(e => e.show_id == id))
-                return NotFound();
-            throw;
+            _movieContext = movieContext;
         }
 
+        // 🎬 GET: /api/movie/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMovieById(string id)
+        {
+            var movie = await _movieContext.movies_titles
+                .FirstOrDefaultAsync(m => m.show_id == id);
         return NoContent();
     }
 
@@ -342,41 +323,22 @@ var filtered = await query.ToListAsync();
     //        return NotFound(new { error = "User role not found" });
     //    }
 
-    //    return Ok(new { role });
-    //}
+            if (movie == null)
+                return NotFound();
 
-    [HttpPost("rate-movie")]
-    public async Task<IActionResult> RateMovie([FromBody] movies_rating newRating)
-    {
-        if (newRating.user_id == null || newRating.show_id == null || newRating.rating == null)
-        {
-            return BadRequest("user_id, show_id, and rating are required.");
+            return Ok(movie);
         }
 
-        try
+        // ⭐ GET: /api/movie/user-rating?userId=1&showId=s880
+        [HttpGet("user-rating")]
+        public async Task<IActionResult> GetUserRating(int userId, string showId)
         {
-            var existingRating = await _movieContext.movies_ratings
-                .FirstOrDefaultAsync(r => r.user_id == newRating.user_id && r.show_id == newRating.show_id);
+            var rating = await _movieContext.movies_ratings
+                .Where(r => r.user_id == userId && r.show_id == showId)
+                .Select(r => r.rating)
+                .FirstOrDefaultAsync();
 
-            if (existingRating != null)
-            {
-                existingRating.rating = newRating.rating;
-                _movieContext.movies_ratings.Update(existingRating);
-            }
-            else
-            {
-                _movieContext.movies_ratings.Add(newRating);
-            }
-
-            await _movieContext.SaveChangesAsync();
-            return Ok(new { message = "Rating saved successfully" });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
+            return Ok(new { rating = rating ?? 0 });
         }
     }
-
-
-
 }

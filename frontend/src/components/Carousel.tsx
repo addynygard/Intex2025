@@ -10,6 +10,12 @@ interface CarouselProps {
   movies: Movie[];
 }
 
+interface CarouselProps {
+  genre: string;
+  movies: Movie[];
+  minimal?: boolean;
+}
+
 const Carousel: React.FC<CarouselProps> = ({ genre, movies }) => {
   const carouselRef = useRef<HTMLDivElement>(null);
 

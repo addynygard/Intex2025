@@ -82,6 +82,7 @@
 }
 
 .carousel-arrow:hover {
+  background-color: rgba(124, 58, 237, 0.8); /* #7c3aed with transparency */
   background-color: rgba(124, 58, 237, 0.8);
 }
 
@@ -92,4 +93,3 @@
 .carousel-arrow.right {
   right: -20px;
 }
-

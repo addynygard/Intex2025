@@ -19,5 +19,11 @@ public class MovieService : IMovieService
         .Where(m => lowerTitles.Contains(m.title.ToLower()))
         .ToListAsync();
 }
+
+    public async Task<movies_title?> GetMovieByTitleAsync(string title)
+{
+    return await _context.movies_titles
+        .FirstOrDefaultAsync(m => m.title.ToLower() == title.ToLower());
+}
 }
 
