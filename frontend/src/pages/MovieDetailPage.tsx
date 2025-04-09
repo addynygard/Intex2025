@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import StarRating from '../components/StarRating';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Imported useNavigate for navigation
 import ImageLink from '../components/ImageLink';
 import Carousel from '../components/Carousel';
 
@@ -19,6 +19,7 @@ interface Movie {
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const userId = 1;
+  const navigate = useNavigate(); // useNavigate for dynamic navigation
   const [movie, setMovie] = useState<Movie | null>(null);
   const [userRating, setUserRating] = useState<number>(0);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
@@ -71,6 +72,10 @@ const MovieDetailPage = () => {
     }
   };
 
+  const handleMovieClick = (movieId: string) => {
+    navigate(`/movie/${movieId}`); // Navigate to the new movie details page
+  };
+
   if (!movie) {
     return (
       <div className="flex items-center justify-center min-h-screen text-white">
@@ -117,7 +122,11 @@ const MovieDetailPage = () => {
           {loadingSimilar ? (
             <p className="text-gray-400 italic">Loading similar movies...</p>
           ) : similarMovies.length > 0 ? (
-            <Carousel genre="You May Also Like" movies={similarMovies} />
+            <Carousel
+              genre="You May Also Like"
+              movies={similarMovies}
+              onMovieClick={handleMovieClick} // Pass the click handler
+            />
           ) : (
             <p className="text-gray-500 italic">
               No similar movies found for this title.
