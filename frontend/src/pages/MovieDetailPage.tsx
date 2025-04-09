@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import StarRating from '../components/StarRating';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Imported useNavigate for navigation
 import ImageLink from '../components/ImageLink';
+import Carousel from '../components/Carousel';
 
 interface Movie {
   show_id: string;
@@ -17,40 +18,39 @@ interface Movie {
 
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const userId = 1; // Replace with dynamic user ID if needed
+  const userId = 1;
+  const navigate = useNavigate(); // useNavigate for dynamic navigation
   const [movie, setMovie] = useState<Movie | null>(null);
   const [userRating, setUserRating] = useState<number>(0);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
+  const [loadingSimilar, setLoadingSimilar] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        // Fetch movie details
         const movieResponse = await axios.get<Movie>(
           `https://localhost:5000/api/movie/${id}`,
         );
         setMovie(movieResponse.data);
 
-        // Fetch user rating
         const ratingResponse = await axios.get(
           `https://localhost:5000/api/movie/user-rating`,
-          {
-            params: { userId, showId: id },
-          },
+          { params: { userId, showId: id } },
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
 
-        // Fetch similar movies
         if (movieResponse.data.title) {
-          const similarMoviesResponse = await axios.get<Movie[]>(
+          const recResponse = await axios.get<Movie[]>(
             `https://localhost:5000/api/recommendation/similar/${encodeURIComponent(
               movieResponse.data.title,
             )}`,
           );
-          setSimilarMovies(similarMoviesResponse.data);
+          setSimilarMovies(recResponse.data);
         }
       } catch (error) {
         console.error('Error fetching movie details or similar movies:', error);
+      } finally {
+        setLoadingSimilar(false);
       }
     };
 
@@ -70,6 +70,10 @@ const MovieDetailPage = () => {
       console.error('Failed to submit rating:', err);
       alert('Failed to submit rating.');
     }
+  };
+
+  const handleMovieClick = (movieId: string) => {
+    navigate(`/movie/${movieId}`); // Navigate to the new movie details page
   };
 
   if (!movie) {
@@ -112,26 +116,23 @@ const MovieDetailPage = () => {
           <StarRating onRate={handleRating} initialRating={userRating} />
         </div>
 
-        {/* 🎯 Recommended Movies */}
-        {similarMovies.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-3xl font-bold mb-4">You May Also Like</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {similarMovies.map((rec) => (
-                <Link to={`/movie/${rec.show_id}`} key={rec.show_id}>
-                  <div className="bg-zinc-900 p-4 rounded-xl shadow hover:shadow-lg transition">
-                    <ImageLink movieTitle={rec.title} size="medium" />
-                    <h3 className="text-xl font-semibold mt-2">{rec.title}</h3>
-                    <p className="text-sm text-gray-400">{rec.release_year}</p>
-                    <p className="text-sm text-gray-500 line-clamp-3">
-                      {rec.description}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* 🎯 Recommended Movies (Carousel) */}
+        <div className="mt-12">
+          <h2 className="text-3xl font-bold mb-4"></h2>
+          {loadingSimilar ? (
+            <p className="text-gray-400 italic">Loading similar movies...</p>
+          ) : similarMovies.length > 0 ? (
+            <Carousel
+              genre="You May Also Like"
+              movies={similarMovies}
+              onMovieClick={handleMovieClick} // Pass the click handler
+            />
+          ) : (
+            <p className="text-gray-500 italic">
+              No similar movies found for this title.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

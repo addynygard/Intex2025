@@ -27,13 +27,13 @@
     letter-spacing: 1px;
   }
   
-  .movie-item {
+  /* .movie-item {
     flex: 0 0 auto;
     width: 200px;
     text-align: center;
     transition: transform 0.3s ease;
     position: relative;
-  }
+  } */
   
   .movie-item:hover {
     transform: scale(1.08);
@@ -52,12 +52,12 @@
     box-shadow: 0 6px 16px rgba(124, 58, 237, 0.6);
   }
   
-  .movie-title {
+  /* .movie-title {
     margin-top: 0.75rem;
     font-size: 0.95rem;
     font-weight: 500;
     color: #ccc;
-  }
+  } */
   
   /* Optional spacing at bottom for better breathing room */
   .movie-page::after {

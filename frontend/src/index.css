@@ -33,6 +33,13 @@ body {
 
 
 
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -63,4 +70,9 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* App.css */
+.sc-Qotzb.hrEKBL {
+  overflow: visible !important;
 }
