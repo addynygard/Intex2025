@@ -1,156 +1,44 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Intex2025.API.Data;
 using Intex2025.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Intex2025.API.Data;
 
-namespace Intex2025.API.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class MovieController : ControllerBase
+namespace Intex2025.API.Controllers
 {
-    private readonly MovieDbContext _movieContext;
-
-    public MovieController(MovieDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MovieController : ControllerBase
     {
-        _movieContext = context;
-    }
+        private readonly MovieDbContext _movieContext;
 
-    // GET: api/movie
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<movies_title>>> GetAllMovies()
-    {
-        return await _movieContext.movies_titles.ToListAsync();
-    }
-
-    // GET: api/movie/{id}
-    [HttpGet("{id}")]
-    public async Task<ActionResult<movies_title>> GetMovie(string id)
-    {
-        var movie = await _movieContext.movies_titles.FindAsync(id);
-        if (movie == null)
-            return NotFound();
-
-        return movie;
-    }
-
-    // POST: api/movie (Admin only)
-    [HttpPost]
-    //[Authorize(Roles = "admin")]
-    public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
-    {
-        _movieContext.movies_titles.Add(movie);
-        await _movieContext.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetMovie), new { id = movie.show_id }, movie);
-    }
-
-    // PUT: api/movie/{id} (Admin only)
-    [HttpPut("{id}")]
-    //[Authorize(Roles = "admin")]
-    public async Task<IActionResult> UpdateMovie(string id, movies_title updatedMovie)
-    {
-        if (id != updatedMovie.show_id)
-            return BadRequest();
-
-        _movieContext.Entry(updatedMovie).State = EntityState.Modified;
-
-        try
+        public MovieController(MovieDbContext movieContext)
         {
-            await _movieContext.SaveChangesAsync();
+            _movieContext = movieContext;
         }
-        catch (DbUpdateConcurrencyException)
+
+        // 🎬 GET: /api/movie/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMovieById(string id)
         {
-            if (!_movieContext.movies_titles.Any(e => e.show_id == id))
+            var movie = await _movieContext.movies_titles
+                .FirstOrDefaultAsync(m => m.show_id == id);
+
+            if (movie == null)
                 return NotFound();
-            throw;
+
+            return Ok(movie);
         }
 
-        return NoContent();
-    }
-
-    // DELETE: api/movie/{id} (Admin only)
-    [HttpDelete("{id}")]
-    //[Authorize(Roles = "admin")]
-    public async Task<IActionResult> DeleteMovie(string id)
-    {
-        var movie = await _movieContext.movies_titles.FindAsync(id);
-        if (movie == null)
-            return NotFound();
-
-        _movieContext.movies_titles.Remove(movie);
-        await _movieContext.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    
-
-    //// GET: api/movie/user/role
-    //[HttpGet("user/role")]
-    //[Authorize] // Ensure the user is authenticated
-    //public async Task<ActionResult<string>> GetUserRole()
-    //{
-    //    // Extract the user ID from claims
-    //    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
-    //    if (userIdClaim == null)
-    //    {
-    //        return Unauthorized(new { error = "User not authenticated" });
-    //    }
-
-    //    // Convert user ID to int
-    //    if (!int.TryParse(userIdClaim, out var parsedUserId))
-    //    {
-    //        return BadRequest(new { error = "Invalid user ID format" });
-    //    }
-
-    //    // Fetch the user's role from the database
-    //    var role = await _movieContext.movies_users
-    //        .Where(mu => mu.user_id == parsedUserId)
-    //        .Select(mu => mu.role)
-    //        .FirstOrDefaultAsync();
-
-    //    if (role == null)
-    //    {
-    //        return NotFound(new { error = "User role not found" });
-    //    }
-
-    //    return Ok(new { role });
-    //}
-
-    [HttpPost("rate-movie")]
-    public async Task<IActionResult> RateMovie([FromBody] movies_rating newRating)
-    {
-        if (newRating.user_id == null || newRating.show_id == null || newRating.rating == null)
+        // ⭐ GET: /api/movie/user-rating?userId=1&showId=s880
+        [HttpGet("user-rating")]
+        public async Task<IActionResult> GetUserRating(int userId, string showId)
         {
-            return BadRequest("user_id, show_id, and rating are required.");
-        }
+            var rating = await _movieContext.movies_ratings
+                .Where(r => r.user_id == userId && r.show_id == showId)
+                .Select(r => r.rating)
+                .FirstOrDefaultAsync();
 
-        try
-        {
-            var existingRating = await _movieContext.movies_ratings
-                .FirstOrDefaultAsync(r => r.user_id == newRating.user_id && r.show_id == newRating.show_id);
-
-            if (existingRating != null)
-            {
-                existingRating.rating = newRating.rating;
-                _movieContext.movies_ratings.Update(existingRating);
-            }
-            else
-            {
-                _movieContext.movies_ratings.Add(newRating);
-            }
-
-            await _movieContext.SaveChangesAsync();
-            return Ok(new { message = "Rating saved successfully" });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
+            return Ok(new { rating = rating ?? 0 });
         }
     }
-
-
-
 }

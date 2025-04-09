@@ -4,4 +4,7 @@ public interface IMovieService
 {
     Task<List<movies_title>> GetMoviesByTitlesAsync(IEnumerable<string> titles);
 
+    Task<movies_title?> GetMovieByTitleAsync(string title);
+
+
 }
