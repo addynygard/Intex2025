@@ -4,6 +4,8 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import './MovieCollectionPage.css';
 import ImageLink from '../components/ImageLink';
 import { Movie } from '../types/Movie';
+import { useNavigate } from 'react-router-dom';
+
 const categories = [
   'Featured',
   'All Movies',
@@ -118,6 +120,7 @@ const getPrimaryGenre = (movie: any): string => {
 const MovieCollection = () => {
   const [selectedGenre, setSelectedGenre] = useState('Featured');
   const [movies, setMovies] = useState<Movie[]>([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       try {
@@ -149,8 +152,16 @@ const MovieCollection = () => {
     const index = rowIndex * columnCount + columnIndex;
     if (index >= movies.length) return null;
     const movie = movies[index];
+
+    const handleClick = () => {
+      navigate(`/movie/${movie.show_id}`); // ⬅️ Navigates to detail page
+    };
+
     return (
-      <div style={{ ...style, padding: '8px' }}>
+      <div
+        style={{ ...style, padding: '8px', cursor: 'pointer' }}
+        onClick={handleClick}
+      >
         <div className="movie-card">
           <ImageLink movieTitle={movie.title} size="small" />
           <div className="movie-title">{movie.title}</div>
