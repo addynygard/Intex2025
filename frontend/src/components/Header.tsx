@@ -1,56 +1,54 @@
 import { Link } from 'react-router-dom';
-import SearchBar from '../components/SearchBar'; // adjust path if needed
+import { Home, Film, User, Shield, LogOut } from 'lucide-react';
+import SearchBar from '../components/SearchBar';
+import Logo from '../assets/cinenichelogo.png'; 
+
 
 function Header({ role }: { role: string | null }) {
   return (
-    <header className="bg-gray-800 text-white py-3 shadow-md">
-      <div className="container mx-auto flex justify-between items-center px-4">
-        {/* Logo */}
-        <h1 className="text-lg font-bold tracking-wide">CinaNiche</h1>
+    <header>
+  <div className="header-inner">
+    {/* Logo + Nav */}
+    <div className="flex items-center">
+    <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+      <img src={Logo} alt="CineNiche Logo" className="logo-image" />
+    </Link>
 
-        {/* Navigation Links */}
-        <nav className="flex space-x-6 items-center">
-          {/* Home link to ShowPage.tsx */}
-          <Link
-            to="/Movie"
-            className="text-white hover:text-gray-300 transition"
-          >
-            Home
+
+
+      <nav className="nav-links">
+        <Link to="/Movie" className="hover:text-gray-300">
+          <Home size={18} strokeWidth={1.5} />
+          <span>Home</span>
+        </Link>
+        <Link to="/MovieCollection" className="hover:text-gray-300">
+          <Film size={18} strokeWidth={1.5} />
+          <span>Movies</span>
+        </Link>
+        <Link to="/account" className="hover:text-gray-300">
+          <User size={18} strokeWidth={1.5} />
+          <span>Account</span>
+        </Link>
+        <Link to="/logout" className="hover:text-gray-300">
+          <LogOut size={16} strokeWidth={1.5} />
+          <span>Logout</span>
+        </Link>
+        {role === 'admin' && (
+          <Link to="/adminpage" className="hover:text-gray-300">
+            <Shield size={18} strokeWidth={1.5} />
+            <span>Admin</span>
           </Link>
+        )}
+      </nav>
+    </div>
 
-          {/* Movies link to MovieCollection.tsx */}
-          <Link
-            to="/MovieCollection"
-            className="text-white hover:text-gray-300 transition"
-          >
-            Movies
-          </Link>
+    {/* Search */}
+    <div className="header-search">
+      <SearchBar />
+    </div>
+  </div>
+</header>
 
-          {/* Account link */}
-          <Link
-            to="/account"
-            className="text-white hover:text-gray-300 transition"
-          >
-            Account
-          </Link>
-
-          {/* Admin Link - Only show if role is admin */}
-          {role === 'admin' && (
-            <Link
-              to="/adminpage"
-              className="text-white hover:text-gray-300 transition"
-            >
-              Admin
-            </Link>
-          )}
-        </nav>
-
-        {/* Search Bar on the right */}
-        <div className="ml-4">
-          <SearchBar />
-        </div>
-      </div>
-    </header>
   );
 }
 
