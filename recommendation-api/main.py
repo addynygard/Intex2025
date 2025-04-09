@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import sqlite3
 from typing import List, Dict
 
@@ -25,7 +26,14 @@ def query_table(query: str, params: tuple = ()):
     conn.close()
     return rows
 
-# 🎯 New search endpoint
+def execute_query(query: str, params: tuple = ()):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(query, params)
+    conn.commit()
+    conn.close()
+
+# 🎯 Search endpoint
 @app.get("/api/movie/search")
 def search_movies(title: str = Query(...)) -> List[Dict]:
     query = """
@@ -37,7 +45,7 @@ def search_movies(title: str = Query(...)) -> List[Dict]:
     result = query_table(query, (search_term,))
     return [{"show_id": row[0], "title": row[1]} for row in result]
 
-# 🔁 Existing recommendation routes
+# 🔁 Recommendation routes
 @app.get("/recommendations/similar/{title}")
 def get_similar_movies(title: str):
     query = """
@@ -70,3 +78,22 @@ def get_user_recommendations(user_id: int):
     """
     result = query_table(query, (user_id,))
     return [{"title": title} for title in result[0] if title] if result else []
+
+# 🎯 New endpoint to submit movie ratings
+class Rating(BaseModel):
+    user_id: int
+    show_id: str
+    rating: int
+
+@app.post("/api/movie/rate-movie")
+def rate_movie(rating: Rating):
+    # Ensure the rating is valid
+    if rating.rating < 1 or rating.rating > 5:
+        raise HTTPException(status_code=400, detail="Rating must be between 1 and 5.")
+
+    query = """
+        INSERT INTO user_ratings (user_id, show_id, rating)
+        VALUES (?, ?, ?)
+    """
+    execute_query(query, (rating.user_id, rating.show_id, rating.rating))
+    return {"message": "Rating submitted successfully"}
