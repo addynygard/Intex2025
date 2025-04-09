@@ -1,18 +1,19 @@
 import styled from 'styled-components';
 
-export const SearchWrapper = styled.div<{ open: boolean }>`
+export const SearchWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: ${({ open }) => (open ? 'flex-start' : 'flex-end')};
-  transition: width 0.3s ease, border 0.2s ease, box-shadow 0.2s ease;
-  width: ${({ open }) => (open ? '280px' : '40px')};
+  width: 280px; // fixed width for simplicity
   background: transparent;
   border: 1px solid white;
   border-radius: 4px;
   padding: 5px;
   overflow: hidden;
   color: white;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:hover {
     border-color: #9333ea;
@@ -53,13 +54,13 @@ export const Input = styled.input`
 export const ResultsWrapper = styled.div`
   position: absolute;
   top: 100%;
-  right: 0;
+  left: 0;
   width: 100%;
   background: #1e1e1e;
   border: 1px solid #333;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 10;
+  z-index: 9999;
 `;
 
 export const ResultItem = styled.div`

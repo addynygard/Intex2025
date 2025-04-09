@@ -33,7 +33,6 @@ body {
   display: block; /* Change flex to block */
 }
 
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -69,4 +68,9 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* App.css */
+.sc-Qotzb.hrEKBL {
+  overflow: visible !important;
 }

@@ -5,102 +5,115 @@ import './MovieCollectionPage.css';
 import ImageLink from '../components/ImageLink';
 import { Movie } from '../types/Movie';
 const categories = [
-  "Featured",
-  "All Movies",
-  "Action/Adventure",
-  "Anime",
-  "Docuseries",
-  "Children",
-  "Comedies",
-  "Documentaries",
-  "Dramas",
-  "Family",
-  "Fantasy",
-  "Horror",
-  "International",
-  "Musicals",
-  "Spirituality",
-  "Thrillers",
-  "Reality TV",
-  "No Genre"
+  'Featured',
+  'All Movies',
+  'Action/Adventure',
+  'Anime',
+  'Docuseries',
+  'Children',
+  'Comedies',
+  'Documentaries',
+  'Dramas',
+  'Family',
+  'Fantasy',
+  'Horror',
+  'International',
+  'Musicals',
+  'Spirituality',
+  'Thrillers',
+  'Reality TV',
+  'No Genre',
 ];
 const genreFilterMap: { [key: string]: string[] } = {
-  "Action/Adventure": ["Action", "Adventure", "TV Action"],
-  "Anime": ["Anime Series International TV Shows"],
-  "Docuseries": ["Docuseries", "British TV Shows Docuseries International TV Shows", "Crime TV Shows Docuseries"],
-  "Children": ["Children", "Kids' TV"],
-  "Comedies": [
-    "Comedies",
-    "Comedies Dramas International Movies",
-    "Comedies International Movies",
-    "Comedies Romantic Movies",
-    "Talk Shows TV Comedies",
-    "TV Comedies"
+  'Action/Adventure': ['Action', 'Adventure', 'TV Action'],
+  Anime: ['Anime Series International TV Shows'],
+  Docuseries: [
+    'Docuseries',
+    'British TV Shows Docuseries International TV Shows',
+    'Crime TV Shows Docuseries',
   ],
-  "Documentaries": ["Documentaries", "Documentaries International Movies", "Nature TV"],
-  "Dramas": ["Dramas", "Dramas International Movies", "TV Dramas", "Dramas Romantic Movies"],
-  "Family": ["Family Movies"],
-  "Fantasy": ["Fantasy"],
-  "Horror": ["Horror Movies"],
-  "International": [
-    "International Movies Thrillers",
-    "International TV Shows Romantic TV Shows TV Dramas",
-    "Language TV Shows"
+  Children: ['Children', "Kids' TV"],
+  Comedies: [
+    'Comedies',
+    'Comedies Dramas International Movies',
+    'Comedies International Movies',
+    'Comedies Romantic Movies',
+    'Talk Shows TV Comedies',
+    'TV Comedies',
   ],
-  "Musicals": ["Musicals"],
-  "Spirituality": ["Spirituality"],
-  "Thrillers": ["Thrillers"],
-  "Reality TV": ["Reality TV"]
+  Documentaries: [
+    'Documentaries',
+    'Documentaries International Movies',
+    'Nature TV',
+  ],
+  Dramas: [
+    'Dramas',
+    'Dramas International Movies',
+    'TV Dramas',
+    'Dramas Romantic Movies',
+  ],
+  Family: ['Family Movies'],
+  Fantasy: ['Fantasy'],
+  Horror: ['Horror Movies'],
+  International: [
+    'International Movies Thrillers',
+    'International TV Shows Romantic TV Shows TV Dramas',
+    'Language TV Shows',
+  ],
+  Musicals: ['Musicals'],
+  Spirituality: ['Spirituality'],
+  Thrillers: ['Thrillers'],
+  'Reality TV': ['Reality TV'],
 };
 const CARD_WIDTH = 200;
 const CARD_HEIGHT = 320;
 const getPrimaryGenre = (movie: any): string => {
   const genreMap: { [key: string]: string } = {
-    action: "Action/Adventure",
-    adventure: "Action/Adventure",
-    tv_Action: "Action/Adventure",
-    anime_Series_International_TV_Shows: "Anime",
-    docuseries: "Docuseries",
-    british_TV_Shows_Docuseries_International_TV_Shows: "Docuseries",
-    crime_TV_Shows_Docuseries: "Docuseries",
-    children: "Children",
-    kids_TV: "Children",
-    comedies: "Comedies",
-    comedies_Dramas_International_Movies: "Comedies",
-    comedies_International_Movies: "Comedies",
-    comedies_Romantic_Movies: "Comedies",
-    talk_Shows_TV_Comedies: "Comedies",
-    tv_Comedies: "Comedies",
-    documentaries: "Documentaries",
-    documentaries_International_Movies: "Documentaries",
-    nature_TV: "Documentaries",
-    dramas: "Dramas",
-    dramas_International_Movies: "Dramas",
-    dramas_Romantic_Movies: "Dramas",
-    tv_Dramas: "Dramas",
-    family_Movies: "Family",
-    fantasy: "Fantasy",
-    horror_Movies: "Horror",
-    international_Movies_Thrillers: "International",
-    international_TV_Shows_Romantic_TV_Shows_TV_Dramas: "International",
-    language_TV_Shows: "International",
-    musicals: "Musicals",
-    spirituality: "Spirituality",
-    thrillers: "Thrillers",
-    reality_TV: "Reality TV"
+    action: 'Action/Adventure',
+    adventure: 'Action/Adventure',
+    tv_Action: 'Action/Adventure',
+    anime_Series_International_TV_Shows: 'Anime',
+    docuseries: 'Docuseries',
+    british_TV_Shows_Docuseries_International_TV_Shows: 'Docuseries',
+    crime_TV_Shows_Docuseries: 'Docuseries',
+    children: 'Children',
+    kids_TV: 'Children',
+    comedies: 'Comedies',
+    comedies_Dramas_International_Movies: 'Comedies',
+    comedies_International_Movies: 'Comedies',
+    comedies_Romantic_Movies: 'Comedies',
+    talk_Shows_TV_Comedies: 'Comedies',
+    tv_Comedies: 'Comedies',
+    documentaries: 'Documentaries',
+    documentaries_International_Movies: 'Documentaries',
+    nature_TV: 'Documentaries',
+    dramas: 'Dramas',
+    dramas_International_Movies: 'Dramas',
+    dramas_Romantic_Movies: 'Dramas',
+    tv_Dramas: 'Dramas',
+    family_Movies: 'Family',
+    fantasy: 'Fantasy',
+    horror_Movies: 'Horror',
+    international_Movies_Thrillers: 'International',
+    international_TV_Shows_Romantic_TV_Shows_TV_Dramas: 'International',
+    language_TV_Shows: 'International',
+    musicals: 'Musicals',
+    spirituality: 'Spirituality',
+    thrillers: 'Thrillers',
+    reality_TV: 'Reality TV',
   };
   for (const key in genreMap) {
     const value = movie[key];
     if (
       value === 1 ||
       value === true ||
-      value === "1" ||
-      (typeof value === "string" && value.toLowerCase() === "true")
+      value === '1' ||
+      (typeof value === 'string' && value.toLowerCase() === 'true')
     ) {
       return genreMap[key];
     }
   }
-  return "Unknown";
+  return 'Unknown';
 };
 const MovieCollection = () => {
   const [selectedGenre, setSelectedGenre] = useState('Featured');
@@ -108,25 +121,25 @@ const MovieCollection = () => {
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       try {
-        let url = "https://localhost:5000/api/Movie";
-        if (selectedGenre === "Featured" || selectedGenre === "All Movies") {
-          url += "/filter?genre=Featured";
-        } else if (selectedGenre === "No Genre") {
-          url += "/filter?genre=Unknown";
+        let url = 'https://localhost:5000/api/Movie';
+        if (selectedGenre === 'Featured' || selectedGenre === 'All Movies') {
+          url += '/filter?genre=Featured';
+        } else if (selectedGenre === 'No Genre') {
+          url += '/filter?genre=Unknown';
         } else {
           const filters = genreFilterMap[selectedGenre] || [];
           const backendGenre = filters[0] || selectedGenre;
           url += `/filter?genre=${encodeURIComponent(backendGenre)}`;
         }
-        console.log("Fetching from:", url);
+        console.log('Fetching from:', url);
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error("Failed to fetch movies");
+          throw new Error('Failed to fetch movies');
         }
         const data = await response.json();
         setMovies(data);
       } catch (error) {
-        console.error("Error fetching movies:", error);
+        console.error('Error fetching movies:', error);
       }
     };
     fetchMoviesByGenre();
@@ -174,7 +187,10 @@ const MovieCollection = () => {
             const rowCount = Math.ceil(movies.length / columnCount);
             const totalHeight = rowCount * CARD_HEIGHT;
             return (
-              <div className="movie-grid-wrapper" style={{ height: `${totalHeight}px` }}>
+              <div
+                className="movie-grid-wrapper"
+                style={{ height: `${totalHeight}px` }}
+              >
                 <Grid
                   columnCount={columnCount}
                   columnWidth={CARD_WIDTH}
