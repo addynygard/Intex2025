@@ -153,7 +153,7 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="admin-layout">
-      <aside className="admin-sidebar">
+      {/* <aside className="admin-sidebar">
         <h3>Filter by Genre</h3>
         {Object.entries(formData)
           .filter(([_, value]) => typeof value === 'boolean')
@@ -168,7 +168,7 @@ const AdminPage: React.FC = () => {
               {key.replace(/_/g, ' ')}
             </label>
           ))}
-      </aside>
+      </aside> */}
 
       <main className="admin-content">
         <button
@@ -192,10 +192,11 @@ const AdminPage: React.FC = () => {
               setEditingId(null);
               setFormData(getDefaultFormData());
             }}
+            setFormData={setFormData}
           />
         )}
 
-        <h3>Movie List</h3>
+        <h2 className="text-center">Movie List</h2>
         <Pagination data={movies}>
           {(paginatedMovies) => (
             <table className="admin-movie-table">
