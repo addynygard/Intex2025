@@ -1,4 +1,5 @@
 using Intex2025.API.Data;
+using Intex2025.API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IMovieService, MovieService>();
 // ✅ THIS IS THE MISSING PIECE
 builder.Services.AddHttpClient<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<TMovieRatingOperations>();
 
 
 
