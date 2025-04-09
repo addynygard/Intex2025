@@ -4,6 +4,7 @@ import StarRating from '../components/StarRating';
 import { useParams } from 'react-router-dom';
 import ImageLink from '../components/ImageLink';
 import Carousel from '../components/Carousel';
+import StarDisplay from '../components/StarDisplay';
 
 interface Movie {
   show_id: string;
@@ -21,6 +22,7 @@ const MovieDetailPage = () => {
   const userId = 1;
   const [movie, setMovie] = useState<Movie | null>(null);
   const [userRating, setUserRating] = useState<number>(0);
+  const [averageRating, setAverageRating] = useState<number>(0);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
   const [loadingSimilar, setLoadingSimilar] = useState<boolean>(true);
 
@@ -37,6 +39,14 @@ const MovieDetailPage = () => {
           { params: { userId, showId: id } },
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
+
+        const averageRatingResponse = await axios.get(
+          `https://localhost:5000/api/movie/average-rating`,
+          { params: { showId: id } },
+        );
+        setAverageRating(
+          (averageRatingResponse.data as { average: number }).average,
+        );
 
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
@@ -65,6 +75,13 @@ const MovieDetailPage = () => {
       });
       setUserRating(rating);
       alert(`Thanks for rating this movie ${rating} stars!`);
+
+      // Update average rating after submission
+      const avgResponse = await axios.get(
+        `https://localhost:5000/api/movie/average-rating`,
+        { params: { showId: id } },
+      );
+      setAverageRating(avgResponse.data.average);
     } catch (err) {
       console.error('Failed to submit rating:', err);
       alert('Rating submitted! Thank you!');
@@ -107,8 +124,13 @@ const MovieDetailPage = () => {
           </button>
         </div>
 
-        {/* ⭐ Star Rating */}
-        <div className="mt-10">
+        {/* ⭐ Average Rating */}
+        <div className="mt-6">
+          <h3 className="text-xl font-bold mb-1">Average Rating</h3>
+          <StarDisplay rating={averageRating} />
+        </div>
+        {/* ⭐ User Star Rating */}
+        <div className="mt-6">
           <h3 className="text-xl font-bold mb-2">Rate this movie:</h3>
           <StarRating onRate={handleRating} initialRating={userRating} />
         </div>
