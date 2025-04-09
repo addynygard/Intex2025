@@ -1,0 +1,74 @@
+# Build output
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS-specific
+.vs/
+.vscode/
+
+# ASP.NET Core secrets & config
+appsettings.Development.json
+secrets.json
+
+# Logs
+*.log
+
+# Crash dumps
+*.dmp
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+*.pid
+
+# JetBrains Rider / ReSharper
+.idea/
+*.sln.iml
+_ReSharper*/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+
+# .NET-specific artifacts
+project.lock.json
+project.fragment.lock.json
+
+# Build results
+*.Build.cs
+*.target
+*.targets
+
+# Local tool settings
+*.dbmdl
+*.psess
+*.vsp
+*.vspx
+*.vspscc
+
+# Backup & temporary files
+~$*
+
+# Optional: SQLite or local DBs
+*.db
+*.sqlite
+
+# Optional: Node/npm artifacts if using React or Vue in frontend
+node_modules/
+dist/
+.env
+.env.*

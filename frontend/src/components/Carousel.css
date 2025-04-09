@@ -1,0 +1,95 @@
+.carousel {
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.carousel h2 {
+  font-size: 1.5rem;
+  color: #7c3aed;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.carousel-controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem 0;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  height: 400px; /* enough for ImageLink height (350) + title spacing */
+}
+
+.carousel-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.movie-item {
+  flex: 0 0 auto;
+  width: 250px; /* Match medium vertical poster width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  text-align: center;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.movie-item:hover {
+  transform: scale(1.08);
+  z-index: 2;
+}
+
+.movie-title {
+  margin-top: 5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ccc;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Arrows */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 50%;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.carousel-arrow:hover {
+  background-color: rgba(124, 58, 237, 0.8);
+}
+
+.carousel-arrow.left {
+  left: -20px;
+}
+
+.carousel-arrow.right {
+  right: -20px;
+}
+

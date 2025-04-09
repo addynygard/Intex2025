@@ -1,35 +1,91 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from 'react-router-dom';
+import './App.css';
+import HomePage from './pages/HomePage';
+import CreateAccountPage from './pages/CreateAccountPage';
+import MoviePage from './pages/MoviePage';
+import LoginPage from './pages/LoginPage';
+import MovieDetailPage from './pages/MovieDetailPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import AdminPage from './pages/AdminPage';
+import Footer from './components/Footer';
+import Header from './components/Header';
+import { useEffect, useState } from 'react';
+import UserAccountPage from './pages/UserAccountPage';
+import MovieCollection from './pages/MovieCollection';
+import ShowCollection from './pages/ShowCollection';
+import { UserContext } from './context/UserContext';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [role, setRole] = useState<string | null>(null);
+
+  // Grabs the user's role from the backend
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch('/api/movie/user/role', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setRole(data.role); // Set the user's role (e.g., 'admin' or 'user')
+        } else {
+          setRole(null); // Clear the role if the request fails
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+        setRole(null);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <UserContext.Provider value={{ userId: 42 }}>
+      <Router>
+        <ConditionalHeader role={role} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/CreateAccount" element={<CreateAccountPage />} />
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/Movie" element={<MoviePage />} />
+          <Route path="/MovieDetail" element={<MovieDetailPage />} />
+          <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
+          <Route path="/account" element={<UserAccountPage />} />
+          <Route path="/MovieCollection" element={<MovieCollection />} />
+          <Route path="/ShowCollection" element={<ShowCollection />} />
+          <Route path="/adminpage" element={<AdminPage />} />
+          <Route path="/movie/:id" element={<MovieDetailPage />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </UserContext.Provider>
+  );
 }
 
-export default App
+// Conditional Header Component
+function ConditionalHeader({ role }: { role: string | null }) {
+  const location = useLocation();
+
+  // Don't render the Header on the HomePage or Privacy Policy if not logged in
+  if (
+    location.pathname === '/' ||
+    (location.pathname === '/PrivacyPolicy' && !role)
+  ) {
+    return null;
+  }
+
+  return <Header role={role} />;
+}
+
+export default App;

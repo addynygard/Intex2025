@@ -1,0 +1,294 @@
+.admin-page-container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  color: var(--text-color);
+}
+
+.admin-page-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.admin-page-container form {
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+}
+
+.admin-page-container input,
+.admin-page-container textarea,
+.admin-page-container select {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.admin-page-container textarea {
+  min-height: 100px;
+}
+
+.admin-page-container fieldset {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-page-container legend {
+  font-weight: 600;
+  padding: 0 0.5rem;
+}
+
+.admin-page-container label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.admin-page-container label input[type='checkbox'] {
+  margin-right: 0.5rem;
+}
+
+.admin-page-container button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.6rem 1.25rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  margin-right: 0.75rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-page-container button:hover {
+  background-color: var(--primary-dark);
+}
+
+.admin-page-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-page-container li {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-page-container li strong {
+  font-size: 1.1rem;
+  color: var(--primary-light);
+}
+
+.admin-layout {
+  display: flex;
+  gap: 2rem;
+  padding-top: 2rem;
+}
+
+.admin-content {
+  flex: 1;
+}
+
+.movie-form {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem;
+  min-width: 240px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  max-height: 80vh; /* 👈 scroll only if needed */
+  overflow-y: auto; /* 👈 allow scrolling if it's too tall */
+  box-sizing: border-box;
+}
+
+.filter-checkbox {
+  display: inline-flex; /* Use inline-flex instead of block layout */
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.filter-checkbox input[type='checkbox'] {
+  transform: scale(1.2);
+  margin: 0;
+  cursor: pointer;
+}
+
+.admin-movie-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.admin-movie-table th,
+.admin-movie-table td {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.admin-movie-table th {
+  background-color: var(--surface-color);
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+.admin-movie-table td button {
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-movie-table td button:hover {
+  background-color: var(--primary-light);
+}
+
+/* General spacing fix */
+.admin-movie-table td button {
+  margin-right: 0.5rem;
+}
+
+/* Button container inside the table */
+.admin-movie-table .action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-start;
+}
+
+/* Keep both buttons styled the same base way */
+.admin-movie-table .action-buttons button {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-movie-table .action-buttons .edit-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.admin-movie-table .action-buttons :hover {
+  background-color: var(--primary-dark);
+}
+
+/* === Pagination Container === */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* === Pagination Buttons === */
+.pagination-button {
+  padding: 0.5rem 1rem;
+  margin: 0 5px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Active (current page) button */
+.pagination-button.active {
+  background-color: var(--primary-color);
+  color: white;
+  cursor: not-allowed;
+}
+
+/* Hover effect for non-disabled buttons */
+.pagination-button:hover:not(:disabled):not(.active) {
+  background-color: var(--primary-dark);
+}
+
+/* Disabled buttons (includes active for consistent cursor) */
+.pagination-button:disabled {
+  background-color: #2c2c2c;
+  color: #777;
+  border-color: #444;
+  cursor: not-allowed;
+}
+
+/* Remove hover effects for disabled buttons */
+.pagination-button:disabled:hover {
+  background-color: #2c2c2c;
+  color: #777;
+  border-color: #444;
+}
+
+/* === Results Per Page Dropdown === */
+.pagination-options select {
+  margin-left: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.pagination-options select:hover {
+  border-color: var(--primary-light);
+  background-color: var(--surface-color);
+}
+
+.pagination-options select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.form-message {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  border-radius: 6px;
+  font-weight: 500;
+}

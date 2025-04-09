@@ -1,42 +1,416 @@
-#root {
-  max-width: 1280px;
+:root {
+  /* Theme Colors */
+  --primary-color: #7c3aed;
+  --primary-dark: #5b21b6;
+  --primary-light: #a78bfa;
+  --primary-muted: #ede9fe;
+
+  /* Dark Mode Base */
+  --background-color: #111;
+  --surface-color: #1a1a1a;
+  --text-color: #ededed;
+  --border-color: #333;
+
+  /* Font */
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== Global Styles ===== */
+body {
+  margin: 0;
+  padding: 1rem;
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  box-sizing: border-box;
+}
+
+/* Wrap content in a main container if needed */
+.main-container {
+  max-width: 100%;
   margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+/* ===== Header / Footer ===== */
+header,
+footer {
+  background-color: var(--primary-color);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* ===== Forms (Updated layout) ===== */
+form {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
   padding: 2rem;
+  margin: 2rem auto;
+  max-width: 400px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* ===== Cards (Updated layout) ===== */
+.card {
+  background-color: var(--surface-color);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+/* ===== Buttons ===== */
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--primary-dark);
+}
+
+button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+textarea,
+select {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary-light);
+  outline: none;
+}
+
+/* ===== Images ===== */
+img {
+  max-width: 100%;
+  display: block;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+/* ===== Utility Classes ===== */
+.accent-text {
+  color: var(--primary-light);
+}
+
+.bg-muted {
+  background-color: var(--primary-muted);
+  color: #222;
+  padding: 1rem;
+  border-radius: 6px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.text-center {
+  text-align: center;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.flex {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ===== Links ===== */
+p {
+  color: var(--text-color);
+}
+
+a {
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+label {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+/* ===== Responsive Helpers ===== */
+@media (max-width: 600px) {
+  .flex {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+
+  form {
+    padding: 1rem;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Home page styling */
+.home {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.home-title {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-subtitle {
+  font-size: 1.25rem;
+  color: var(--accent-color);
+  margin-bottom: 2rem;
+}
+
+.home-description {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.home-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+.home-left {
+  margin: 10px;
+  flex-grow: 1; /* Allow both to grow and fill available space */
+  min-width: 0; /* Remove min-width to allow flexibility */
+  max-width: 50%; /* Optionally set a max-width if needed */
+}
+.home-right {
+  margin: 10px;
+  flex-grow: 1; /* Allow both to grow and fill available space */
+  min-width: 0; /* Remove min-width to allow flexibility */
+  max-width: 50%; /* Optionally set a max-width if needed */
+  /* display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0 1rem; */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .movie-image-grid {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(150px, 1fr)
+    ); /* Make images smaller for smaller screens */
   }
 }
 
-.card {
-  padding: 2em;
+.movie-image-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(100px, 1fr)
+  ); /* Adjust for smaller images */
+  gap: 1.5rem;
+  padding: 0 1rem;
 }
 
-.read-the-docs {
-  color: #888;
+/* Image placeholder with fixed aspect ratio (500x700px) */
+.image-placeholder {
+  background-color: #444;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-style: italic;
+  border-radius: 8px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 7; /* Maintain 500px / 700px aspect ratio */
+  max-width: 100%;
+}
+
+/* Ensure images maintain their aspect ratio */
+.image-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the images cover the area without distortion */
+  border-radius: 8px;
+}
+
+/* Bootstrap grid layout example */
+.container-fluid {
+  padding: 0 1rem;
+}
+
+.row {
+  margin-bottom: 2rem;
+}
+
+.col-sm-12,
+.col-md-6,
+.col-lg-4 {
+  padding: 0.5rem;
+}
+
+/* Example of a responsive form layout */
+@media (max-width: 600px) {
+  .form-container {
+    padding: 1rem;
+  }
+}
+
+/* ===== Card (home-actions) ===== */
+.card.home-actions {
+  background-color: var(--surface-color);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px; /* Set a max-width for better control */
+  margin: 2rem auto;
+  text-align: center; /* Align content to center */
+}
+
+/* Enhance button styling */
+.card.home-actions button {
+  width: 100%; /* Full-width button */
+  padding: 1rem;
+  margin: 0.5rem 0; /* Add margin between buttons */
+  font-size: 1.2rem; /* Make the text a bit larger */
+  transition: all 0.3s ease;
+}
+
+/* Button hover effect */
+.card.home-actions button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px); /* Add a slight hover effect */
+}
+
+/* Focus state for buttons */
+.card.home-actions button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.featured-movie-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 1.5rem;
+}
+
+.featured-movie-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.movie-title-text {
+  margin-top: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.arrow-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--text-color);
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-btn:hover {
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .featured-movie-wrapper {
+    gap: 1rem;
+  }
+
+  .arrow-btn {
+    font-size: 1.5rem;
+  }
+}
+
+.nav-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: var(--primary-light);
+  color: #111;
+  transform: translateY(-1px);
+}
+
+.branding {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.branding:hover {
+  color: white !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
