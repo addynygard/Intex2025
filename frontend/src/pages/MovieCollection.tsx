@@ -193,14 +193,5 @@ const MovieCollection = () => {
     </div>
   );
 };
+
 export default MovieCollection;
-
-
-
-
-
-
-
-
-
-

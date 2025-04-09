@@ -109,10 +109,10 @@ const AdminPage: React.FC = () => {
       } else {
         await addMovie({ ...formData, show_id: Date.now().toString() });
         setMessage('Movie added successfully.');
-        setShowForm(false); // Hide form after creation
       }
-
+      
       setFormData(getDefaultFormData());
+      setShowForm(false); // Hide form after creation
       fetchMovieData();
     } catch (error) {
       console.error('Error submitting movie:', error);
