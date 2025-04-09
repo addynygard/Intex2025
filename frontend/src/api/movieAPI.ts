@@ -1,5 +1,20 @@
 import { Movie } from '../types/Movie';
 
+const convertBooleansToInts = (movie: Movie) => {
+  const converted: any = {};
+
+  for (const [key, value] of Object.entries(movie)) {
+    if (typeof value === 'boolean') {
+      converted[key] = value ? 1 : 0;
+    } else {
+      converted[key] = value;
+    }
+  }
+
+  return converted;
+};
+
+
 const API_URL = 'https://localhost:5000/api/Movie';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
@@ -24,7 +39,7 @@ export const addMovie = async (newMovie: Movie): Promise<Movie> => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newMovie),
+      body: JSON.stringify(convertBooleansToInts(newMovie)),
     });
 
     if (!response.ok) {
@@ -48,7 +63,7 @@ export const updateMovie = async (
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedMovie),
+      body: JSON.stringify(convertBooleansToInts(updatedMovie)),
     });
 
     if (!response.ok) {
