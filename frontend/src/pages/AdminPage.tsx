@@ -178,6 +178,11 @@ const AdminPage: React.FC = () => {
             editingId={editingId}
             onChange={handleChange}
             onSubmit={handleSubmit}
+            onCancel={() => {
+              setShowForm(false);
+              setEditingId(null);
+              setFormData(getDefaultFormData());
+            }}
           />
         )}
 
