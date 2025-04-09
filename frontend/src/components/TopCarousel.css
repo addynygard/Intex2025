@@ -3,7 +3,7 @@
   overflow: hidden;
   width: 100%;
   max-width: 100vw;
-  margin-bottom: 3rem;
+  margin-bottom: 0rem;
   background-color: #111;
   padding: 2rem 0; /* Adds vertical breathing room */
 }
@@ -59,7 +59,7 @@
 .carousel-movie-title {
   margin-top: 1rem;
   font-size: 1.1rem;
-  color: #ddd;
+  color: #B0B0B0;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   max-width: 90%;
@@ -76,7 +76,7 @@
   transform: translateY(-50%);
   background-color: rgba(20, 20, 20, 0.7);
   border: none;
-  color: #fff;
+  color: #B0B0B0;
   font-size: 2rem;
   padding: 0.5rem 1rem;
   cursor: pointer;

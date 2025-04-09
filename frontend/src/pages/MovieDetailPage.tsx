@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import StarRating from '../components/StarRating';
-import { useParams, useNavigate } from 'react-router-dom'; // Imported useNavigate for navigation
+import { useParams, useNavigate } from 'react-router-dom';
 import ImageLink from '../components/ImageLink';
 import Carousel from '../components/Carousel';
+import PageWrapper from '../components/PageWrapper'; // ✅ Add this
+import './MovieDetailPage.css';
+
 
 interface Movie {
   show_id: string;
@@ -19,7 +22,7 @@ interface Movie {
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const userId = 1;
-  const navigate = useNavigate(); // useNavigate for dynamic navigation
+  const navigate = useNavigate();
   const [movie, setMovie] = useState<Movie | null>(null);
   const [userRating, setUserRating] = useState<number>(0);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
@@ -29,21 +32,21 @@ const MovieDetailPage = () => {
     const fetchMovieDetails = async () => {
       try {
         const movieResponse = await axios.get<Movie>(
-          `https://localhost:5000/api/movie/${id}`,
+          `https://localhost:5000/api/movie/${id}`
         );
         setMovie(movieResponse.data);
 
         const ratingResponse = await axios.get(
           `https://localhost:5000/api/movie/user-rating`,
-          { params: { userId, showId: id } },
+          { params: { userId, showId: id } }
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
 
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
             `https://localhost:5000/api/recommendation/similar/${encodeURIComponent(
-              movieResponse.data.title,
-            )}`,
+              movieResponse.data.title
+            )}`
           );
           setSimilarMovies(recResponse.data);
         }
@@ -73,35 +76,42 @@ const MovieDetailPage = () => {
   };
 
   const handleMovieClick = (movieId: string) => {
-    navigate(`/movie/${movieId}`); // Navigate to the new movie details page
+    navigate(`/movie/${movieId}`);
   };
 
   if (!movie) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-white">
-        Loading...
-      </div>
+      <PageWrapper>
+        <div className="flex items-center justify-center min-h-screen text-white">
+          Loading...
+        </div>
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-black text-white px-10 py-10 flex flex-col md:flex-row gap-10 items-start">
+<PageWrapper>
+  <div className="movie-detail-wrapper">
+    <div className="movie-detail-content">
       {/* Movie Poster */}
-      <div className="w-full md:w-1/3 flex justify-center">
+      <div className="movie-poster">
         <ImageLink movieTitle={movie.title} size="large" />
       </div>
 
       {/* Movie Info */}
-      <div className="md:w-2/3 space-y-4">
-        <h1 className="text-5xl font-extrabold">{movie.title}</h1>
-        <p className="text-sm text-gray-300">
-          {movie.release_year} • {movie.rating || 'NR'} •{' '}
-          {movie.duration || '??'} min
-        </p>
-        <p className="italic text-purple-400">{movie.type}</p>
-        <p className="text-lg max-w-2xl">{movie.description}</p>
+      <div className="movie-info">
+      <h1 className="text-5xl font-extrabold text-left">{movie.title}</h1>
 
-        <div className="mt-6 flex gap-4">
+
+      <p className="text-sm text-gray-300 text-left">
+
+          {movie.release_year} • {movie.rating || 'NR'} • {movie.duration || '??'} •{' '}
+          <span className="italic text-purple-400">{movie.type}</span>
+        </p>
+
+        <p className="text-lg">{movie.description}</p>
+
+        <div className="movie-buttons">
           <button className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition">
             ▶ Play
           </button>
@@ -110,31 +120,33 @@ const MovieDetailPage = () => {
           </button>
         </div>
 
-        {/* ⭐ Star Rating */}
-        <div className="mt-10">
-          <h3 className="text-xl font-bold mb-2">Rate this movie:</h3>
+        <div>
+        <h3 className="text-md font-semibold mt-2 mb-1 text-left">Rate this movie:</h3>
+
           <StarRating onRate={handleRating} initialRating={userRating} />
         </div>
 
-        {/* 🎯 Recommended Movies (Carousel) */}
-        <div className="mt-12">
-          <h2 className="text-3xl font-bold mb-4"></h2>
-          {loadingSimilar ? (
-            <p className="text-gray-400 italic">Loading similar movies...</p>
-          ) : similarMovies.length > 0 ? (
-            <Carousel
-              genre="You May Also Like"
-              movies={similarMovies}
-              onMovieClick={handleMovieClick} // Pass the click handler
-            />
-          ) : (
-            <p className="text-gray-500 italic">
-              No similar movies found for this title.
-            </p>
-          )}
-        </div>
       </div>
     </div>
+
+    {/* 🎯 Carousel Section – now outside of the flex box */}
+    <div className="movie-carousel-section">
+      {loadingSimilar ? (
+        <p className="text-gray-400 italic">Loading similar movies...</p>
+      ) : similarMovies.length > 0 ? (
+        <Carousel
+          genre="You May Also Like"
+          movies={similarMovies}
+          onMovieClick={handleMovieClick}
+        />
+      ) : (
+        <p className="text-gray-500 italic">No similar movies found for this title.</p>
+      )}
+    </div>
+  </div>
+</PageWrapper>
+
+
   );
 };
 
