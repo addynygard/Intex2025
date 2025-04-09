@@ -14,7 +14,6 @@ const convertBooleansToInts = (movie: Movie) => {
   return converted;
 };
 
-
 const API_URL = 'https://localhost:5000/api/Movie';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
@@ -55,8 +54,8 @@ export const addMovie = async (newMovie: Movie): Promise<Movie> => {
 
 export const updateMovie = async (
   movieID: string,
-  updatedMovie: Movie
-): Promise<Movie> => {
+  updatedMovie: Movie,
+): Promise<Movie | null> => {
   try {
     const response = await fetch(`${API_URL}/${movieID}`, {
       method: 'PUT',
@@ -70,7 +69,9 @@ export const updateMovie = async (
       throw new Error('Failed to update movie');
     }
 
-    return await response.json();
+    // 🔒 Handle cases where response body might be empty
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
   } catch (error) {
     console.error('Error updating movie:', error);
     throw error;

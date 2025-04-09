@@ -101,25 +101,33 @@ const AdminPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Submitting form...');
+
     try {
       if (editingId) {
+        console.log('Editing movie with ID:', editingId);
         await updateMovie(editingId, { ...formData, show_id: editingId });
+        console.log('✅ Movie updated');
         setMessage('Movie updated successfully.');
-        setEditingId(null);
       } else {
+        console.log('Adding new movie');
         await addMovie({ ...formData, show_id: Date.now().toString() });
         setMessage('Movie added successfully.');
       }
-      
+
       setFormData(getDefaultFormData());
-      setShowForm(false); // Hide form after creation
-      fetchMovieData();
+      setEditingId(null);
+      setShowForm(false);
+      console.log('✅ Form reset and closed');
+
+      await fetchMovieData();
+      console.log('✅ Movie list refreshed');
     } catch (error) {
-      console.error('Error submitting movie:', error);
+      console.error('❌ Error submitting movie:', error);
       setMessage('Something went wrong. Please try again.');
     }
 
-    setTimeout(() => setMessage(null), 3000); // Clear message after 3 seconds
+    setTimeout(() => setMessage(null), 3000);
   };
 
   const handleEdit = (movie: Movie) => {
@@ -172,6 +180,7 @@ const AdminPage: React.FC = () => {
           {showForm ? 'Cancel' : 'Add Movie'}
         </button>
 
+        {message && <p className="form-message">{message}</p>}
         {showForm && (
           <AddMovieForm
             formData={formData}
@@ -186,7 +195,6 @@ const AdminPage: React.FC = () => {
           />
         )}
 
-        {message && <p className="form-message">{message}</p>}
         <h3>Movie List</h3>
         <Pagination data={movies}>
           {(paginatedMovies) => (
