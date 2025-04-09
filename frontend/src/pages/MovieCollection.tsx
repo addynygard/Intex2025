@@ -145,6 +145,40 @@ const getPrimaryGenre = (movie: any): string => {
   
   
 
+  'Featured', // Optional: manually keep this first
+  'Action',
+  'Adventure',
+  'Anime Series',
+  'Docuseries',
+  'Children',
+  'Comedies',
+  'Comedies Dramas',
+  'Comedies International Movies',
+  'Comedies Romantic Movies',
+  'Documentaries',
+  'Documentaries International Movies',
+  'Dramas',
+  'Dramas International Movies',
+  'Dramas Romantic Movies',
+  'Family Movies',
+  'Fantasy',
+  'Horror Movies',
+  'International Movies Thrillers',
+  'Musicals',
+  'Spirituality',
+  'Thrillers',
+];
+
+const movies = [
+  { title: 'Moana 2', image: '/assets/moana2.jpg' },
+  { title: 'Jumanji', image: '/assets/jumanji.jpg' },
+  { title: 'The Space Race', image: '/assets/space.jpg' },
+  { title: 'Dr. Pol', image: '/assets/drpol.jpg' },
+  { title: 'Jurassic Park', image: '/assets/jurassic.jpg' },
+  // Add more movie objects...
+];
+
+
 const MovieCollection = () => {
   const [selectedGenre, setSelectedGenre] = useState('Featured');
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -213,6 +247,7 @@ const MovieCollection = () => {
     <div className="movie-collection-container">
       <h1 className="page-title">Movies</h1>
 
+
       <div className="category-bar-wrapper">
         <div className="category-bar">
             {categories.map((cat, index) => (
@@ -227,7 +262,6 @@ const MovieCollection = () => {
         </div>
         <div className="category-fade" />
         </div>
-
 
       <div style={{ width: '100%' }}>
         <AutoSizer disableHeight>

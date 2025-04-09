@@ -1,40 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import './MoviePage.css'; // Your main page CSS file
+import './MoviePage.css';
 import { Movie } from '../types/Movie';
-import Carousel from '../components/Carousel'; // Import the Carousel component
+import Carousel from '../components/Carousel';
 import TopCarousel from '../components/TopCarousel';
+import { useUser } from '../context/UserContext';
 
 const MoviePage = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [topRated, setTopRated] = useState<Movie[]>([]);
+  const [userRecs, setUserRecs] = useState<Movie[]>([]);
+  const [actionTop, setActionTop] = useState<Movie[]>([]);
+  const [comedyTop, setComedyTop] = useState<Movie[]>([]);
+  const [thrillerTop, setThrillerTop] = useState<Movie[]>([]);
 
-  // Example fetching movies (you can adjust the fetching mechanism to your needs)
+  const { userId } = useUser();
+
+  // ✅ Fetch Top 10 from top_rated_movies
   useEffect(() => {
-    async function fetchMovies() {
-      const response = await fetch('/api/movies'); // Adjust your API endpoint
-      const data = await response.json();
-      setMovies(data);
-    }
+    const fetchTopRated = async () => {
+      try {
+        const res = await fetch(
+          'https://localhost:5000/api/recommendation/top-rated',
+        );
+        const data = await res.json();
+        setTopRated(data);
+      } catch (err) {
+        console.error('Failed to fetch top rated movies:', err);
+      }
+    };
 
-    fetchMovies();
+    fetchTopRated();
   }, []);
 
-  // Filter movies by genre
-  const actionMovies = movies.filter((movie) => movie.action);
-  const comedyMovies = movies.filter((movie) => movie.comedies);
-  const dramaMovies = movies.filter((movie) => movie.dramas);
+  // ✅ Fetch User-Based Recs
+  useEffect(() => {
+    const fetchUserRecs = async () => {
+      try {
+        const res = await fetch(
+          `https://localhost:5000/api/recommendation/user/${userId}`,
+        );
+        const data = await res.json();
+        setUserRecs(data);
+      } catch (err) {
+        console.error('Failed to fetch user recs:', err);
+      }
+    };
+
+    if (userId) {
+      fetchUserRecs();
+    }
+  }, [userId]);
+
+  // ✅ Fetch Top by Genre from FastAPI
+  useEffect(() => {
+    const fetchGenre = async (
+      genre: string,
+      setter: React.Dispatch<React.SetStateAction<Movie[]>>,
+    ) => {
+      try {
+        const res = await fetch(
+          `https://localhost:5000/api/recommendation/genre/${genre}`,
+        );
+        const data = await res.json();
+        setter(data);
+      } catch (err) {
+        console.error(`Failed to fetch top ${genre} movies:`, err);
+      }
+    };
+
+    fetchGenre('action', setActionTop);
+    fetchGenre('comedies', setComedyTop);
+    fetchGenre('thrillers', setThrillerTop);
+  }, []);
 
   return (
     <>
-      <TopCarousel />
+      {/* 🎯 Top 10 Movies – from top_rated_movies */}
+      {topRated.length > 0 && <TopCarousel items={topRated} />}
+
       <div className="movie-page">
         <h1>Welcome to Your Movie Library</h1>
 
-        {/* Use the Carousel component */}
-        <Carousel genre="Action" movies={actionMovies} />
-        <Carousel genre="Comedy" movies={comedyMovies} />
-        <Carousel genre="Drama" movies={dramaMovies} />
+        {/* 🎯 Personalized Recommendations */}
+        {userRecs.length > 0 && (
+          <Carousel genre="Recommended For You" movies={userRecs} />
+        )}
 
-        {/* Add more carousels as needed */}
+        {/* 🎬 Genre Sections from Recommender Models */}
+        {actionTop.length > 0 && (
+          <Carousel genre="Action Picks" movies={actionTop} />
+        )}
+        {comedyTop.length > 0 && (
+          <Carousel genre="Laugh Out Loud" movies={comedyTop} />
+        )}
+        {thrillerTop.length > 0 && (
+          <Carousel genre="Terrific Thrillers" movies={thrillerTop} />
+        )}
       </div>
     </>
   );

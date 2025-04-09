@@ -5,18 +5,15 @@
   --primary-light: #a78bfa;
   --primary-muted: #ede9fe;
 
-
   /* Dark Mode Base */
   --background-color: #111;
   --surface-color: #1a1a1a;
   --text-color: #ededed;
   --border-color: #333;
 
-
   /* Font */
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
 
 /* ===== Global Styles ===== */
 body {
@@ -28,14 +25,12 @@ body {
   box-sizing: border-box;
 }
 
-
 /* Wrap content in a main container if needed */
 .main-container {
   max-width: 100%;
   margin: 0 auto;
   padding: 1rem 2rem;
 }
-
 
 /* ===== Header / Footer ===== */
 header,
@@ -45,7 +40,6 @@ footer {
   text-align: center;
   padding: 1rem;
 }
-
 
 /* ===== Forms (Updated layout) ===== */
 form {
@@ -73,7 +67,6 @@ form {
   margin: 1rem auto;
 }
 
-
 /* ===== Buttons ===== */
 button {
   background-color: var(--primary-color);
@@ -86,19 +79,16 @@ button {
   transition: background-color 0.3s ease;
 }
 
-
 button:hover {
   background-color: var(--primary-dark);
 }
-
 
 button:disabled {
   background-color: var(--border-color);
   cursor: not-allowed;
 }
 
-
-input{
+input {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border-color);
@@ -117,14 +107,12 @@ select {
   color: var(--text-color);
 }
 
-
 input:focus,
 textarea:focus,
 select:focus {
   border-color: var(--primary-light);
   outline: none;
 }
-
 
 /* ===== Images ===== */
 img {
@@ -134,12 +122,10 @@ img {
   margin: 1rem 0;
 }
 
-
 /* ===== Utility Classes ===== */
 .accent-text {
   color: var(--primary-light);
 }
-
 
 .bg-muted {
   background-color: var(--primary-muted);
@@ -149,18 +135,15 @@ img {
   text-align: center;
 }
 
-
 .text-center {
   text-align: center;
 }
-
 
 .flex {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
 }
-
 
 /* ===== Links ===== */
 p {
@@ -189,12 +172,10 @@ label {
     flex-direction: column;
   }
 
-
   form {
     padding: 1rem;
   }
 }
-
 
 /* Home page styling */
 .home {
@@ -202,19 +183,16 @@ label {
   padding: 2rem 1rem;
 }
 
-
 .home-title {
   font-size: 3rem;
   margin-bottom: 0.5rem;
 }
-
 
 .home-subtitle {
   font-size: 1.25rem;
   color: var(--accent-color);
   margin-bottom: 2rem;
 }
-
 
 .home-description {
   max-width: 600px;
@@ -223,14 +201,12 @@ label {
   color: var(--text-color);
 }
 
-
 .home-actions {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
 }
-
 
 .home-layout {
   display: flex;
@@ -241,7 +217,6 @@ label {
   padding: 2rem 1rem;
   width: 100%;
 }
-
 
 .home-left {
   margin: 10px;
@@ -263,14 +238,19 @@ label {
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
   .movie-image-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Make images smaller for smaller screens */
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(150px, 1fr)
+    ); /* Make images smaller for smaller screens */
   }
 }
 
-
 .movie-image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust for smaller images */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(100px, 1fr)
+  ); /* Adjust for smaller images */
   gap: 1.5rem;
   padding: 0 1rem;
 }
@@ -299,24 +279,20 @@ label {
   border-radius: 8px;
 }
 
-
 /* Bootstrap grid layout example */
 .container-fluid {
   padding: 0 1rem;
 }
 
-
 .row {
   margin-bottom: 2rem;
 }
-
 
 .col-sm-12,
 .col-md-6,
 .col-lg-4 {
   padding: 0.5rem;
 }
-
 
 /* Example of a responsive form layout */
 @media (max-width: 600px) {
@@ -404,4 +380,37 @@ label {
   .arrow-btn {
     font-size: 1.5rem;
   }
+}
+
+.nav-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: var(--primary-light);
+  color: #111;
+  transform: translateY(-1px);
+}
+
+.branding {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.branding:hover {
+  color: white !important;
+  text-decoration: none !important;
+  transform: none !important;
 }

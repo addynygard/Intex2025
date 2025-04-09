@@ -1,25 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './TopCarousel.css';
+import { Movie } from '../types/Movie';
+import ImageLink from './ImageLink';
+import { Link } from 'react-router-dom';
 
-const placeholderImages = [
-  'https://via.placeholder.com/500x700?text=1',
-  'https://via.placeholder.com/500x700?text=2',
-  'https://via.placeholder.com/500x700?text=3',
-  'https://via.placeholder.com/500x700?text=4',
-  'https://via.placeholder.com/500x700?text=5',
-  'https://via.placeholder.com/500x700?text=6',
-];
+interface TopCarouselProps {
+  items: Movie[]; // Accepts real movie data
+}
 
-const TopCarousel = () => {
+const TopCarousel: React.FC<TopCarouselProps> = ({ items }) => {
   const visibleSlides = 3;
-  const totalSlides = placeholderImages.length;
-  const extendedImages = [
-    ...placeholderImages.slice(-visibleSlides), // Clone end
-    ...placeholderImages,
-    ...placeholderImages.slice(0, visibleSlides), // Clone start
+  const totalSlides = items.length;
+  const extendedItems = [
+    ...items.slice(-visibleSlides),
+    ...items,
+    ...items.slice(0, visibleSlides),
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(visibleSlides); // Start on first real slide
+  const [currentIndex, setCurrentIndex] = useState(visibleSlides);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const slideWidth = () => {
@@ -30,7 +28,9 @@ const TopCarousel = () => {
   const moveToSlide = (index: number, withTransition: boolean = true) => {
     const track = trackRef.current;
     if (!track) return;
-    track.style.transition = withTransition ? 'transform 0.5s ease-in-out' : 'none';
+    track.style.transition = withTransition
+      ? 'transform 0.5s ease-in-out'
+      : 'none';
     const offset = slideWidth() * index;
     track.style.transform = `translateX(-${offset}px)`;
   };
@@ -63,12 +63,10 @@ const TopCarousel = () => {
     }
   };
 
-  // Set initial position on mount
   useEffect(() => {
     moveToSlide(currentIndex, false);
   }, []);
 
-  // Auto-scroll by 1 every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide();
@@ -78,21 +76,28 @@ const TopCarousel = () => {
 
   return (
     <div className="top-carousel-wrapper">
-      <button className="carousel-arrow left" onClick={prevSlide}>◀</button>
+      <button className="carousel-arrow left" onClick={prevSlide}>
+        ◀
+      </button>
       <div className="top-carousel-track">
         <div
           className="top-carousel"
           ref={trackRef}
           onTransitionEnd={handleTransitionEnd}
         >
-          {extendedImages.map((src, i) => (
+          {extendedItems.map((movie, i) => (
             <div className="carousel-slide" key={i}>
-              <img src={src} alt={`Slide ${i + 1}`} />
+              <Link to={`/movie/${movie.show_id}`}>
+                <ImageLink movieTitle={movie.title} size="large" />
+                <div className="carousel-movie-title">{movie.title}</div>
+              </Link>
             </div>
           ))}
         </div>
       </div>
-      <button className="carousel-arrow right" onClick={nextSlide}>▶</button>
+      <button className="carousel-arrow right" onClick={nextSlide}>
+        ▶
+      </button>
     </div>
   );
 };

@@ -2,5 +2,6 @@
   "dependencies": {
     "react-virtualized-auto-sizer": "^1.0.26",
     "react-window": "^1.8.11"
+    "styled-components": "^6.1.17"
   }
 }
