@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import StarRating from '../components/StarRating';
 import { useParams, useNavigate } from 'react-router-dom';
 import ImageLink from '../components/ImageLink';
@@ -46,6 +46,22 @@ const MovieDetailPage = () => {
         );
 
         // Fetch cluster recommendations from FastAPI
+        // Fetch cluster recommendations from FastAPI
+        // const clusterRecResponse = await axios.get<{ title: string }[]>(
+        //   `https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/recommendations/cluster/${userId}`,
+        // );
+
+        // // Fetch real metadata for each title using your .NET API
+        // const movieMetadataRequests = clusterRecResponse.data.map((rec) =>
+        //   axios.get<Movie>(
+        //     `${API_URL}/api/movie/title/${encodeURIComponent(rec.title)}`,
+        //   ),
+        // );
+
+        // const metadataResponses = await Promise.all(movieMetadataRequests);
+        // const realMovies: Movie[] = metadataResponses.map((res) => res.data);
+
+        // setClusterRecommendations(realMovies);
         try {
           console.log('📡 Fetching cluster recommendations from FastAPI...');
 
@@ -73,16 +89,16 @@ const MovieDetailPage = () => {
           });
 
           const metadataResponses = await Promise.all(movieMetadataRequests);
-          const realMovies: Movie[] = metadataResponses
-            .filter(
-              (res): res is { data: Movie } => res !== null && !!res?.data,
-            )
-            .map((res) => res.data);
 
-          console.log(
-            '🎬 Successfully fetched full movie metadata:',
-            realMovies,
+          // ✅ Filter out failed (null) or incomplete responses
+          const filtered = metadataResponses.filter(
+            (res): res is AxiosResponse<Movie> => res !== null && !!res?.data,
           );
+
+          // ✅ Extract just the movie data
+          const realMovies: Movie[] = filtered.map((res) => res.data);
+
+          // ✅ Save to state
           setClusterRecommendations(realMovies);
         } catch (err) {
           console.error(
@@ -202,7 +218,7 @@ const MovieDetailPage = () => {
             <p className="text-gray-400 italic">Loading similar movies...</p>
           ) : similarMovies.length > 0 ? (
             <Carousel
-              genre="Similar Movies"
+              genre="Similar Movies To {movie.title}"
               movies={similarMovies}
               onMovieClick={handleMovieClick}
             />
