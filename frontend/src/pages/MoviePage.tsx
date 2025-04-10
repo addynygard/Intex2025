@@ -82,25 +82,33 @@ const MoviePage = () => {
       <div className="movie-page">
         {/* 🎯 Personalized Recommendations */}
         {userRecs.length > 0 && (
-          <Carousel genre="Recommended For You" movies={userRecs} />
+          <Carousel genre="Recommended For You" movies={userRecs} onMovieClick={function (): void {
+            throw new Error('Function not implemented.');
+          } } />
         )}
 
         {/* 🎬 Genre Sections from Recommender Models */}
         {actionTop.length > 0 && (
           <div style={{ marginTop: '2rem' }}>
-            <Carousel genre="Action Picks" movies={actionTop} />
+            <Carousel genre="Action Picks" movies={actionTop} onMovieClick={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
           </div>
         )}
 
         {comedyTop.length > 0 && (
           <div style={{ marginTop: '2rem' }}>
-            <Carousel genre="Laugh Out Loud" movies={comedyTop} />
+            <Carousel genre="Laugh Out Loud" movies={comedyTop} onMovieClick={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
           </div>
         )}
 
         {thrillerTop.length > 0 && (
           <div style={{ marginTop: '2rem' }}>
-            <Carousel genre="Terrific Thrillers" movies={thrillerTop} />
+            <Carousel genre="Terrific Thrillers" movies={thrillerTop} onMovieClick={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
           </div>
         )}
       </div>
