@@ -8,17 +8,18 @@ import { API_URL } from '../api/movieAPI';
 import PageWrapper from '../components/PageWrapper';
 import './MovieDetailPage.css';
 import StarDisplay from '../components/StarDisplay';
+import { Movie } from '../types/Movie';
 
-interface Movie {
-  show_id: string;
-  title: string;
-  release_year: number;
-  rating: string;
-  duration: string;
-  description: string;
-  type: string;
-  [key: string]: string | number | undefined;
-}
+// interface Movie {
+//   show_id: string;
+//   title: string;
+//   release_year: number;
+//   rating: string;
+//   duration: string;
+//   description: string;
+//   type: string;
+//   [key: string]: string | number | undefined;
+// }
 
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
