@@ -7,17 +7,18 @@ import Carousel from '../components/Carousel';
 import PageWrapper from '../components/PageWrapper';
 import './MovieDetailPage.css';
 import StarDisplay from '../components/StarDisplay';
+import { Movie } from '../types/Movie';
 
-interface Movie {
-  show_id: string;
-  title: string;
-  release_year: number;
-  rating: string;
-  duration: string;
-  description: string;
-  type: string;
-  [key: string]: string | number | undefined;
-}
+// interface Movie {
+//   show_id: string;
+//   title: string;
+//   release_year: number;
+//   rating: string;
+//   duration: string;
+//   description: string;
+//   type: string;
+//   [key: string]: string | number | undefined;
+// }
 
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,14 +34,14 @@ const MovieDetailPage = () => {
     const fetchMovieDetails = async () => {
       try {
         const movieResponse = await axios.get<Movie>(
-          `https://localhost:5000/api/movie/${id}`
+          `https://localhost:5000/api/movie/${id}`,
         );
-        console.log('Movie details:', movieResponse.data)
+        console.log('Movie details:', movieResponse.data);
         setMovie(movieResponse.data);
 
         const ratingResponse = await axios.get(
           `https://localhost:5000/api/movie/user-rating`,
-          { params: { userId, showId: movieResponse.data.show_id } }
+          { params: { userId, showId: movieResponse.data.show_id } },
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
         const averageRatingResponse = await axios.get(
@@ -54,8 +55,8 @@ const MovieDetailPage = () => {
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
             `https://localhost:5000/api/recommendation/similar/${encodeURIComponent(
-              movieResponse.data.title
-            )}`
+              movieResponse.data.title,
+            )}`,
           );
           setSimilarMovies(recResponse.data);
         }
@@ -78,18 +79,18 @@ const MovieDetailPage = () => {
       });
       setUserRating(rating);
       alert(`Thanks for rating this movie ${rating} stars!`);
-          // Update average rating after submission
-          const avgResponse = await axios.get(
-            `https://localhost:5000/api/movie/average-rating`,
-            { params: { showId: movie?.show_id } },
-          );
-          setAverageRating(avgResponse.data.average);
-        } catch (err) {
-          console.error('Failed to submit rating:', err);
-          alert('Rating submitted! Thank you!');
-          // our rating functionality always will display this message when a user clicks on a star to rate it
-          // it doesn't work right now, but we will fix it in the future
-        }
+      // Update average rating after submission
+      const avgResponse = await axios.get(
+        `https://localhost:5000/api/movie/average-rating`,
+        { params: { showId: movie?.show_id } },
+      );
+      setAverageRating(avgResponse.data.average);
+    } catch (err) {
+      console.error('Failed to submit rating:', err);
+      alert('Rating submitted! Thank you!');
+      // our rating functionality always will display this message when a user clicks on a star to rate it
+      // it doesn't work right now, but we will fix it in the future
+    }
   };
 
   const handleMovieClick = (movieId: string) => {
@@ -117,14 +118,19 @@ const MovieDetailPage = () => {
 
           {/* Movie Info */}
           <div className="movie-info">
-            <h1 className="text-6xl font-extrabold text-left mb-2">{movie.title}</h1>
+            <h1 className="text-6xl font-extrabold text-left mb-2">
+              {movie.title}
+            </h1>
 
             <p className="text-base text-gray-300 text-left mb-3">
-              {movie.release_year} • {movie.rating || 'NR'} • {movie.duration || '??'} •{' '}
+              {movie.release_year} • {movie.rating || 'NR'} •{' '}
+              {movie.duration || '??'} •{' '}
               <span className="italic text-purple-400">{movie.type}</span>
             </p>
 
-            <p className="text-lg text-left leading-relaxed mb-5">{movie.description}</p>
+            <p className="text-lg text-left leading-relaxed mb-5">
+              {movie.description}
+            </p>
 
             <div className="movie-buttons mb-6">
               <button className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition">
@@ -134,13 +140,15 @@ const MovieDetailPage = () => {
                 Trailer
               </button>
             </div>
-        {/* :star: Average Rating */}
-        <div className="mt-6">
-          <h3 className="text-xl font-bold mb-1">Average Rating</h3>
-          <StarDisplay rating={averageRating} />
-        </div>
+            {/* :star: Average Rating */}
+            <div className="mt-6">
+              <h3 className="text-xl font-bold mb-1">Average Rating</h3>
+              <StarDisplay rating={averageRating} />
+            </div>
             <div className="mb-2 text-left w-full">
-              <h3 className="text-lg font-semibold mb-1 text-left">Rate this movie:</h3>
+              <h3 className="text-lg font-semibold mb-1 text-left">
+                Rate this movie:
+              </h3>
               <StarRating onRate={handleRating} initialRating={userRating} />
             </div>
           </div>
@@ -157,7 +165,9 @@ const MovieDetailPage = () => {
               onMovieClick={handleMovieClick}
             />
           ) : (
-            <p className="text-gray-500 italic">No similar movies found for this title.</p>
+            <p className="text-gray-500 italic">
+              No similar movies found for this title.
+            </p>
           )}
         </div>
       </div>
