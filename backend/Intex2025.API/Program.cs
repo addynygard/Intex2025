@@ -34,6 +34,7 @@ builder.Services.AddScoped<TMovieRatingOperations>();
 
 var app = builder.Build();
 
+app.UseCors("AllowLocalFrontend");
 
 if (app.Environment.IsDevelopment())
 {
@@ -45,7 +46,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-app.UseCors("AllowLocalFrontend");
 // app.UseCors("AllowReactDev");
 
 
