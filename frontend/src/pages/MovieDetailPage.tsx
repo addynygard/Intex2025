@@ -46,22 +46,50 @@ const MovieDetailPage = () => {
         );
 
         // Fetch cluster recommendations from FastAPI
-        // Fetch cluster recommendations from FastAPI
-        const clusterRecResponse = await axios.get<{ title: string }[]>(
-          `https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/recommendations/cluster/${userId}`,
-        );
+        try {
+          console.log('📡 Fetching cluster recommendations from FastAPI...');
 
-        // Fetch real metadata for each title using your .NET API
-        const movieMetadataRequests = clusterRecResponse.data.map((rec) =>
-          axios.get<Movie>(
-            `${API_URL}/api/movie/title/${encodeURIComponent(rec.title)}`,
-          ),
-        );
+          const clusterRecResponse = await axios.get<{ title: string }[]>(
+            `https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/recommendations/cluster/${userId}`,
+          );
 
-        const metadataResponses = await Promise.all(movieMetadataRequests);
-        const realMovies: Movie[] = metadataResponses.map((res) => res.data);
+          console.log(
+            '✅ Raw cluster titles received:',
+            clusterRecResponse.data,
+          );
 
-        setClusterRecommendations(realMovies);
+          const movieMetadataRequests = clusterRecResponse.data.map((rec) => {
+            const url = `${API_URL}/api/movie/title/${encodeURIComponent(rec.title)}`;
+            console.log(
+              '🔍 Fetching metadata from .NET for:',
+              rec.title,
+              '→',
+              url,
+            );
+            return axios.get<Movie>(url).catch((err) => {
+              console.error('❌ Failed to fetch metadata for:', rec.title, err);
+              return null; // Don't fail the whole batch
+            });
+          });
+
+          const metadataResponses = await Promise.all(movieMetadataRequests);
+          const realMovies: Movie[] = metadataResponses
+            .filter(
+              (res): res is { data: Movie } => res !== null && !!res?.data,
+            )
+            .map((res) => res.data);
+
+          console.log(
+            '🎬 Successfully fetched full movie metadata:',
+            realMovies,
+          );
+          setClusterRecommendations(realMovies);
+        } catch (err) {
+          console.error(
+            '🔥 Error fetching cluster recommendations or metadata:',
+            err,
+          );
+        }
 
         // Fetch similar movies
         if (movieResponse.data.title) {
