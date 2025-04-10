@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ImageLink from '../components/ImageLink';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { API_URL } from '../api/movieAPI';
 import './HomePage.css';
 
 interface Movie {
@@ -24,7 +25,7 @@ function HomePage() {
 
   useEffect(() => {
     axios
-      .get<Movie[]>('https://localhost:5000/api/recommendation/top-rated')
+      .get<Movie[]>(`${API_URL}/api/recommendation/top-rated`)
       .then((res) => {
         setTopRated(res.data);
       })
