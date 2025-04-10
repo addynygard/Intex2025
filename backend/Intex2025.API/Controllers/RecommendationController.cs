@@ -58,9 +58,32 @@ public class RecommendationController : ControllerBase
         }
 
         return Ok(movie);
+    }
+    [HttpGet("recommendations/cluster/{userId}")]
+    public async Task<IActionResult> GetClusterRecommendations(int userId)
+    {
+        using (var httpClient = new HttpClient())
+        {
+            try
+            {
+                // Replace with your FastAPI URL
+                var fastApiUrl = $"http://localhost:8000/recommendations/cluster/{userId}";
+                var response = await httpClient.GetAsync(fastApiUrl);
+
+                if (!response.IsSuccessStatusCode)
+                    return NotFound("Recommendations not found for this user.");
+
+                var content = await response.Content.ReadAsStringAsync();
+                return Content(content, "application/json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching recommendations: {ex.Message}");
+            }
+        }
+    }
+}
 }
 
-}
 
-}
 

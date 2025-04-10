@@ -173,6 +173,7 @@ namespace Intex2025.API.Controllers
 
             return Ok(new { rating = rating ?? 0 });
         }
+
         [HttpPost("rate-movie")]
         public async Task<IActionResult> RateMovie([FromBody] movies_rating model)
         {
@@ -189,6 +190,7 @@ namespace Intex2025.API.Controllers
             await _movieContext.SaveChangesAsync();
             return Ok();
         }
+
         [HttpGet("average-rating")]
         public async Task<IActionResult> GetAverageRating([FromQuery] string showId)
         {
@@ -197,6 +199,21 @@ namespace Intex2025.API.Controllers
                 .AverageAsync(r => (double?)r.rating) ?? 0.0;
             return Ok(new { average = avg });
         }
+
+        [HttpGet("title/{title}")]
+        public async Task<IActionResult> GetMovieByTitle(string title)
+        {
+            var movie = await _movieContext.movies_titles
+                .FirstOrDefaultAsync(m => m.title.ToLower() == title.ToLower());
+
+            if (movie == null)
+            {
+                return NotFound($"No movie found with title: {title}");
+            }
+
+            return Ok(movie);
+        }
     }
-    }
+}
+
 

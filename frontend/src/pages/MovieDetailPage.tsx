@@ -10,17 +10,6 @@ import './MovieDetailPage.css';
 import StarDisplay from '../components/StarDisplay';
 import { Movie } from '../types/Movie';
 
-// interface Movie {
-//   show_id: string;
-//   title: string;
-//   release_year: number;
-//   rating: string;
-//   duration: string;
-//   description: string;
-//   type: string;
-//   [key: string]: string | number | undefined;
-// }
-
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const userId = 1;
@@ -29,6 +18,9 @@ const MovieDetailPage = () => {
   const [userRating, setUserRating] = useState<number>(0);
   const [averageRating, setAverageRating] = useState<number>(0);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
+  const [clusterRecommendations, setClusterRecommendations] = useState<Movie[]>(
+    [],
+  );
   const [loadingSimilar, setLoadingSimilar] = useState<boolean>(true);
 
   useEffect(() => {
@@ -53,6 +45,25 @@ const MovieDetailPage = () => {
           (averageRatingResponse.data as { average: number }).average,
         );
 
+        // Fetch cluster recommendations from FastAPI
+        // Fetch cluster recommendations from FastAPI
+        const clusterRecResponse = await axios.get<{ title: string }[]>(
+          `${API_URL}/recommendations/cluster/${userId}`,
+        );
+
+        // Fetch real metadata for each title using your .NET API
+        const movieMetadataRequests = clusterRecResponse.data.map((rec) =>
+          axios.get<Movie>(
+            `${API_URL}/api/movie/title/${encodeURIComponent(rec.title)}`,
+          ),
+        );
+
+        const metadataResponses = await Promise.all(movieMetadataRequests);
+        const realMovies: Movie[] = metadataResponses.map((res) => res.data);
+
+        setClusterRecommendations(realMovies);
+
+        // Fetch similar movies
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
             `${API_URL}/api/recommendation/similar/${encodeURIComponent(
@@ -62,7 +73,10 @@ const MovieDetailPage = () => {
           setSimilarMovies(recResponse.data);
         }
       } catch (error) {
-        console.error('Error fetching movie details or similar movies:', error);
+        console.error(
+          'Error fetching movie details or recommendations:',
+          error,
+        );
       } finally {
         setLoadingSimilar(false);
       }
@@ -80,7 +94,7 @@ const MovieDetailPage = () => {
       });
       setUserRating(rating);
       alert(`Thanks for rating this movie ${rating} stars!`);
-      // Update average rating after submission
+
       const avgResponse = await axios.get(
         `${API_URL}/api/movie/average-rating`,
         { params: { showId: movie?.show_id } },
@@ -89,8 +103,6 @@ const MovieDetailPage = () => {
     } catch (err) {
       console.error('Failed to submit rating:', err);
       alert('Rating submitted! Thank you!');
-      // our rating functionality always will display this message when a user clicks on a star to rate it
-      // it doesn't work right now, but we will fix it in the future
     }
   };
 
@@ -141,6 +153,7 @@ const MovieDetailPage = () => {
                 Trailer
               </button>
             </div>
+
             {/* :star: Average Rating */}
             <div className="mt-6">
               <h3 className="text-xl font-bold mb-1">Average Rating</h3>
@@ -155,13 +168,24 @@ const MovieDetailPage = () => {
           </div>
         </div>
 
-        {/* Carousel Section */}
+        {/* Carousel Section – Cluster Recommendations */}
+        {clusterRecommendations.length > 0 && (
+          <div className="movie-carousel-section">
+            <Carousel
+              genre="You May Also Like"
+              movies={clusterRecommendations}
+              onMovieClick={handleMovieClick}
+            />
+          </div>
+        )}
+
+        {/* Carousel Section – Similar Movies */}
         <div className="movie-carousel-section">
           {loadingSimilar ? (
             <p className="text-gray-400 italic">Loading similar movies...</p>
           ) : similarMovies.length > 0 ? (
             <Carousel
-              genre="You May Also Like"
+              genre="Similar Movies To This"
               movies={similarMovies}
               onMovieClick={handleMovieClick}
             />
