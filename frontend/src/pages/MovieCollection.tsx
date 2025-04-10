@@ -169,65 +169,63 @@ const MovieCollection = () => {
           <ImageLink movieTitle={movie.title} size="small" />
           <div className="movie-title">{movie.title}</div>
           <div className="movie-info">
-          <div className="badge-row vertical-badges">
-            <div className="top-badges">
-              <span className="movie-rating">{movie.rating || 'N/A'}</span>
-              <span className="movie-year">{movie.release_year || '—'}</span>
+            <div className="badge-row vertical-badges">
+              <div className="top-badges">
+                <span className="movie-rating">{movie.rating || 'N/A'}</span>
+                <span className="movie-year">{movie.release_year || '—'}</span>
+              </div>
+              <span className="movie-genre">{getPrimaryGenre(movie)}</span>
             </div>
-            <span className="movie-genre">{getPrimaryGenre(movie)}</span>
           </div>
-
-          </div>
-
         </div>
       </div>
     );
   };
   return (
     <PageWrapper>
-    <div className="movie-collection-container">
-      <h1 className="page-title">Movies</h1>
-      <div className="category-bar-wrapper">
-        <div className="category-bar">
-          {categories.map((cat, index) => (
-            <button
-              key={index}
-              className={`category-btn ${selectedGenre === cat ? 'active' : ''}`}
-              onClick={() => setSelectedGenre(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-        <div className="category-fade" />
-      </div>
-      <div style={{ width: '100%' }}>
-        <AutoSizer disableHeight>
-          {({ width }) => {
-            const columnCount = Math.floor(width / CARD_WIDTH);
-            const rowCount = Math.ceil(movies.length / columnCount);
-            const totalHeight = rowCount * CARD_HEIGHT;
-            return (
-              <div
-                className="movie-grid-wrapper"
-                style={{ height: `${totalHeight}px` }}
+      <div className="movie-collection-container">
+        <h1 className="page-title">Movies</h1>
+        <div className="category-bar-wrapper">
+          <div className="category-bar">
+            {categories.map((cat, index) => (
+              <button
+                key={index}
+                className={`category-btn ${selectedGenre === cat ? 'active' : ''}`}
+                onClick={() => setSelectedGenre(cat)}
               >
-                <Grid
-                  columnCount={columnCount}
-                  columnWidth={CARD_WIDTH}
-                  height={totalHeight}
-                  rowCount={rowCount}
-                  rowHeight={CARD_HEIGHT}
-                  width={width}
+                {cat}
+              </button>
+            ))}
+          </div>
+          <div className="category-fade" />
+        </div>
+        <div style={{ width: '100%' }}>
+          <AutoSizer disableHeight>
+            {({ width }) => {
+              const columnCount = Math.floor(width / CARD_WIDTH);
+              const rowCount = Math.ceil(movies.length / columnCount);
+              const totalHeight = rowCount * CARD_HEIGHT;
+              return (
+                <div
+                  className="movie-grid-wrapper"
+                  style={{ height: `${totalHeight}px` }}
                 >
-                  {Cell}
-                </Grid>
-              </div>
-            );
-          }}
-        </AutoSizer>
+                  <Grid
+                    columnCount={columnCount}
+                    columnWidth={CARD_WIDTH}
+                    height={totalHeight}
+                    rowCount={rowCount}
+                    rowHeight={CARD_HEIGHT}
+                    width={width}
+                  >
+                    {Cell}
+                  </Grid>
+                </div>
+              );
+            }}
+          </AutoSizer>
+        </div>
       </div>
-    </div>
     </PageWrapper>
   );
 };
