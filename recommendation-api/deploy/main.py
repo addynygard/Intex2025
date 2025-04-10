@@ -5,6 +5,7 @@ import sqlite3
 from typing import List, Dict
 import uvicorn
 import asyncio
+
 app = FastAPI()
 
 # Enable CORS so your React frontend can make requests
@@ -15,7 +16,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Sample data for demonstration
 items = {"item1": "This is item 1", "item2": "This is item 2"}
 @app.get("/")
@@ -47,6 +47,21 @@ def execute_query(query: str, params: tuple = ()):
     cursor.execute(query, params)
     conn.commit()
     conn.close()
+
+# Root test route
+@app.get("/")
+async def root():
+    await asyncio.sleep(1)
+    return {"message": "Hello World"}
+
+# Dummy item route
+items = {"item1": "This is item 1", "item2": "This is item 2"}
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: str):
+    if item_id not in items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return {"item": items[item_id]}
 
 # 🎯 Search endpoint
 @app.get("/api/movie/search")
@@ -102,10 +117,8 @@ class Rating(BaseModel):
 
 @app.post("/api/movie/rate-movie")
 def rate_movie(rating: Rating):
-    # Ensure the rating is valid
     if rating.rating < 1 or rating.rating > 5:
         raise HTTPException(status_code=400, detail="Rating must be between 1 and 5.")
-
     query = """
         INSERT INTO user_ratings (user_id, show_id, rating)
         VALUES (?, ?, ?)
@@ -113,5 +126,30 @@ def rate_movie(rating: Rating):
     execute_query(query, (rating.user_id, rating.show_id, rating.rating))
     return {"message": "Rating submitted successfully"}
 
+# Cluster-based recommender endpoint
+@app.get("/recommendations/cluster/{user_id}")
+def get_cluster_recommendations(user_id: int):
+    # Step 1: Get the cluster for the user
+    cluster_query = "SELECT cluster FROM clusters WHERE user_id = ?"
+    cluster_result = query_table(cluster_query, (user_id,))
+    
+    if not cluster_result:
+        raise HTTPException(status_code=404, detail="Cluster not found for user.")
+
+    cluster_id = cluster_result[0][0]
+
+    # Step 2: Get movie recommendations for that cluster
+    rec_query = """
+        SELECT movie_1, movie_2, movie_3, movie_4, movie_5,
+               movie_6, movie_7, movie_8, movie_9, movie_10
+        FROM cluster_recommendations WHERE cluster = ?
+    """
+    rec_result = query_table(rec_query, (cluster_id,))
+    
+    if not rec_result:
+        raise HTTPException(status_code=404, detail="No recommendations found for this cluster.")
+
+    # Return as a list of titles
+    return [{"title": title} for title in rec_result[0] if title]
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
