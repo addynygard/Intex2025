@@ -27,25 +27,34 @@ body {
 
 /* Wrap content in a main container if needed */
 .main-container {
+  flex: 1;
   max-width: 100%;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 64px 2rem 1rem; /* Top padding matches header height */
 }
+
 
 /* ===== Header / Footer ===== */
 header {
   background-color: var(--primary-color);
   color: white;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* ensure it stays above other elements */
+}
+
+
+footer {
+  background-color: black;
+  color: white;
   text-align: center;
   padding: 0;
 }
 
-footer {
-  background-color: var(--primary-color);
-  color: white;
-  text-align: center;
-  padding: 1rem;
-}
+
 
 /* ===== Forms (Updated layout) ===== */
 form {
@@ -506,5 +515,16 @@ header {
 /* App.css */
 .sc-Qotzb.hrEKBL {
   overflow: visible !important;
+}
+
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
 }
 

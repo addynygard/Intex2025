@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import cinaNicheLogo from '../assets/cinenichelogo.png';
 
 type ImageLinkProps = {
   movieTitle: string;
@@ -29,7 +30,9 @@ const ImageLink: React.FC<ImageLinkProps> = ({
   size = 'small',
   orientation = 'vertical',
 }) => {
-  const decomposedTitle = movieTitle.normalize('NFD'); // Decomposed: é → e + ◌́
+  const [imageError, setImageError] = useState(false);
+
+  const decomposedTitle = movieTitle.normalize('NFD');
   const strippedTitle = decomposedTitle.replace(
     /[^a-zA-Z0-9 \u0300-\u036f]/g,
     '',
@@ -37,12 +40,11 @@ const ImageLink: React.FC<ImageLinkProps> = ({
   const encodedTitle = encodeURIComponent(strippedTitle);
   const imageUrl = `https://ashleestreamimages.blob.core.windows.net/images/Movie%20Posters/${encodedTitle}.jpg`;
 
-  // Set width/height for container based on size and orientation
   const sizeMap = {
     vertical: {
       small: { width: 150, height: 210 },
       medium: { width: 250, height: 350 },
-      large: { width: 375, height: 525 }, // 💅 perfect trimmed version
+      large: { width: 375, height: 525 },
     },
     horizontal: {
       small: { width: 210, height: 150 },
@@ -67,16 +69,38 @@ const ImageLink: React.FC<ImageLinkProps> = ({
         backgroundColor: '#222',
       }}
     >
-      <img
-        src={imageUrl}
-        alt={`Movie Poster for ${movieTitle}`}
-        loading="lazy"
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover', // or 'contain' for letterboxing
-        }}
-      />
+      {imageError ? (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '10px',
+            color: '#ccc',
+          }}
+        >
+          <img
+            src={cinaNicheLogo}
+            alt="CinaNiche Logo"
+            style={{ width: '50px', marginBottom: '10px' }}
+          />
+          <span>Movie Poster Coming Soon!</span>
+        </div>
+      ) : (
+        <img
+          src={imageUrl}
+          alt={`Movie Poster for ${movieTitle}`}
+          loading="lazy"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
+          onError={() => setImageError(true)}
+        />
+      )}
     </div>
   );
 };

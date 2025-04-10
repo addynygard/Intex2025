@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import StarRating from '../components/StarRating';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ImageLink from '../components/ImageLink';
 import Carousel from '../components/Carousel';
 import { API_URL } from '../api/movieAPI';
+import PageWrapper from '../components/PageWrapper';
+import './MovieDetailPage.css';
+import StarDisplay from '../components/StarDisplay';
 
 interface Movie {
   show_id: string;
@@ -20,8 +23,10 @@ interface Movie {
 const MovieDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const userId = 1;
+  const navigate = useNavigate();
   const [movie, setMovie] = useState<Movie | null>(null);
   const [userRating, setUserRating] = useState<number>(0);
+  const [averageRating, setAverageRating] = useState<number>(0);
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([]);
   const [loadingSimilar, setLoadingSimilar] = useState<boolean>(true);
 
@@ -31,13 +36,23 @@ const MovieDetailPage = () => {
         const movieResponse = await axios.get<Movie>(
           `${API_URL}/api/movie/${id}`,
         );
+        console.log('Movie details:', movieResponse.data)
         setMovie(movieResponse.data);
 
         const ratingResponse = await axios.get(
           `${API_URL}/api/movie/user-rating`,
           { params: { userId, showId: id } },
+<!--           `https://localhost:5000/api/movie/user-rating`,
+          { params: { userId, showId: movieResponse.data.show_id } } -->
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
+        const averageRatingResponse = await axios.get(
+          `https://localhost:5000/api/movie/average-rating`,
+          { params: { showId: movieResponse.data.show_id } },
+        );
+        setAverageRating(
+          (averageRatingResponse.data as { average: number }).average,
+        );
 
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
@@ -61,74 +76,95 @@ const MovieDetailPage = () => {
     try {
       await axios.post(`${API_URL}/api/movie/rate-movie`, {
         user_id: userId,
-        show_id: id,
+        show_id: movie?.show_id,
         rating,
       });
       setUserRating(rating);
       alert(`Thanks for rating this movie ${rating} stars!`);
-    } catch (err) {
-      console.error('Failed to submit rating:', err);
-      alert('Rating submitted! Thank you!');
-      // our rating functionality always will display this message when a user clicks on a star to rate it
-      // it doesn't work right now, but we will fix it in the future
-    }
+          // Update average rating after submission
+          const avgResponse = await axios.get(
+            `https://localhost:5000/api/movie/average-rating`,
+            { params: { showId: movie?.show_id } },
+          );
+          setAverageRating(avgResponse.data.average);
+        } catch (err) {
+          console.error('Failed to submit rating:', err);
+          alert('Rating submitted! Thank you!');
+          // our rating functionality always will display this message when a user clicks on a star to rate it
+          // it doesn't work right now, but we will fix it in the future
+        }
+  };
+
+  const handleMovieClick = (movieId: string) => {
+    navigate(`/movie/${movieId}`);
   };
 
   if (!movie) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-white">
-        Loading...
-      </div>
+      <PageWrapper>
+        <div className="flex items-center justify-center min-h-screen text-white">
+          Loading...
+        </div>
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-black text-white px-10 py-10 flex flex-col md:flex-row gap-10 items-start">
-      {/* Movie Poster */}
-      <div className="w-full md:w-1/3 flex justify-center">
-        <ImageLink movieTitle={movie.title} size="large" />
-      </div>
+    <PageWrapper>
+      <div className="movie-detail-wrapper">
+        <div className="movie-detail-content">
+          {/* Movie Poster */}
+          <div className="movie-poster">
+            <ImageLink movieTitle={movie.title} size="large" />
+          </div>
 
-      {/* Movie Info */}
-      <div className="md:w-2/3 space-y-4">
-        <h1 className="text-5xl font-extrabold">{movie.title}</h1>
-        <p className="text-sm text-gray-300">
-          {movie.release_year} • {movie.rating || 'NR'} •{' '}
-          {movie.duration || '??'} min
-        </p>
-        <p className="italic text-purple-400">{movie.type}</p>
-        <p className="text-lg max-w-2xl">{movie.description}</p>
+          {/* Movie Info */}
+          <div className="movie-info">
+            <h1 className="text-6xl font-extrabold text-left mb-2">{movie.title}</h1>
 
-        <div className="mt-6 flex gap-4">
-          <button className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition">
-            ▶ Play
-          </button>
-          <button className="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-full font-semibold transition">
-            Trailer
-          </button>
+            <p className="text-base text-gray-300 text-left mb-3">
+              {movie.release_year} • {movie.rating || 'NR'} • {movie.duration || '??'} •{' '}
+              <span className="italic text-purple-400">{movie.type}</span>
+            </p>
+
+            <p className="text-lg text-left leading-relaxed mb-5">{movie.description}</p>
+
+            <div className="movie-buttons mb-6">
+              <button className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition">
+                ▶ Play
+              </button>
+              <button className="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-full font-semibold transition">
+                Trailer
+              </button>
+            </div>
+        {/* :star: Average Rating */}
+        <div className="mt-6">
+          <h3 className="text-xl font-bold mb-1">Average Rating</h3>
+          <StarDisplay rating={averageRating} />
+        </div>
+            <div className="mb-2 text-left w-full">
+              <h3 className="text-lg font-semibold mb-1 text-left">Rate this movie:</h3>
+              <StarRating onRate={handleRating} initialRating={userRating} />
+            </div>
+          </div>
         </div>
 
-        {/* ⭐ Star Rating */}
-        <div className="mt-10">
-          <h3 className="text-xl font-bold mb-2">Rate this movie:</h3>
-          <StarRating onRate={handleRating} initialRating={userRating} />
-        </div>
-
-        {/* 🎯 Recommended Movies (Carousel) */}
-        <div className="mt-12">
-          <h2 className="text-3xl font-bold mb-4"></h2>
+        {/* Carousel Section */}
+        <div className="movie-carousel-section">
           {loadingSimilar ? (
             <p className="text-gray-400 italic">Loading similar movies...</p>
           ) : similarMovies.length > 0 ? (
-            <Carousel genre="You May Also Like" movies={similarMovies} />
+            <Carousel
+              genre="You May Also Like"
+              movies={similarMovies}
+              onMovieClick={handleMovieClick}
+            />
           ) : (
-            <p className="text-gray-500 italic">
-              No similar movies found for this title.
-            </p>
+            <p className="text-gray-500 italic">No similar movies found for this title.</p>
           )}
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 

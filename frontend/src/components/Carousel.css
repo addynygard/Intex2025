@@ -5,7 +5,7 @@
 
 .carousel h2 {
   font-size: 1.5rem;
-  color: #7c3aed;
+  color: #B0B0B0;
   margin-bottom: 1rem;
   margin-left: 0.5rem;
   text-transform: uppercase;
@@ -26,6 +26,8 @@
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   height: 400px; /* enough for ImageLink height (350) + title spacing */
+  max-width: 100vw;         /* ⬅️ Limit width to viewport */
+  box-sizing: border-box;
 }
 
 .carousel-container::-webkit-scrollbar {
@@ -53,7 +55,7 @@
   margin-top: 5rem;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #ccc;
+  color: #B0B0B0;
   max-width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;

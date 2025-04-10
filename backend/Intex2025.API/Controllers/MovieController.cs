@@ -158,5 +158,30 @@ namespace Intex2025.API.Controllers
 
             return Ok(new { rating = rating ?? 0 });
         }
+        [HttpPost("rate-movie")]
+        public async Task<IActionResult> RateMovie([FromBody] movies_rating model)
+        {
+            var existing = await _movieContext.movies_ratings
+                .FirstOrDefaultAsync(r => r.user_id == model.user_id && r.show_id == model.show_id);
+            if (existing != null)
+            {
+                existing.rating = model.rating;
+            }
+            else
+            {
+                _movieContext.movies_ratings.Add(model);
+            }
+            await _movieContext.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpGet("average-rating")]
+        public async Task<IActionResult> GetAverageRating([FromQuery] string showId)
+        {
+            var avg = await _movieContext.movies_ratings
+                .Where(r => r.show_id == showId && r.rating != null)
+                .AverageAsync(r => (double?)r.rating) ?? 0.0;
+            return Ok(new { average = avg });
+        }
     }
-}
+    }
+
