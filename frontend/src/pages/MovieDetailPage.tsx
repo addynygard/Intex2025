@@ -4,6 +4,7 @@ import StarRating from '../components/StarRating';
 import { useParams, useNavigate } from 'react-router-dom';
 import ImageLink from '../components/ImageLink';
 import Carousel from '../components/Carousel';
+import { API_URL } from '../api/movieAPI';
 import PageWrapper from '../components/PageWrapper';
 import './MovieDetailPage.css';
 import StarDisplay from '../components/StarDisplay';
@@ -33,14 +34,16 @@ const MovieDetailPage = () => {
     const fetchMovieDetails = async () => {
       try {
         const movieResponse = await axios.get<Movie>(
-          `https://localhost:5000/api/movie/${id}`
+          `${API_URL}/api/movie/${id}`,
         );
         console.log('Movie details:', movieResponse.data)
         setMovie(movieResponse.data);
 
         const ratingResponse = await axios.get(
-          `https://localhost:5000/api/movie/user-rating`,
-          { params: { userId, showId: movieResponse.data.show_id } }
+          `${API_URL}/api/movie/user-rating`,
+          { params: { userId, showId: id } },
+<!--           `https://localhost:5000/api/movie/user-rating`,
+          { params: { userId, showId: movieResponse.data.show_id } } -->
         );
         setUserRating((ratingResponse.data as { rating: number }).rating);
         const averageRatingResponse = await axios.get(
@@ -53,9 +56,9 @@ const MovieDetailPage = () => {
 
         if (movieResponse.data.title) {
           const recResponse = await axios.get<Movie[]>(
-            `https://localhost:5000/api/recommendation/similar/${encodeURIComponent(
-              movieResponse.data.title
-            )}`
+            `${API_URL}/api/recommendation/similar/${encodeURIComponent(
+              movieResponse.data.title,
+            )}`,
           );
           setSimilarMovies(recResponse.data);
         }
@@ -71,7 +74,7 @@ const MovieDetailPage = () => {
 
   const handleRating = async (rating: number) => {
     try {
-      await axios.post('https://localhost:5000/api/movie/rate-movie', {
+      await axios.post(`${API_URL}/api/movie/rate-movie`, {
         user_id: userId,
         show_id: movie?.show_id,
         rating,

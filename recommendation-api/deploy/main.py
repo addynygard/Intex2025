@@ -4,6 +4,23 @@ from pydantic import BaseModel
 import sqlite3
 from typing import List, Dict
 
+import uvicorn
+import asyncio
+app = FastAPI()
+# Sample data for demonstration
+items = {"item1": "This is item 1", "item2": "This is item 2"}
+@app.get("/")
+async def root():
+    await asyncio.sleep(1)  # Simulate a long-running operation
+    return {"message": "Hello World"}
+@app.get("/items/{item_id}")
+async def read_item(item_id: str):
+    if item_id not in items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return {"item": items[item_id]}
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
 app = FastAPI()
 
 DB_PATH = "Movies.db"
