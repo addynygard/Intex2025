@@ -1,11 +1,16 @@
 /* === GENRE DROPDOWN STYLES === */
 
-.genre-form-row {
+/* .genre-form-row {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin: 0.5rem 0;
+    margin: 0;
+  } */
+  .form-row label {
+    min-width: 100px;
+    text-align: right;
   }
+  
   
   .genre-form-row label {
     min-width: 100px;
@@ -18,6 +23,7 @@
   .genre-select__container {
     flex: 1;
     width: 100%;
+    box-sizing: border-box;
   }
   
   /* Main input box */
@@ -26,7 +32,7 @@
     border: none !important;
     border-radius: 6px !important;
     min-height: 2.5rem;
-    padding: 0 0.5rem;
+    padding: 0 0rem;
     color: white !important;
     font-size: 1rem;
     box-sizing: border-box;
@@ -38,23 +44,23 @@
   .genre-select__value-container {
     display: flex !important;
     flex-wrap: wrap !important;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 2px 4px !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    padding: 0 !important;
     box-sizing: border-box;
   }
   
   /* Pills */
   .genre-select__multi-value {
-    background-color: var(--primary-dark);
+    background-color: #333 !important;
     border-radius: 6px;
-    padding: 2px 6px;
+    padding: 0px 0px !important;
     font-size: 0.85rem;
-    color: white;
+    color: white !important;
   }
   
   .genre-select__multi-value__label {
-    color: white;
+    color: white !important;
     font-weight: 500;
   }
   
@@ -68,7 +74,7 @@
   
   /* Dropdown menu */
   .genre-select__menu {
-    background-color: #1e1e1e;
+    background-color: #333 !important;
     color: white;
     border-radius: 6px;
     overflow: hidden;
@@ -80,17 +86,38 @@
     color: white;
   }
   .genre-select__option--is-focused {
-    background-color: #444;
+    background-color: #7dafff !important;
+    color: #333 !important;
   }
   .genre-select__option--is-selected {
-    background-color: var(--primary-color);
+    background-color:  #7dafff !important;
+    color: #333 !important;
   }
   
   /* Caret */
-  .genre-select__indicators {
-    color: white;
-  }
-  .genre-select__dropdown-indicator {
-    padding: 0 8px;
-  }
+/* Shrink and align the dropdown arrow */
+.genre-select__dropdown-indicator {
+  font-size: -5rem !important;       /* Make the caret smaller */
+  padding: 0 0px !important;          /* Match native select spacing */
+  height: 100% !important;
+  display: flex !important;
+  align-items: center;
+  color: white !important;
+}
+
+/* Remove the separator (white line) */
+.genre-select__indicator-separator {
+  display: none !important;
+}
+
+/* Ensure the overall height and spacing matches */
+.genre-select__control {
+  min-height: 2.5rem !important;  /* Match your native inputs */
+  padding-right: 0rem !important;
+  box-sizing: border-box !important;
+}
+
+  
+
+
   
