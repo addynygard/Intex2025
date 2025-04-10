@@ -196,24 +196,13 @@ const MovieDetailPage = () => {
           </div>
         </div>
 
-        {/* Carousel Section – Cluster Recommendations */}
-        {clusterRecommendations.length > 0 && (
-          <div className="movie-carousel-section">
-            <Carousel
-              genre="You May Also Like"
-              movies={clusterRecommendations}
-              onMovieClick={handleMovieClick}
-            />
-          </div>
-        )}
-
         {/* Carousel Section – Similar Movies */}
         <div className="movie-carousel-section">
           {loadingSimilar ? (
             <p className="text-gray-400 italic">Loading similar movies...</p>
           ) : similarMovies.length > 0 ? (
             <Carousel
-              genre="Similar Movies To This"
+              genre="Similar Movies To {movie.title}"
               movies={similarMovies}
               onMovieClick={handleMovieClick}
             />
@@ -221,6 +210,16 @@ const MovieDetailPage = () => {
             <p className="text-gray-500 italic">
               No similar movies found for this title.
             </p>
+          )}
+          {/* Carousel Section – Cluster Recommendations */}
+          {clusterRecommendations.length > 0 && (
+            <div className="movie-carousel-section">
+              <Carousel
+                genre="You May Also Like"
+                movies={clusterRecommendations}
+                onMovieClick={handleMovieClick}
+              />
+            </div>
           )}
         </div>
       </div>
