@@ -173,7 +173,6 @@ namespace Intex2025.API.Controllers
 
             return Ok(new { rating = rating ?? 0 });
         }
-
         [HttpPost("rate-movie")]
         public async Task<IActionResult> RateMovie([FromBody] movies_rating model)
         {
@@ -190,7 +189,6 @@ namespace Intex2025.API.Controllers
             await _movieContext.SaveChangesAsync();
             return Ok();
         }
-
         [HttpGet("average-rating")]
         public async Task<IActionResult> GetAverageRating([FromQuery] string showId)
         {
@@ -200,4 +198,5 @@ namespace Intex2025.API.Controllers
             return Ok(new { average = avg });
         }
     }
-}
+    }
+

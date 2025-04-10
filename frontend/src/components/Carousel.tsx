@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 interface CarouselProps {
   genre: string;
   movies: Movie[];
+  onMovieClick: (movieId: string) => void; // Add this property
 }
 
 interface CarouselProps {

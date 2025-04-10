@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ImageLink from '../components/ImageLink';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { API_URL } from '../api/movieAPI';
+import './HomePage.css';
 
 interface Movie {
   show_id: string;
@@ -20,10 +22,10 @@ function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const lastInteractionTime = useRef<number>(Date.now());
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // ✅ Fetch top-rated movies on load
+
   useEffect(() => {
     axios
-      .get<Movie[]>('https://localhost:5000/api/recommendation/top-rated')
+      .get<Movie[]>(`${API_URL}/api/recommendation/top-rated`)
       .then((res) => {
         setTopRated(res.data);
       })
@@ -32,21 +34,19 @@ function HomePage() {
       });
   }, []);
 
-  // ⏳ Auto-slide logic
   useEffect(() => {
     const resetAutoAdvance = () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
       timeoutRef.current = setTimeout(() => {
         setCurrentIndex((prevIndex) =>
           topRated.length ? (prevIndex + 1) % topRated.length : 0,
         );
-        resetAutoAdvance(); // keep it going
-      }, 6000); // resume after a 6s pause
+        resetAutoAdvance();
+      }, 6000);
     };
 
     if (topRated.length) {
-      resetAutoAdvance(); // start the cycle
+      resetAutoAdvance();
     }
 
     return () => {
@@ -73,10 +73,13 @@ function HomePage() {
   return (
     <div className="main-container home-layout">
       <div className="home-left">
-        <h1 className="text-center home-title">🎬 CinaNiche</h1>
-        <p className="text-center home-subtitle">
-          Your personalized movie platform
-        </p>
+        <img
+          src="/src/assets/cinenichelogo.png"
+          alt="CineNiche Logo"
+          className="home-logo"
+        />
+
+        <p className="home-subtitle">Your personalized movie platform</p>
 
         <div className="home-description">
           <p>
@@ -87,9 +90,7 @@ function HomePage() {
         </div>
 
         <div className="card home-actions">
-          <p className="text-center">
-            Join us now and start your cinematic journey!
-          </p>
+          <p>Join us now and start your cinematic journey!</p>
           <button
             className="btn btn-primary"
             onClick={() => navigate('/CreateAccount')}

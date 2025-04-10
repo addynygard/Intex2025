@@ -3,6 +3,7 @@ import AddMovieForm from '../components/AddMovieForm';
 import EditMovie from '../components/EditMovie';
 import DeleteMovie from '../components/DeleteMovie';
 import Pagination from '../components/pagination';
+import PageWrapper from '../components/PageWrapper';
 
 import {
   fetchMovies,
@@ -152,6 +153,7 @@ const AdminPage: React.FC = () => {
   };
 
   return (
+    <PageWrapper>
     <div className="admin-layout">
       {/* <aside className="admin-sidebar">
         <h3>Filter by Genre</h3>
@@ -232,6 +234,7 @@ const AdminPage: React.FC = () => {
         </Pagination>
       </main>
     </div>
+    </PageWrapper>
   );
 };
 
