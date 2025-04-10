@@ -53,7 +53,7 @@ const GENRES = [
   { value: 'thrillers', label: 'Thrillers' },
 ] as const;
 
-type GenreOption = (typeof GENRES)[number];
+// type GenreOption = (typeof GENRES)[number];
 
 type GenreTypesProps = {
   formData: Omit<Movie, 'show_id'>;
