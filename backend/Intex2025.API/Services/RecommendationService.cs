@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Intex2025.API.Models;
 using Intex2025.API.Data;
 using Microsoft.EntityFrameworkCore;
+using Intex2025.API.Helpers;
 
 public class RecommendationService : IRecommendationService
 {
@@ -18,7 +19,7 @@ public class RecommendationService : IRecommendationService
    public async Task<List<movies_title>> GetSimilarMoviesAsync(string title)
 {
     var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(
-        $"http://localhost:8000/recommendations/similar/{Uri.EscapeDataString(title)}");
+        $"{RecommenderLink.REC_URL}/recommendations/similar/{Uri.EscapeDataString(title)}");
 
     if (response == null || response.Count == 0)
     {
@@ -47,17 +48,17 @@ public class RecommendationService : IRecommendationService
 
     public async Task<List<movies_title>> GetTopRatedMoviesAsync()
     {
-        return await FetchAndMapTitlesAsync("http://localhost:8000/recommendations/top-rated");
+        return await FetchAndMapTitlesAsync($"{RecommenderLink.REC_URL}/recommendations/top-rated");
     }
 
     public async Task<List<movies_title>> GetTopByGenreAsync(string genre)
     {
-        return await FetchAndMapTitlesAsync($"http://localhost:8000/recommendations/genre/{Uri.EscapeDataString(genre)}");
+        return await FetchAndMapTitlesAsync($"{RecommenderLink.REC_URL}/recommendations/genre/{Uri.EscapeDataString(genre)}");
     }
 
     public async Task<List<movies_title>> GetUserRecommendationsAsync(int userId)
     {
-        return await FetchAndMapTitlesAsync($"http://localhost:8000/recommendations/user/{userId}");
+        return await FetchAndMapTitlesAsync($"{RecommenderLink.REC_URL}/recommendations/user/{userId}");
     }
 
     /// <summary>
