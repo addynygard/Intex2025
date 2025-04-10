@@ -6,7 +6,7 @@ using RootkitAuth.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ==================== SERVICES ====================
+// ==================== SERVICES ==================== //
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
