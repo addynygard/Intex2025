@@ -16,7 +16,6 @@ namespace Intex2025.API.Controllers
             _movieContext = context;
         }
 
-        // GET: api/movie
         [HttpGet]
         public async Task<ActionResult<IEnumerable<movies_title>>> GetAllMovies()
         {
@@ -77,10 +76,38 @@ namespace Intex2025.API.Controllers
 
             var genreMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                { "Action", "action" },
-                { "Adventure", "adventure" },
-                // ... (rest of genreMap — unchanged)
-                { "Thrillers", "thrillers" }
+                { "Action", "Action" },
+                { "Adventure", "Adventure" },
+                { "TV Action", "TV_Action" },
+                { "Anime Series International TV Shows", "Anime_Series_International_TV_Shows" },
+                { "Docuseries", "Docuseries" },
+                { "British TV Shows Docuseries International TV Shows", "British_TV_Shows_Docuseries_International_TV_Shows" },
+                { "Crime TV Shows Docuseries", "Crime_TV_Shows_Docuseries" },
+                { "Children", "Children" },
+                { "Kids' TV", "Kids__TV" },
+                { "Comedies", "Comedies" },
+                { "Comedies Dramas International Movies", "Comedies_Dramas_International_Movies" },
+                { "Comedies International Movies", "Comedies_International_Movies" },
+                { "Comedies Romantic Movies", "Comedies_Romantic_Movies" },
+                { "Talk Shows TV Comedies", "Talk_Shows_TV_Comedies" },
+                { "TV Comedies", "TV_Comedies" },
+                { "Documentaries", "Documentaries" },
+                { "Documentaries International Movies", "Documentaries_International_Movies" },
+                { "Nature TV", "Nature_TV" },
+                { "Dramas", "Dramas" },
+                { "Dramas International Movies", "Dramas_International_Movies" },
+                { "TV Dramas", "TV_Dramas" },
+                { "Dramas Romantic Movies", "Dramas_Romantic_Movies" },
+                { "Family Movies", "Family_Movies" },
+                { "Fantasy", "Fantasy" },
+                { "Horror Movies", "Horror_Movies" },
+                { "International Movies Thrillers", "International_Movies_Thrillers" },
+                { "International TV Shows Romantic TV Shows TV Dramas", "International_TV_Shows_Romantic_TV_Shows_TV_Dramas" },
+                { "Language TV Shows", "Language_TV_Shows" },
+                { "Musicals", "Musicals" },
+                { "Spirituality", "Spirituality" },
+                { "Thrillers", "Thrillers" },
+                { "Reality TV", "Reality_TV" }
             };
 
             if (!genreMap.TryGetValue(genre, out var columnName))
@@ -91,22 +118,10 @@ namespace Intex2025.API.Controllers
 
             try
             {
-                IQueryable<movies_title> query = _movieContext.movies_titles;
+                var filtered = await _movieContext.movies_titles
+                    .Where(m => EF.Property<int>(m, columnName) == 1)
+                    .ToListAsync();
 
-                switch (columnName)
-                {
-                    case "action":
-                        query = query.Where(m => m.Action == 1);
-                        break;
-                    // ... repeat for others ...
-                    case "thrillers":
-                        query = query.Where(m => m.Thrillers == 1);
-                        break;
-                    default:
-                        return BadRequest("Unsupported genre.");
-                }
-
-                var filtered = await query.ToListAsync();
                 Console.WriteLine($"Found {filtered.Count} movies for genre: {columnName}");
                 return Ok(filtered);
             }
