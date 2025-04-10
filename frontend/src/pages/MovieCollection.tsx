@@ -10,7 +10,6 @@ import PageWrapper from '../components/PageWrapper';
 import { useNavigate } from 'react-router-dom';
 
 const categories = [
-  'Featured',
   'All Movies',
   'Action/Adventure',
   'Anime',
