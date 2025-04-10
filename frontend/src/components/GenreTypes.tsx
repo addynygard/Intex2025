@@ -6,28 +6,16 @@ import './GenreTypes.css';
 const GENRES = [
   { value: 'action', label: 'Action' },
   { value: 'adventure', label: 'Adventure' },
-  {
-    value: 'anime_Series_International_TV_Shows',
-    label: 'Anime Series / International TV Shows',
-  },
-  {
-    value: 'british_TV_Shows_Docuseries_International_TV_Shows',
-    label: 'British / Docuseries / International TV',
-  },
+  { value: 'anime_Series_International_TV_Shows', label: 'Anime Series / International TV Shows' },
+  { value: 'british_TV_Shows_Docuseries_International_TV_Shows', label: 'British / Docuseries / International TV' },
   { value: 'children', label: 'Children' },
   { value: 'comedies', label: 'Comedies' },
-  {
-    value: 'comedies_Dramas_International_Movies',
-    label: 'Comedies / Dramas / Int. Movies',
-  },
+  { value: 'comedies_Dramas_International_Movies', label: 'Comedies / Dramas / Int. Movies' },
   { value: 'comedies_International_Movies', label: 'Comedies / Int. Movies' },
   { value: 'comedies_Romantic_Movies', label: 'Comedies / Romantic Movies' },
   { value: 'crime_TV_Shows_Docuseries', label: 'Crime / Docuseries' },
   { value: 'documentaries', label: 'Documentaries' },
-  {
-    value: 'documentaries_International_Movies',
-    label: 'Documentaries / Int. Movies',
-  },
+  { value: 'documentaries_International_Movies', label: 'Documentaries / Int. Movies' },
   { value: 'docuseries', label: 'Docuseries' },
   { value: 'dramas', label: 'Dramas' },
   { value: 'dramas_International_Movies', label: 'Dramas / Int. Movies' },
@@ -36,10 +24,7 @@ const GENRES = [
   { value: 'fantasy', label: 'Fantasy' },
   { value: 'horror_Movies', label: 'Horror' },
   { value: 'international_Movies_Thrillers', label: 'Int. Movies / Thrillers' },
-  {
-    value: 'international_TV_Shows_Romantic_TV_Shows_TV_Dramas',
-    label: 'Int. TV / Romantic / Dramas',
-  },
+  { value: 'international_TV_Shows_Romantic_TV_Shows_TV_Dramas', label: 'Int. TV / Romantic / Dramas' },
   { value: 'kids_TV', label: 'Kids TV' },
   { value: 'language_TV_Shows', label: 'Language TV Shows' },
   { value: 'musicals', label: 'Musicals' },
@@ -53,6 +38,8 @@ const GENRES = [
   { value: 'thrillers', label: 'Thrillers' },
 ] as const;
 
+
+
 // type GenreOption = (typeof GENRES)[number];
 
 type GenreTypesProps = {
@@ -61,7 +48,9 @@ type GenreTypesProps = {
 };
 
 const GenreTypes: React.FC<GenreTypesProps> = ({ formData, setFormData }) => {
-  const selected = GENRES.filter(({ value }) => formData[value] === true);
+  console.log("FormData:", formData);
+
+  const selected = GENRES.filter(({ value }) => Number(formData[value]) === 1);
 
   const handleChange = (
     selectedOptions: readonly { value: string; label: string }[] | null,
@@ -88,7 +77,7 @@ const GenreTypes: React.FC<GenreTypesProps> = ({ formData, setFormData }) => {
   };
 
   return (
-    <div className="form-row genre-form-row">
+    <div className="form-row">
       <label htmlFor="genres">Genres:</label>
       <div className="genre-select__container">
         <Select
