@@ -48,7 +48,7 @@ const MovieDetailPage = () => {
         // Fetch cluster recommendations from FastAPI
         // Fetch cluster recommendations from FastAPI
         const clusterRecResponse = await axios.get<{ title: string }[]>(
-          `${API_URL}/recommendations/cluster/${userId}`,
+          `https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/recommendations/cluster/${userId}`,
         );
 
         // Fetch real metadata for each title using your .NET API

@@ -141,7 +141,7 @@ def get_cluster_recommendations(user_id: int):
     # Step 2: Get movie recommendations for that cluster
     rec_query = """
         SELECT movie_1, movie_2, movie_3, movie_4, movie_5,
-               movie_6, movie_7, movie_8, movie_9, movie_10
+            movie_6, movie_7, movie_8, movie_9, movie_10
         FROM cluster_recommendations WHERE cluster = ?
     """
     rec_result = query_table(rec_query, (cluster_id,))
