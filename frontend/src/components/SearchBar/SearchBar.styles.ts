@@ -46,10 +46,28 @@ export const Input = styled.input`
   width: 100%;
   font-size: 16px;
 
-  ::placeholder {
-    color: #ccc;
+  &::placeholder {
+    color: white;
+    opacity: 1; /* Make sure it's not faded */
+  }
+
+  &::-webkit-input-placeholder {
+    color: white;
+  }
+
+  &::-moz-placeholder {
+    color: white;
+  }
+
+  &:-ms-input-placeholder {
+    color: white;
+  }
+
+  &::-ms-input-placeholder {
+    color: white;
   }
 `;
+
 
 export const ResultsWrapper = styled.div`
   position: absolute;

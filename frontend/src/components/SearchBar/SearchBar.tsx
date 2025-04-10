@@ -41,7 +41,7 @@ const SearchBar: React.FC = () => {
 
     debounceTimeout.current = setTimeout(() => {
       fetch(
-        `http://localhost:8000/api/movie/search?title=${encodeURIComponent(query)}`,
+        `https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/api/movie/search?title=${encodeURIComponent(query)}`,
       )
         .then((res) => res.json())
         .then((data: Movie[]) => {
@@ -91,7 +91,7 @@ const SearchBar: React.FC = () => {
         onFocus={() => {
           if (results.length > 0) setOpen(true);
         }}
-        placeholder="Search titles..."
+        placeholder="Search Movies..."
       />
 
       {/* 👉 Move this outside the fragment so it always renders inside SearchWrapper */}

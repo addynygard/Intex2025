@@ -14,7 +14,8 @@ const convertBooleansToInts = (movie: Movie) => {
   return converted;
 };
 
-const API_URL = 'https://localhost:5000/api/Movie';
+export const API_URL =
+  'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
   try {

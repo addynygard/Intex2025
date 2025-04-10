@@ -4,6 +4,8 @@ import { Movie } from '../types/Movie';
 import Carousel from '../components/Carousel';
 import TopCarousel from '../components/TopCarousel';
 import { useUser } from '../context/UserContext';
+import { API_URL } from '../api/movieAPI';
+import PageWrapper from '../components/PageWrapper'; // ✅ Import it
 
 const MoviePage = () => {
   const [topRated, setTopRated] = useState<Movie[]>([]);
@@ -19,7 +21,7 @@ const MoviePage = () => {
     const fetchTopRated = async () => {
       try {
         const res = await fetch(
-          'https://localhost:5000/api/recommendation/top-rated',
+          `${API_URL}/api/recommendation/top-rated`,
         );
         const data = await res.json();
         setTopRated(data);
@@ -36,7 +38,7 @@ const MoviePage = () => {
     const fetchUserRecs = async () => {
       try {
         const res = await fetch(
-          `https://localhost:5000/api/recommendation/user/${userId}`,
+          `${API_URL}/api/recommendation/user/${userId}`,
         );
         const data = await res.json();
         setUserRecs(data);
@@ -58,7 +60,7 @@ const MoviePage = () => {
     ) => {
       try {
         const res = await fetch(
-          `https://localhost:5000/api/recommendation/genre/${genre}`,
+          `${API_URL}/api/recommendation/genre/${genre}`,
         );
         const data = await res.json();
         setter(data);
@@ -73,30 +75,46 @@ const MoviePage = () => {
   }, []);
 
   return (
-    <>
+    <PageWrapper>
       {/* 🎯 Top 10 Movies – from top_rated_movies */}
       {topRated.length > 0 && <TopCarousel items={topRated} />}
 
       <div className="movie-page">
-        <h1>Welcome to Your Movie Library</h1>
-
         {/* 🎯 Personalized Recommendations */}
         {userRecs.length > 0 && (
-          <Carousel genre="Recommended For You" movies={userRecs} />
+          <Carousel genre="Recommended For You" movies={userRecs} onMovieClick={function (): void {
+            throw new Error('Function not implemented.');
+          } } />
         )}
 
         {/* 🎬 Genre Sections from Recommender Models */}
         {actionTop.length > 0 && (
-          <Carousel genre="Action Picks" movies={actionTop} />
+          <div style={{ marginTop: '2rem' }}>
+            <Carousel genre="Action Picks" movies={actionTop} onMovieClick={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
+          </div>
         )}
+
         {comedyTop.length > 0 && (
-          <Carousel genre="Laugh Out Loud" movies={comedyTop} />
+          <div style={{ marginTop: '2rem' }}>
+            <Carousel genre="Laugh Out Loud" movies={comedyTop} onMovieClick={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
+          </div>
         )}
+
         {thrillerTop.length > 0 && (
-          <Carousel genre="Terrific Thrillers" movies={thrillerTop} />
+          <div style={{ marginTop: '2rem' }}>
+            <Carousel genre="Terrific Thrillers" movies={thrillerTop} onMovieClick={function (): void {
+              throw new Error('Function not implemented.');
+            } } />
+          </div>
         )}
       </div>
-    </>
+
+
+    </PageWrapper>
   );
 };
 

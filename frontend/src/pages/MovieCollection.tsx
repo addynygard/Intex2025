@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import './MovieCollectionPage.css';
 import ImageLink from '../components/ImageLink';
 import { Movie } from '../types/Movie';
+import { API_URL } from '../api/movieAPI';
+import PageWrapper from '../components/PageWrapper';
+
 import { useNavigate } from 'react-router-dom';
 
 const categories = [
@@ -123,7 +126,7 @@ const MovieCollection = () => {
   useEffect(() => {
     const fetchMoviesByGenre = async () => {
       try {
-        let url = 'https://localhost:5000/api/Movie';
+        let url = `${API_URL}/api/Movie`;
         if (selectedGenre === 'Featured' || selectedGenre === 'All Movies') {
           url += '/filter?genre=Featured';
         } else if (selectedGenre === 'No Genre') {
@@ -165,15 +168,22 @@ const MovieCollection = () => {
           <ImageLink movieTitle={movie.title} size="small" />
           <div className="movie-title">{movie.title}</div>
           <div className="movie-info">
-            <span className="movie-rating">{movie.rating || 'N/A'}</span>
-            <span className="movie-year">• {movie.release_year || '—'}</span>
-            <span className="movie-genre">• {getPrimaryGenre(movie)}</span>
+          <div className="badge-row vertical-badges">
+            <div className="top-badges">
+              <span className="movie-rating">{movie.rating || 'N/A'}</span>
+              <span className="movie-year">{movie.release_year || '—'}</span>
+            </div>
+            <span className="movie-genre">{getPrimaryGenre(movie)}</span>
           </div>
+
+          </div>
+
         </div>
       </div>
     );
   };
   return (
+    <PageWrapper>
     <div className="movie-collection-container">
       <h1 className="page-title">Movies</h1>
       <div className="category-bar-wrapper">
@@ -217,6 +227,7 @@ const MovieCollection = () => {
         </AutoSizer>
       </div>
     </div>
+    </PageWrapper>
   );
 };
 
