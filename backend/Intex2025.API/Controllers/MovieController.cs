@@ -2,9 +2,11 @@
 using Intex2025.API.Data;
 using Intex2025.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Intex2025.API.Controllers
 {
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MovieController : ControllerBase
@@ -142,7 +144,7 @@ namespace Intex2025.API.Controllers
 
             return movie;
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
         {
@@ -150,7 +152,7 @@ namespace Intex2025.API.Controllers
             await _movieContext.SaveChangesAsync();
             return CreatedAtAction(nameof(GetMovie), new { id = movie.show_id }, movie);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(string id)
         {
@@ -213,7 +215,7 @@ namespace Intex2025.API.Controllers
 
             return Ok(movie);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(string id, [FromBody] movies_title updatedMovie)
         {
