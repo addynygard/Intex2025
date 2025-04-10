@@ -1,5 +1,5 @@
 // src/pages/ShowCollection.tsx
-import React from 'react';
+// import React from 'react';
 import './MovieCollectionPage.css'; // Optional: create a new CSS file like ShowCollectionPage.css
 
 const tvGenres = [
