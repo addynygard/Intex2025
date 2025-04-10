@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalFrontend",
         policy => policy
-            .WithOrigins("http://localhost:5173", "https://mango-forest-0265fa21e.6.azurestaticapps.net")
+            .WithOrigins("http://localhost:5173", "https://mango-forest-0265fa21e.6.azurestaticapps.net", "https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
@@ -34,7 +34,6 @@ builder.Services.AddScoped<TMovieRatingOperations>();
 
 var app = builder.Build();
 
-app.UseCors("AllowLocalFrontend");
 
 if (app.Environment.IsDevelopment())
 {
@@ -45,9 +44,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
+app.UseRouting();
 // app.UseCors("AllowReactDev");
 
+app.UseCors("AllowLocalFrontend");
 
 app.UseAuthorization();
 

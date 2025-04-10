@@ -216,4 +216,27 @@ namespace Intex2025.API.Controllers
     }
 }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(string id, [FromBody] movies_title updatedMovie)
+        {
+            if (id != updatedMovie.show_id)
+            {
+                return BadRequest("ID mismatch between URL and body");
+            }
+
+            var existingMovie = await _movieContext.movies_titles.FindAsync(id);
+            if (existingMovie == null)
+            {
+                return NotFound();
+            }
+
+            // Update all properties
+            _movieContext.Entry(existingMovie).CurrentValues.SetValues(updatedMovie);
+            await _movieContext.SaveChangesAsync();
+
+            return Ok(updatedMovie); // Or NoContent() if you don’t need to return the data
+        }
+
+    }
+}
 
