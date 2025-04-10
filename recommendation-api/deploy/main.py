@@ -1,5 +1,8 @@
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 from pydantic import BaseModel
 import sqlite3
 from typing import List, Dict
@@ -16,6 +19,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# CSP Middleware based on provided configuration
+class CSPMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response: Response = await call_next(request)
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com; "
+            "style-src 'self' 'unsafe-inline' fonts.googleapis.com https://accounts.google.com; "
+            "img-src 'self' https://ashleestreamimages.blob.core.windows.net data:; "
+            "connect-src 'self' https://localhost:5000 http://localhost:8000 https://accounts.google.com https://oauth2.googleapis.com; "
+            "font-src 'self' fonts.gstatic.com data:; "
+            "frame-src 'self' https://accounts.google.com https://oauth2.googleapis.com; "
+            "frame-ancestors 'none'; "
+            "object-src 'none'; "
+            "form-action 'self'; "
+            "base-uri 'self';"
+        )
+        return response
+
+app.add_middleware(CSPMiddleware)
+
 # Sample data for demonstration
 items = {"item1": "This is item 1", "item2": "This is item 2"}
 @app.get("/")
@@ -149,7 +174,8 @@ def get_cluster_recommendations(user_id: int):
     if not rec_result:
         raise HTTPException(status_code=404, detail="No recommendations found for this cluster.")
 
-    # Return as a list of titles
+   # Return as a list of titles
     return [{"title": title} for title in rec_result[0] if title]
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
