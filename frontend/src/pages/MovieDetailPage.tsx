@@ -218,7 +218,7 @@ const MovieDetailPage = () => {
             <p className="text-gray-400 italic">Loading similar movies...</p>
           ) : similarMovies.length > 0 ? (
             <Carousel
-              genre="Similar Movies To {movie.title}"
+              genre="Similar Movies"
               movies={similarMovies}
               onMovieClick={handleMovieClick}
             />
