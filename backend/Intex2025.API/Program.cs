@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalFrontend",
         policy => policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "https://mango-forest-0265fa21e.6.azurestaticapps.net")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
