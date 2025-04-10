@@ -3,10 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import sqlite3
 from typing import List, Dict
-
 import uvicorn
 import asyncio
 app = FastAPI()
+
+# Enable CORS so your React frontend can make requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "https://mango-forest-0265fa21e.6.azurestaticapps.net"],  # Your Vite dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Sample data for demonstration
 items = {"item1": "This is item 1", "item2": "This is item 2"}
 @app.get("/")
@@ -18,21 +27,10 @@ async def read_item(item_id: str):
     if item_id not in items:
         raise HTTPException(status_code=404, detail="Item not found")
     return {"item": items[item_id]}
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
 
-app = FastAPI()
+# app = FastAPI()
 
 DB_PATH = "Movies.db"
-
-# Enable CORS so your React frontend can make requests
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Your Vite dev server
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Shared function to query the database
 def query_table(query: str, params: tuple = ()):
@@ -114,3 +112,6 @@ def rate_movie(rating: Rating):
     """
     execute_query(query, (rating.user_id, rating.show_id, rating.rating))
     return {"message": "Rating submitted successfully"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
