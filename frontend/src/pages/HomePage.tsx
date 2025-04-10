@@ -5,6 +5,7 @@ import ImageLink from '../components/ImageLink';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { API_URL } from '../api/movieAPI';
 import './HomePage.css';
+import Logo from '../assets/cinenichelogo.png';
 
 interface Movie {
   show_id: string;
@@ -74,7 +75,7 @@ function HomePage() {
     <div className="main-container home-layout">
       <div className="home-left">
         <img
-          src="/src/assets/cinenichelogo.png"
+          src={Logo}
           alt="CineNiche Logo"
           className="home-logo"
         />
