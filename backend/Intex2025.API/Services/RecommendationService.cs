@@ -5,16 +5,21 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using Intex2025.API.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+
 
 public class RecommendationService : IRecommendationService
 {
     private readonly HttpClient _httpClient;
     private readonly MovieDbContext _context;
+    private readonly String _baseUrl;
 
-    public RecommendationService(HttpClient httpClient, MovieDbContext context)
+    public RecommendationService(HttpClient httpClient, MovieDbContext context, IConfiguration config)
     {
         _httpClient = httpClient;
         _context = context;
+        _baseUrl = config["RecommendationApi:BaseUrl"] ?? throw new Exception("Missing API Base Url");
     }
 
     public async Task<List<movies_title>> GetSimilarMoviesAsync(string title)

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Intex2025.API.Data;
 
 namespace Intex2025.API.Controllers;
-
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class MovieController : ControllerBase
