@@ -1,36 +1,82 @@
 .home-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    margin-top: 2rem;
-  }
-  
-  .home-logo {
-    max-width: 600px;
-    width: 100%;
-    margin-bottom: -7rem;
-    margin-top: -10rem;
-  }
-  
-  .home-subtitle {
-    font-size: 1.75rem;
-    font-weight: 500;
-    color: #e5e7eb; /* Tailwind's text-gray-200 */
-    margin-bottom: 0.25rem;
-    text-align: center;
-  }
-  
-  .home-description {
-    max-width: 40rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #d1d5db; /* Tailwind's text-gray-300 */
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-  
-  .home-actions {
-    text-align: center;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 2rem;
+}
+
+.home-logo {
+  max-width: 600px;
+  width: 100%;
+  margin-bottom: -7rem;
+  margin-top: -10rem;
+}
+
+.home-subtitle {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #e5e7eb; /* Tailwind's text-gray-200 */
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.home-description {
+  max-width: 40rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #d1d5db; /* Tailwind's text-gray-300 */
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.home-actions {
+  text-align: center;
+}
+
+.main-container {
+  position: relative;
+  z-index: 1;
+}
+
+.main-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/bestimageoffamily.png') no-repeat center center / cover;
+  filter: blur(1px) brightness(0.5);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.main-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+.home-layout {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 3rem;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.home-left,
+.home-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 🟢 vertically center */
+  align-items: center; /* 🟢 horizontally center */
+}

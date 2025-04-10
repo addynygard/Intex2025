@@ -5,7 +5,6 @@ import ImageLink from '../components/ImageLink';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './HomePage.css';
 
-
 interface Movie {
   show_id: string;
   title: string;
@@ -22,7 +21,7 @@ function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const lastInteractionTime = useRef<number>(Date.now());
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // ✅ Fetch top-rated movies on load
+
   useEffect(() => {
     axios
       .get<Movie[]>('https://localhost:5000/api/recommendation/top-rated')
@@ -34,21 +33,19 @@ function HomePage() {
       });
   }, []);
 
-  // ⏳ Auto-slide logic
   useEffect(() => {
     const resetAutoAdvance = () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
       timeoutRef.current = setTimeout(() => {
         setCurrentIndex((prevIndex) =>
           topRated.length ? (prevIndex + 1) % topRated.length : 0,
         );
-        resetAutoAdvance(); // keep it going
-      }, 6000); // resume after a 6s pause
+        resetAutoAdvance();
+      }, 6000);
     };
 
     if (topRated.length) {
-      resetAutoAdvance(); // start the cycle
+      resetAutoAdvance();
     }
 
     return () => {
@@ -74,42 +71,40 @@ function HomePage() {
 
   return (
     <div className="main-container home-layout">
-<div className="home-left">
-<div className="home-left">
-  <img
-    src="/src/assets/cinenichelogo.png"
-    alt="CineNiche Logo"
-    className="home-logo"
-  />
+      <div className="home-left">
+        <img
+          src="/src/assets/cinenichelogo.png"
+          alt="CineNiche Logo"
+          className="home-logo"
+        />
 
-  <p className="home-subtitle">Your personalized movie platform</p>
+        <p className="home-subtitle">Your personalized movie platform</p>
 
-  <div className="home-description">
-    <p>
-      Discover movies tailored to your taste, explore niche genres, and
-      connect with fellow movie lovers by logging in or creating a free
-      account.
-    </p>
-  </div>
+        <div className="home-description">
+          <p>
+            Discover movies tailored to your taste, explore niche genres, and
+            connect with fellow movie lovers by logging in or creating a free
+            account.
+          </p>
+        </div>
 
-  <div className="card home-actions">
-    <p>Join us now and start your cinematic journey!</p>
-    <button
-      className="btn btn-primary"
-      onClick={() => navigate('/CreateAccount')}
-    >
-      Get Started
-    </button>
-    <p>Already have an account?</p>
-    <button
-      className="btn btn-secondary"
-      onClick={() => navigate('/Login')}
-    >
-      Login
-    </button>
-  </div>
-</div>
-</div>
+        <div className="card home-actions">
+          <p>Join us now and start your cinematic journey!</p>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate('/CreateAccount')}
+          >
+            Get Started
+          </button>
+          <p>Already have an account?</p>
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate('/Login')}
+          >
+            Login
+          </button>
+        </div>
+      </div>
 
       <div className="home-right">
         <h2 className="text-center home-image-title">Top Trending Movies</h2>
