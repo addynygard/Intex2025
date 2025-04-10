@@ -1,9 +1,18 @@
 import { createContext, useContext } from 'react';
 
-interface UserContextType {
-  userId: number | null;
+export interface UserContextType {
+  userId: string | null;
+  email: string | null;
+  role: string | null;
+  setUser: (user: { userId: string | null; email: string | null; role: string | null }) => void;
 }
 
-export const UserContext = createContext<UserContextType>({ userId: null });
+// Provide a default context with no-op for setUser
+export const UserContext = createContext<UserContextType>({
+  userId: null,
+  email: null,
+  role: null,
+  setUser: () => {}
+});
 
 export const useUser = () => useContext(UserContext);
