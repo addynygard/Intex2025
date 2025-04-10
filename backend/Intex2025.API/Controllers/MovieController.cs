@@ -213,8 +213,6 @@ namespace Intex2025.API.Controllers
 
             return Ok(movie);
         }
-    }
-}
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(string id, [FromBody] movies_title updatedMovie)
