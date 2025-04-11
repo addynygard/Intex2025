@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // === DATABASES ===
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
@@ -28,8 +29,10 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:5173",
                 "https://mango-forest-0265fa21e.6.azurestaticapps.net",
+
                 "https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net",
                 "https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net"
+
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -74,6 +77,7 @@ builder.Services.AddHttpClient<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<TMovieRatingOperations>();
 
 var app = builder.Build();
+
 
 // === INITIAL ROLE & USER SETUP ===
 using (var scope = app.Services.CreateScope())
@@ -138,13 +142,18 @@ using (var scope = app.Services.CreateScope())
 
 // === MIDDLEWARE ===
 
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
 app.UseHsts();
+app.UseHttpsRedirection();
+app.UseRouting();
+Console.WriteLine("✅ CORS policy is being applied");
 
 app.UseHttpsRedirection();
 
@@ -167,6 +176,7 @@ app.Use(async (context, next) =>
     await next();
 });
 app.UseRouting();
+
 
 app.UseCors("AllowLocalFrontend");
 app.UseAuthentication();
