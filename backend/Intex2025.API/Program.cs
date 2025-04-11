@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // === DATABASES ===
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
@@ -28,8 +29,10 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:5173",
                 "https://mango-forest-0265fa21e.6.azurestaticapps.net",
+
                 "https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net",
                 "https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net"
+
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -74,6 +77,7 @@ builder.Services.AddHttpClient<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<TMovieRatingOperations>();
 
 var app = builder.Build();
+
 
 // === INITIAL ROLE & USER SETUP ===
 using (var scope = app.Services.CreateScope())
@@ -137,16 +141,43 @@ using (var scope = app.Services.CreateScope())
 }
 
 // === MIDDLEWARE ===
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseRouting();
 Console.WriteLine("✅ CORS policy is being applied");
+
+app.UseHttpsRedirection();
+
+// ✅ Add CSP header middleware here
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Content-Security-Policy",
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com; " +
+        "style-src 'self' 'unsafe-inline' fonts.googleapis.com https://accounts.google.com; " +
+        "img-src 'self' https://ashleestreamimages.blob.core.windows.net data:; " +
+        "connect-src 'self' https://localhost:5000 http://localhost:8000 https://accounts.google.com https://oauth2.googleapis.com; " +
+        "font-src 'self' fonts.gstatic.com data:; " +
+        "frame-src 'self' https://accounts.google.com https://oauth2.googleapis.com; " +
+        "frame-ancestors 'none'; " +
+        "object-src 'none'; " +
+        "form-action 'self'; " +
+        "base-uri 'self';"
+    );
+    await next();
+});
+
+app.UseRouting();
+
+
 app.UseCors("AllowLocalFrontend");
 app.UseAuthentication();
 app.UseAuthorization();

@@ -164,6 +164,50 @@ const MovieDetailPage = () => {
     );
   }
 
+  const getGenres = () => {
+    if (!movie) return '';
+    const genreMap: { [key: string]: string } = {
+      action: 'Action',
+      adventure: 'Adventure',
+      anime_Series_International_TV_Shows: 'Anime / International',
+      british_TV_Shows_Docuseries_International_TV_Shows: 'British / Docuseries / International',
+      children: 'Children',
+      comedies: 'Comedies',
+      comedies_Dramas_International_Movies: 'Comedies / Dramas / International',
+      comedies_International_Movies: 'Comedies / International',
+      comedies_Romantic_Movies: 'Comedies / Romantic',
+      crime_TV_Shows_Docuseries: 'Crime / Docuseries',
+      documentaries: 'Documentaries',
+      documentaries_International_Movies: 'Documentaries / International',
+      docuseries: 'Docuseries',
+      dramas: 'Dramas',
+      dramas_International_Movies: 'Dramas / International',
+      dramas_Romantic_Movies: 'Dramas / Romantic',
+      family_Movies: 'Family',
+      fantasy: 'Fantasy',
+      horror_Movies: 'Horror',
+      international_Movies_Thrillers: 'Intl. Thrillers',
+      international_TV_Shows_Romantic_TV_Shows_TV_Dramas: 'Intl. Romantic TV / Dramas',
+      kids_TV: 'Kids TV',
+      language_TV_Shows: 'Language TV',
+      musicals: 'Musicals',
+      nature_TV: 'Nature TV',
+      reality_TV: 'Reality TV',
+      spirituality: 'Spirituality',
+      tV_Action: 'TV Action',
+      tV_Comedies: 'TV Comedies',
+      tV_Dramas: 'TV Dramas',
+      talk_Shows_TV_Comedies: 'Talk Shows / TV Comedies',
+      thrillers: 'Thrillers',
+    };
+  
+    return Object.entries(genreMap)
+      .filter(([key]) => movie[key as keyof Movie])
+      .map(([, label]) => label)
+      .join(' / ');
+  };
+  
+
   return (
     <PageWrapper>
       <div className="movie-detail-wrapper">
@@ -182,7 +226,10 @@ const MovieDetailPage = () => {
             <p className="text-base text-gray-300 text-left mb-3">
               {movie.release_year} • {movie.rating || 'NR'} •{' '}
               {movie.duration || '??'} •{' '}
-              <span className="italic text-purple-400">{movie.type}</span>
+              <span className="italic text-purple-400">{movie.type}
+              {getGenres() && ` • ${getGenres()}`}
+
+              </span>
             </p>
 
             <p className="text-lg text-left leading-relaxed mb-5">
