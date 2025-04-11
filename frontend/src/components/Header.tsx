@@ -8,7 +8,7 @@ import Logo from '../assets/cinenichelogo.png';
 
 import Logout from './Logout';
 
-import { AuthorizedUser } from './AuthorizeView';
+// import { AuthorizedUser } from './AuthorizeView';
 
 function Header({
   role,
@@ -92,9 +92,9 @@ function Header({
 
         {/* Optional user identity display */}
 
-        <div className="text-sm text-right pr-4 mt-1 text-gray-400">
+        {/* <div className="text-sm text-right pr-4 mt-1 text-gray-400">
           Logged in as: <AuthorizedUser value="email" />
-        </div>
+        </div> */}
       </div>
     </header>
   );

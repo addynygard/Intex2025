@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import './MoviePage.css';
 import { Movie } from '../types/Movie';
 import Carousel from '../components/Carousel';
@@ -6,8 +6,8 @@ import TopCarousel from '../components/TopCarousel';
 import { useUser } from '../context/UserContext';
 import { API_URL } from '../api/movieAPI';
 import PageWrapper from '../components/PageWrapper'; // ✅ Import it
-import { getUserRoles } from '../api/movieAPI';
-import { UserContext } from '../components/AuthorizeView';
+// import { getUserRoles } from '../api/movieAPI';
+// import { UserContext } from '../components/AuthorizeView';
 import { Navigate } from 'react-router-dom';
 
 const MoviePage = () => {
@@ -16,18 +16,19 @@ const MoviePage = () => {
   const [actionTop, setActionTop] = useState<Movie[]>([]);
   const [comedyTop, setComedyTop] = useState<Movie[]>([]);
   const [thrillerTop, setThrillerTop] = useState<Movie[]>([]);
-  const { userId } = useUser();
-  const [roles, setRoles] = useState<string[]>([]);
-  const user = useContext(UserContext);
-  const userRoles = user?.roles ?? [];
+  const { userId, role: roles } = useUser();
 
-  // ✅ Check for "User" role
-  if (!roles.includes('User')) {
-    return (
-      <div>
-        You must be a User to view this page. <Navigate to="/Login" />
-      </div>
-    );
+  // const userRoles = user?.roles ?? [];
+  console.log('🔍 userId:', userId);
+  console.log('🔍 roles:', roles);
+
+  // // ✅ Check for "User" role
+  // if (roles === null) {
+  //   return <div>Loading...</div>; // Or use a spinner component
+  // }
+
+  if (!roles || !roles.includes('User')) {
+    return <Navigate to="/Login" replace />;
   }
 
   // ✅ Fetch Top 10 from top_rated_movies
@@ -45,14 +46,14 @@ const MoviePage = () => {
     fetchTopRated();
   }, []);
 
-  useEffect(() => {
-    const fetchRoles = async () => {
-      const userRoles = await getUserRoles();
-      setRoles(userRoles);
-    };
+  // useEffect(() => {
+  //   const fetchRoles = async () => {
+  //     const userRoles = await getUserRoles();
+  //     // setRoles(userRoles);
+  //   };
 
-    fetchRoles();
-  }, []);
+  //   fetchRoles();
+  // }, []);
 
   // ✅ Fetch User-Based Recs
   useEffect(() => {
@@ -142,13 +143,6 @@ const MoviePage = () => {
                 throw new Error('Function not implemented.');
               }}
             />
-          </div>
-        )}
-        {roles.includes('Admin') && (
-          <div
-            style={{ textAlign: 'center', marginTop: '2rem', color: 'lime' }}
-          >
-            👑 You are an Admin!
           </div>
         )}
       </div>
