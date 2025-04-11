@@ -26,7 +26,9 @@ function HomePage({ language }: { language: string }) {
 
   useEffect(() => {
     axios
-      .get<Movie[]>(`${API_URL}/api/recommendation/top-rated`)
+      .get<Movie[]>(`${API_URL}/api/recommendation/top-rated`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setTopRated(res.data);
       })

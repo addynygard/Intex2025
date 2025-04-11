@@ -14,8 +14,9 @@ const convertBooleansToInts = (movie: Movie) => {
   return converted;
 };
 
-export const API_URL =
-  'https://mango-forest-0265fa21e.6.azurestaticapps.net';
+// export const API_URL =
+//   'https://mango-forest-0265fa21e.6.azurestaticapps.net';
+export const API_URL = 'https://localhost:5000';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
   try {
