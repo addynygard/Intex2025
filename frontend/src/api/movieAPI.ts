@@ -15,9 +15,9 @@ const convertBooleansToInts = (movie: Movie) => {
 };
 // export const API_URL =
 //   'https://mission13-bingham-backend-ezh2cwdwg6e4cgct.eastus-01.azurewebsites.net';
-export const API_URL =
-  'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net';
-// export const API_URL = 'https://localhost:5000';
+// export const API_URL =
+//   'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net';
+export const API_URL = 'https://localhost:5000';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
   try {
