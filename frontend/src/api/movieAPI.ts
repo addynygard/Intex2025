@@ -13,9 +13,10 @@ const convertBooleansToInts = (movie: Movie) => {
 
   return converted;
 };
-
 export const API_URL =
-  'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net';
+  'https://mission13-bingham-backend-ezh2cwdwg6e4cgct.eastus-01.azurewebsites.net';
+// export const API_URL =
+//   'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net';
 // export const API_URL = 'https://localhost:5000';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
@@ -109,11 +110,15 @@ export const loginUser = async (
       body: JSON.stringify({ email, password }),
     });
 
+    console.log('🧪 Raw response:', response);
+    const text = await response.text();
+    console.log('📦 Response text:', text);
+
     let data = null;
     try {
-      data = await response.json();
+      data = text ? JSON.parse(text) : null;
     } catch (jsonError) {
-      console.warn('No JSON body returned');
+      console.warn('❗ Response was not valid JSON:', jsonError);
     }
 
     if (!response.ok) {
