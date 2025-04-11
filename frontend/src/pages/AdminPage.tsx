@@ -3,6 +3,7 @@ import AddMovieForm from '../components/AddMovieForm';
 import EditMovie from '../components/EditMovie';
 import DeleteMovie from '../components/DeleteMovie';
 import Pagination from '../components/pagination';
+import PageWrapper from '../components/PageWrapper';
 
 import {
   fetchMovies,
@@ -99,27 +100,33 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  const resetForm = () => {
+    setFormData(getDefaultFormData());
+    setEditingId(null);
+    setShowForm(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       if (editingId) {
         await updateMovie(editingId, { ...formData, show_id: editingId });
         setMessage('Movie updated successfully.');
-        setEditingId(null);
       } else {
         await addMovie({ ...formData, show_id: Date.now().toString() });
         setMessage('Movie added successfully.');
-        setShowForm(false); // Hide form after creation
       }
 
-      setFormData(getDefaultFormData());
-      fetchMovieData();
+      // ✅ Move resetForm() inside a finally block to guarantee it always runs
+      resetForm();
+      await fetchMovieData();
     } catch (error) {
-      console.error('Error submitting movie:', error);
+      console.error('❌ Error submitting movie:', error);
       setMessage('Something went wrong. Please try again.');
+    } finally {
+      setTimeout(() => setMessage(null), 3000);
     }
-
-    setTimeout(() => setMessage(null), 3000); // Clear message after 3 seconds
   };
 
   const handleEdit = (movie: Movie) => {
@@ -144,8 +151,9 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="admin-layout">
-      <aside className="admin-sidebar">
+    <PageWrapper>
+      <div className="admin-layout">
+        {/* <aside className="admin-sidebar">
         <h3>Filter by Genre</h3>
         {Object.entries(formData)
           .filter(([_, value]) => typeof value === 'boolean')
@@ -160,69 +168,74 @@ const AdminPage: React.FC = () => {
               {key.replace(/_/g, ' ')}
             </label>
           ))}
-      </aside>
+      </aside> */}
 
-      <main className="admin-content">
-        <button
-          onClick={() => {
-            setShowForm((prev) => !prev);
-            if (editingId) setEditingId(null);
-          }}
-        >
-          {showForm ? 'Cancel' : 'Add Movie'}
-        </button>
-
-        {showForm && (
-          <AddMovieForm
-            formData={formData}
-            editingId={editingId}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            onCancel={() => {
-              setShowForm(false);
-              setEditingId(null);
-              setFormData(getDefaultFormData());
+        <main className="admin-content">
+          <button
+            onClick={() => {
+              if (showForm) {
+                resetForm(); // 🧼 handles full cleanup for cancel
+              } else {
+                setShowForm(true); // 👈 just show the form when it's closed
+              }
             }}
-          />
-        )}
+          >
+            {showForm ? 'Cancel' : 'Add Movie'}
+          </button>
 
-        {message && <p className="form-message">{message}</p>}
-        <h3>Movie List</h3>
-        <Pagination data={movies}>
-          {(paginatedMovies) => (
-            <table className="admin-movie-table">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Year</th>
-                  <th>Type</th>
-                  <th>Rating</th>
-                  <th>Duration</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedMovies.map((movie) => (
-                  <tr key={movie.show_id}>
-                    <td>{movie.title}</td>
-                    <td>{movie.release_year}</td>
-                    <td>{movie.type}</td>
-                    <td>{movie.rating}</td>
-                    <td>{movie.duration}</td>
-                    <td className="action-buttons">
-                      <EditMovie onClick={() => handleEdit(movie)} />
-                      <DeleteMovie
-                        onClick={() => handleDelete(movie.show_id)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {message && <p className="form-message">{message}</p>}
+          {showForm && (
+            <AddMovieForm
+              formData={formData}
+              editingId={editingId}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              onCancel={() => {
+                setShowForm(false);
+                setEditingId(null);
+                setFormData(getDefaultFormData());
+              }}
+              setFormData={setFormData}
+            />
           )}
-        </Pagination>
-      </main>
-    </div>
+
+          <h2 className="text-center">Movie List</h2>
+          <Pagination data={movies}>
+            {(paginatedMovies) => (
+              <table className="admin-movie-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Year</th>
+                    <th>Type</th>
+                    <th>Rating</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedMovies.map((movie) => (
+                    <tr key={movie.show_id}>
+                      <td>{movie.title}</td>
+                      <td>{movie.release_year}</td>
+                      <td>{movie.type}</td>
+                      <td>{movie.rating}</td>
+                      <td>{movie.duration}</td>
+                      <td className="action-buttons">
+                        <EditMovie onClick={() => handleEdit(movie)} />
+                        <DeleteMovie
+                          onClick={() => handleDelete(movie.show_id)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </Pagination>
+        </main>
+      </div>
+    </PageWrapper>
   );
 };
 

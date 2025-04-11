@@ -22,18 +22,36 @@ const Pagination = <T,>({
   );
 
   const getPageNumbers = () => {
-    const maxVisible = 5;
-    let start = Math.max(currentPage - 2, 1);
-    let end = Math.min(start + maxVisible - 1, totalPages);
-    if (end - start < maxVisible - 1) {
-      start = Math.max(end - maxVisible + 1, 1);
+    const pages: (number | string)[] = [];
+    const siblings = 1; // how many pages to show on each side of current
+    const showEndCount = 2;
+
+    const left = Math.max(currentPage - siblings, 1);
+    const right = Math.min(currentPage + siblings, totalPages);
+
+    // Always show first page
+    if (1 !== left) {
+      pages.push(1);
+      if (left > 2) pages.push('...');
     }
 
-    const range = [];
-    for (let i = start; i <= end; i++) {
-      range.push(i);
+    // Middle pages
+    for (let i = left; i <= right; i++) {
+      pages.push(i);
     }
-    return range;
+
+    // Always show last few pages
+    if (right < totalPages - showEndCount) {
+      pages.push('...');
+      pages.push(totalPages - 1);
+      pages.push(totalPages);
+    } else {
+      for (let i = right + 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    }
+
+    return pages;
   };
 
   return (
@@ -45,28 +63,32 @@ const Pagination = <T,>({
           <button
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(currentPage - 1)}
-            className="pagination-button"
+            className="pagination-button first"
           >
             ← Prev
           </button>
 
-          {getPageNumbers().map((num) => (
-            <button
-              key={num}
-              onClick={() => setCurrentPage(num)}
-              disabled={currentPage === num}
-              className={`pagination-button ${
-                currentPage === num ? 'active' : ''
-              }`}
-            >
-              {num}
-            </button>
-          ))}
+          {getPageNumbers().map((item, index) =>
+            item === '...' ? (
+              <span key={`ellipsis-${index}`} className="pagination-ellipsis">
+                ...
+              </span>
+            ) : (
+              <button
+                key={item}
+                onClick={() => setCurrentPage(Number(item))}
+                disabled={currentPage === item}
+                className={`pagination-button ${currentPage === item ? 'active' : ''}`}
+              >
+                {item}
+              </button>
+            ),
+          )}
 
           <button
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(currentPage + 1)}
-            className="pagination-button"
+            className="pagination-button last"
           >
             Next →
           </button>

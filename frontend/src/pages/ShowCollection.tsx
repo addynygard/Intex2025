@@ -1,28 +1,28 @@
 // src/pages/ShowCollection.tsx
-import React from 'react';
+// import React from 'react';
 import './MovieCollectionPage.css'; // Optional: create a new CSS file like ShowCollectionPage.css
 
 const tvGenres = [
-  "British TV Shows",
-  "Crime TV Shows",
-  "International TV Shows",
-  "Romantic TV Shows",
-  "TV Dramas",
+  'British TV Shows',
+  'Crime TV Shows',
+  'International TV Shows',
+  'Romantic TV Shows',
+  'TV Dramas',
   "Kids' TV",
-  "Language TV Shows",
-  "Nature TV",
-  "Reality TV",
-  "TV Action",
-  "TV Comedies",
-  "Talk Shows TV Comedies"
+  'Language TV Shows',
+  'Nature TV',
+  'Reality TV',
+  'TV Action',
+  'TV Comedies',
+  'Talk Shows TV Comedies',
 ];
 
 const tvShows = [
-  { title: "Stranger Things", image: "/assets/strangerthings.jpg" },
-  { title: "Bluey", image: "/assets/bluey.jpg" },
-  { title: "Planet Earth", image: "/assets/planetearth.jpg" },
-  { title: "The Office", image: "/assets/theoffice.jpg" },
-  { title: "Brooklyn Nine-Nine", image: "/assets/brooklyn99.jpg" },
+  { title: 'Stranger Things', image: '/assets/strangerthings.jpg' },
+  { title: 'Bluey', image: '/assets/bluey.jpg' },
+  { title: 'Planet Earth', image: '/assets/planetearth.jpg' },
+  { title: 'The Office', image: '/assets/theoffice.jpg' },
+  { title: 'Brooklyn Nine-Nine', image: '/assets/brooklyn99.jpg' },
   // Add more TV show objects...
 ];
 
@@ -33,7 +33,10 @@ const ShowCollection = () => {
 
       <div className="category-bar">
         {tvGenres.map((genre, index) => (
-          <button key={index} className={`category-btn ${index === 0 ? 'active' : ''}`}>
+          <button
+            key={index}
+            className={`category-btn ${index === 0 ? 'active' : ''}`}
+          >
             {genre}
           </button>
         ))}

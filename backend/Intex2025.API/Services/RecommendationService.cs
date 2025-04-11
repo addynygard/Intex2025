@@ -1,10 +1,9 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using Intex2025.API.Models;
-using System.Net.Http;
-using System.Net.Http.Json;
 using Intex2025.API.Data;
 using Microsoft.EntityFrameworkCore;
+using Intex2025.API.Helpers;
 
 public class RecommendationService : IRecommendationService
 {
@@ -17,63 +16,88 @@ public class RecommendationService : IRecommendationService
         _context = context;
     }
 
-    public async Task<List<movies_title>> GetSimilarMoviesAsync(string title)
+   public async Task<List<movies_title>> GetSimilarMoviesAsync(string title)
+{
+    var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(
+        $"{RecommenderLink.REC_URL}/recommendations/similar/{Uri.EscapeDataString(title)}");
+
+    if (response == null || response.Count == 0)
     {
-        var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(
-            $"http://localhost:8000/recommendations/similar/{Uri.EscapeDataString(title)}");
-
-        if (response == null)
-            return new List<movies_title>();
-
-        var titles = response.Select(r => r.Title.ToLower()).ToList();
-
-        return await _context.movies_titles
-            .Where(m => m.title != null && titles.Contains(m.title.ToLower()))
-            .ToListAsync();
+        Console.WriteLine($"❌ FastAPI returned no titles for: {title}");
+        return new List<movies_title>();
     }
 
+    var titles = response.Select(r => r.Title.ToLower().Trim()).ToList();
+    Console.WriteLine($"🔍 Titles from FastAPI: {string.Join(", ", titles)}");
+
+    var dbTitles = await _context.movies_titles
+        .Select(m => new { m.title, m.show_id })
+        .ToListAsync();
+
+    var matched = dbTitles
+        .Where(m => m.title != null && titles.Contains(m.title.ToLower().Trim()))
+        .ToList();
+
+    Console.WriteLine($"✅ Matched {matched.Count} titles in the DB");
+
+    // Optionally return full models again
+    return await _context.movies_titles
+        .Where(m => m.title != null && titles.Contains(m.title.ToLower().Trim()))
+        .ToListAsync();
+}
+
     public async Task<List<movies_title>> GetTopRatedMoviesAsync()
-{
-    var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(
-        "http://localhost:8000/recommendations/top-rated");
+    {
+        return await FetchAndMapTitlesAsync($"{RecommenderLink.REC_URL}/recommendations/top-rated");
+    }
 
-    if (response == null) return new List<movies_title>();
+    public async Task<List<movies_title>> GetTopByGenreAsync(string genre)
+    {
+        return await FetchAndMapTitlesAsync($"{RecommenderLink.REC_URL}/recommendations/genre/{Uri.EscapeDataString(genre)}");
+    }
 
-    var titles = response.Select(r => r.Title.ToLower()).ToList();
+    public async Task<List<movies_title>> GetUserRecommendationsAsync(int userId)
+    {
+        return await FetchAndMapTitlesAsync($"{RecommenderLink.REC_URL}/recommendations/user/{userId}");
+    }
 
-    return await _context.movies_titles
-        .Where(m => m.title != null && titles.Contains(m.title.ToLower()))
-        .ToListAsync();
-}
+    /// <summary>
+    /// Shared method to fetch a list of title strings from FastAPI and match them to full movie entities.
+    /// </summary>
+    private async Task<List<movies_title>> FetchAndMapTitlesAsync(string requestUrl)
+    {
+        try
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(requestUrl);
 
-public async Task<List<movies_title>> GetTopByGenreAsync(string genre)
-{
-    var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(
-        $"http://localhost:8000/recommendations/genre/{Uri.EscapeDataString(genre)}");
+            if (response == null || response.Count == 0)
+            {
+                Console.WriteLine($"❌ No recommendations returned from: {requestUrl}");
+                return new List<movies_title>();
+            }
 
-    if (response == null) return new List<movies_title>();
+            var titles = response.Select(r => r.Title.ToLower()).ToList();
 
-    var titles = response.Select(r => r.Title.ToLower()).ToList();
-
-    return await _context.movies_titles
-        .Where(m => m.title != null && titles.Contains(m.title.ToLower()))
-        .ToListAsync();
-}
-
-public async Task<List<movies_title>> GetUserRecommendationsAsync(int userId)
-{
-    var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(
-        $"http://localhost:8000/recommendations/user/{userId}");
-
-    if (response == null) return new List<movies_title>();
-
-    var titles = response.Select(r => r.Title.ToLower()).ToList();
-
-    return await _context.movies_titles
-        .Where(m => m.title != null && titles.Contains(m.title.ToLower()))
-        .ToListAsync();
-}
-
+            return await _context.movies_titles
+                .Where(m => m.title != null && titles.Contains(m.title.ToLower()))
+                .ToListAsync();
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"❌ HTTP error when calling recommendation API: {httpEx.Message}");
+            return new List<movies_title>();
+        }
+        catch (NotSupportedException nsEx)
+        {
+            Console.WriteLine($"❌ Response is not valid JSON: {nsEx.Message}");
+            return new List<movies_title>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Unexpected error: {ex.Message}");
+            return new List<movies_title>();
+        }
+    }
 
 
     private class RecommendationResult

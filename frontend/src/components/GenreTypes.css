@@ -1,0 +1,123 @@
+/* === GENRE DROPDOWN STYLES === */
+
+/* .genre-form-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+  } */
+  .form-row label {
+    min-width: 100px;
+    text-align: right;
+  }
+  
+  
+  .genre-form-row label {
+    min-width: 100px;
+    color: white;
+    font-size: 1rem;
+    text-align: right;
+  }
+  
+  /* Container around the react-select input */
+  .genre-select__container {
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Main input box */
+  .genre-select__control {
+    background-color: #333 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    min-height: 2.5rem;
+    padding: 0 0rem;
+    color: white !important;
+    font-size: 1rem;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  /* Multi-value pills container */
+  .genre-select__value-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  /* Pills */
+  .genre-select__multi-value {
+    background-color: #333 !important;
+    border-radius: 6px;
+    padding: 0px 0px !important;
+    font-size: 0.85rem;
+    color: white !important;
+  }
+  
+  .genre-select__multi-value__label {
+    color: white !important;
+    font-weight: 500;
+  }
+  
+  .genre-select__multi-value__remove {
+    color: white;
+    cursor: pointer;
+  }
+  .genre-select__multi-value__remove:hover {
+    background-color: var(--primary-color);
+  }
+  
+  /* Dropdown menu */
+  .genre-select__menu {
+    background-color: #333 !important;
+    color: white;
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 5;
+  }
+  
+  .genre-select__option {
+    background-color: #333;
+    color: white;
+  }
+  .genre-select__option--is-focused {
+    background-color: #7dafff !important;
+    color: #333 !important;
+  }
+  .genre-select__option--is-selected {
+    background-color:  #7dafff !important;
+    color: #333 !important;
+  }
+  
+  /* Caret */
+/* Shrink and align the dropdown arrow */
+.genre-select__dropdown-indicator {
+  font-size: -5rem !important;       /* Make the caret smaller */
+  padding: 0 0px !important;          /* Match native select spacing */
+  height: 100% !important;
+  display: flex !important;
+  align-items: center;
+  color: white !important;
+}
+
+/* Remove the separator (white line) */
+.genre-select__indicator-separator {
+  display: none !important;
+}
+
+/* Ensure the overall height and spacing matches */
+.genre-select__control {
+  min-height: 2.5rem !important;  /* Match your native inputs */
+  padding-right: 0rem !important;
+  box-sizing: border-box !important;
+}
+
+  
+
+
+  

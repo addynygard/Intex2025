@@ -1,156 +1,260 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Intex2025.API.Data;
 using Intex2025.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Intex2025.API.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
-namespace Intex2025.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
-public class MovieController : ControllerBase
+namespace Intex2025.API.Controllers
 {
-    private readonly MovieDbContext _movieContext;
-
-    public MovieController(MovieDbContext context)
+    // [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MovieController : ControllerBase
     {
-        _movieContext = context;
-    }
+        private readonly MovieDbContext _movieContext;
+        private readonly UserManager<IdentityUser> _userManager;
 
-    // GET: api/movie
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<movies_title>>> GetAllMovies()
-    {
-        return await _movieContext.movies_titles.ToListAsync();
-    }
-
-    // GET: api/movie/{id}
-    [HttpGet("{id}")]
-    public async Task<ActionResult<movies_title>> GetMovie(string id)
-    {
-        var movie = await _movieContext.movies_titles.FindAsync(id);
-        if (movie == null)
-            return NotFound();
-
-        return movie;
-    }
-
-    // POST: api/movie (Admin only)
-    [HttpPost]
-    //[Authorize(Roles = "admin")]
-    public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
-    {
-        _movieContext.movies_titles.Add(movie);
-        await _movieContext.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetMovie), new { id = movie.show_id }, movie);
-    }
-
-    // PUT: api/movie/{id} (Admin only)
-    [HttpPut("{id}")]
-    //[Authorize(Roles = "admin")]
-    public async Task<IActionResult> UpdateMovie(string id, movies_title updatedMovie)
-    {
-        if (id != updatedMovie.show_id)
-            return BadRequest();
-
-        _movieContext.Entry(updatedMovie).State = EntityState.Modified;
-
-        try
+        public MovieController(MovieDbContext context, UserManager<IdentityUser> userManager)
         {
-            await _movieContext.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_movieContext.movies_titles.Any(e => e.show_id == id))
-                return NotFound();
-            throw;
+            _movieContext = context;
+            _userManager = userManager;
         }
 
-        return NoContent();
-    }
-
-    // DELETE: api/movie/{id} (Admin only)
-    [HttpDelete("{id}")]
-    //[Authorize(Roles = "admin")]
-    public async Task<IActionResult> DeleteMovie(string id)
-    {
-        var movie = await _movieContext.movies_titles.FindAsync(id);
-        if (movie == null)
-            return NotFound();
-
-        _movieContext.movies_titles.Remove(movie);
-        await _movieContext.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    
-
-    //// GET: api/movie/user/role
-    //[HttpGet("user/role")]
-    //[Authorize] // Ensure the user is authenticated
-    //public async Task<ActionResult<string>> GetUserRole()
-    //{
-    //    // Extract the user ID from claims
-    //    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
-    //    if (userIdClaim == null)
-    //    {
-    //        return Unauthorized(new { error = "User not authenticated" });
-    //    }
-
-    //    // Convert user ID to int
-    //    if (!int.TryParse(userIdClaim, out var parsedUserId))
-    //    {
-    //        return BadRequest(new { error = "Invalid user ID format" });
-    //    }
-
-    //    // Fetch the user's role from the database
-    //    var role = await _movieContext.movies_users
-    //        .Where(mu => mu.user_id == parsedUserId)
-    //        .Select(mu => mu.role)
-    //        .FirstOrDefaultAsync();
-
-    //    if (role == null)
-    //    {
-    //        return NotFound(new { error = "User role not found" });
-    //    }
-
-    //    return Ok(new { role });
-    //}
-
-    [HttpPost("rate-movie")]
-    public async Task<IActionResult> RateMovie([FromBody] movies_rating newRating)
-    {
-        if (newRating.user_id == null || newRating.show_id == null || newRating.rating == null)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<movies_title>>> GetAllMovies()
         {
-            return BadRequest("user_id, show_id, and rating are required.");
+            return await _movieContext.movies_titles.ToListAsync();
         }
 
-        try
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetMoviesByGenre([FromQuery] string? genre)
         {
-            var existingRating = await _movieContext.movies_ratings
-                .FirstOrDefaultAsync(r => r.user_id == newRating.user_id && r.show_id == newRating.show_id);
+            Console.WriteLine($"Requested genre: {genre}");
 
-            if (existingRating != null)
+            if (string.IsNullOrEmpty(genre) || genre == "Featured")
             {
-                existingRating.rating = newRating.rating;
-                _movieContext.movies_ratings.Update(existingRating);
+                var all = await _movieContext.movies_titles.ToListAsync();
+                return Ok(all);
+            }
+
+            if (genre == "Unknown")
+            {
+                var all = await _movieContext.movies_titles.ToListAsync();
+                var filtered = all.Where(m =>
+                    m.Action != 1 &&
+                    m.Adventure != 1 &&
+                    m.Anime_Series_International_TV_Shows != 1 &&
+                    m.British_TV_Shows_Docuseries_International_TV_Shows != 1 &&
+                    m.Children != 1 &&
+                    m.Comedies != 1 &&
+                    m.Comedies_Dramas_International_Movies != 1 &&
+                    m.Comedies_International_Movies != 1 &&
+                    m.Comedies_Romantic_Movies != 1 &&
+                    m.Crime_TV_Shows_Docuseries != 1 &&
+                    m.Documentaries != 1 &&
+                    m.Documentaries_International_Movies != 1 &&
+                    m.Docuseries != 1 &&
+                    m.Dramas != 1 &&
+                    m.Dramas_International_Movies != 1 &&
+                    m.Dramas_Romantic_Movies != 1 &&
+                    m.Family_Movies != 1 &&
+                    m.Fantasy != 1 &&
+                    m.Horror_Movies != 1 &&
+                    m.International_Movies_Thrillers != 1 &&
+                    m.International_TV_Shows_Romantic_TV_Shows_TV_Dramas != 1 &&
+                    m.Kids__TV != 1 &&
+                    m.Language_TV_Shows != 1 &&
+                    m.Musicals != 1 &&
+                    m.Nature_TV != 1 &&
+                    m.Reality_TV != 1 &&
+                    m.Spirituality != 1 &&
+                    m.TV_Action != 1 &&
+                    m.TV_Comedies != 1 &&
+                    m.TV_Dramas != 1 &&
+                    m.Talk_Shows_TV_Comedies != 1 &&
+                    m.Thrillers != 1
+                ).ToList();
+
+                return Ok(filtered);
+            }
+
+            var genreMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Action", "Action" },
+                { "Adventure", "Adventure" },
+                { "TV Action", "TV_Action" },
+                { "Anime Series International TV Shows", "Anime_Series_International_TV_Shows" },
+                { "Docuseries", "Docuseries" },
+                { "British TV Shows Docuseries International TV Shows", "British_TV_Shows_Docuseries_International_TV_Shows" },
+                { "Crime TV Shows Docuseries", "Crime_TV_Shows_Docuseries" },
+                { "Children", "Children" },
+                { "Kids' TV", "Kids__TV" },
+                { "Comedies", "Comedies" },
+                { "Comedies Dramas International Movies", "Comedies_Dramas_International_Movies" },
+                { "Comedies International Movies", "Comedies_International_Movies" },
+                { "Comedies Romantic Movies", "Comedies_Romantic_Movies" },
+                { "Talk Shows TV Comedies", "Talk_Shows_TV_Comedies" },
+                { "TV Comedies", "TV_Comedies" },
+                { "Documentaries", "Documentaries" },
+                { "Documentaries International Movies", "Documentaries_International_Movies" },
+                { "Nature TV", "Nature_TV" },
+                { "Dramas", "Dramas" },
+                { "Dramas International Movies", "Dramas_International_Movies" },
+                { "TV Dramas", "TV_Dramas" },
+                { "Dramas Romantic Movies", "Dramas_Romantic_Movies" },
+                { "Family Movies", "Family_Movies" },
+                { "Fantasy", "Fantasy" },
+                { "Horror Movies", "Horror_Movies" },
+                { "International Movies Thrillers", "International_Movies_Thrillers" },
+                { "International TV Shows Romantic TV Shows TV Dramas", "International_TV_Shows_Romantic_TV_Shows_TV_Dramas" },
+                { "Language TV Shows", "Language_TV_Shows" },
+                { "Musicals", "Musicals" },
+                { "Spirituality", "Spirituality" },
+                { "Thrillers", "Thrillers" },
+                { "Reality TV", "Reality_TV" }
+            };
+
+            if (!genreMap.TryGetValue(genre, out var columnName))
+            {
+                Console.WriteLine("Genre not found in map");
+                return BadRequest($"Invalid genre: {genre}");
+            }
+
+            try
+            {
+                var filtered = await _movieContext.movies_titles
+                    .Where(m => EF.Property<int>(m, columnName) == 1)
+                    .ToListAsync();
+
+                Console.WriteLine($"Found {filtered.Count} movies for genre: {columnName}");
+                return Ok(filtered);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("EXCEPTION:");
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
+        }
+
+            [HttpGet("role")]
+            public async Task<IActionResult> GetUserRole()
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new { role = roles.FirstOrDefault() ?? "user" });
+            }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<movies_title>> GetMovie(string id)
+        {
+            var movie = await _movieContext.movies_titles.FindAsync(id);
+            if (movie == null)
+                return NotFound();
+
+            return movie;
+        }
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
+        {
+            _movieContext.movies_titles.Add(movie);
+            await _movieContext.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetMovie), new { id = movie.show_id }, movie);
+        }
+        [Authorize(Roles = "admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMovie(string id)
+        {
+            var movie = await _movieContext.movies_titles.FindAsync(id);
+            if (movie == null)
+                return NotFound();
+
+            _movieContext.movies_titles.Remove(movie);
+            await _movieContext.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpGet("user-rating")]
+        public async Task<IActionResult> GetUserRating(int userId, string showId)
+        {
+            var rating = await _movieContext.movies_ratings
+                .Where(r => r.user_id == userId && r.show_id == showId)
+                .Select(r => r.rating)
+                .FirstOrDefaultAsync();
+
+            return Ok(new { rating = rating ?? 0 });
+        }
+
+        [HttpPost("rate-movie")]
+        public async Task<IActionResult> RateMovie([FromBody] movies_rating model)
+        {
+            var existing = await _movieContext.movies_ratings
+                .FirstOrDefaultAsync(r => r.user_id == model.user_id && r.show_id == model.show_id);
+            if (existing != null)
+            {
+                existing.rating = model.rating;
             }
             else
             {
-                _movieContext.movies_ratings.Add(newRating);
+                _movieContext.movies_ratings.Add(model);
+            }
+            await _movieContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpGet("average-rating")]
+        public async Task<IActionResult> GetAverageRating([FromQuery] string showId)
+        {
+            var avg = await _movieContext.movies_ratings
+                .Where(r => r.show_id == showId && r.rating != null)
+                .AverageAsync(r => (double?)r.rating) ?? 0.0;
+            return Ok(new { average = avg });
+        }
+
+        [HttpGet("title/{title}")]
+        public async Task<IActionResult> GetMovieByTitle(string title)
+        {
+            var movie = await _movieContext.movies_titles
+                .FirstOrDefaultAsync(m => m.title.ToLower() == title.ToLower());
+
+            if (movie == null)
+            {
+                return NotFound($"No movie found with title: {title}");
             }
 
-            await _movieContext.SaveChangesAsync();
-            return Ok(new { message = "Rating saved successfully" });
+            return Ok(movie);
         }
-        catch (Exception ex)
+        [Authorize(Roles = "admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(string id, [FromBody] movies_title updatedMovie)
         {
-            return StatusCode(500, new { error = ex.Message });
+            if (id != updatedMovie.show_id)
+            {
+                return BadRequest("ID mismatch between URL and body");
+            }
+
+            var existingMovie = await _movieContext.movies_titles.FindAsync(id);
+            if (existingMovie == null)
+            {
+                return NotFound();
+            }
+
+            // Update all properties
+            _movieContext.Entry(existingMovie).CurrentValues.SetValues(updatedMovie);
+            await _movieContext.SaveChangesAsync();
+
+            return Ok(updatedMovie); // Or NoContent() if you don’t need to return the data
         }
+
     }
-
-
-
 }
+

@@ -10,7 +10,9 @@
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 1.5rem;
+    text-align: center;
   }
+  
   
   .category-bar {
     display: flex;
@@ -44,27 +46,126 @@
   }
   
   .movie-card {
-    background-color: #1e1e1e;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: transform 0.2s ease;
+    width: 200px;
+    height: 320px;
+    background-color: #1f1f1f;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: transform 0.2s ease-in-out;
   }
   
   .movie-card:hover {
     transform: scale(1.03);
   }
   
-  .movie-image {
-    width: 100%;
-    height: 260px;
-    object-fit: cover;
+  .movie-card img {
+    max-width: 100%;
+    max-height: 85%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
   }
   
   .movie-title {
-    padding: 0.75rem 1rem;
-    font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    color: #fff;
     text-align: center;
+    margin-top: 8px;
+    word-wrap: break-word;
+  }
+  
+  /* Hide scrollbars in the react-window grid */
+  .movie-grid-wrapper ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+  
+  .movie-grid-wrapper {
+    scrollbar-width: none;         /* Firefox */
+    -ms-overflow-style: none;      /* IE 10+ */
+  }
+  
+  .movie-grid-wrapper::-webkit-scrollbar {
+    display: none;                 /* Chrome/Safari */
+  }
+  .movie-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #bbb;
+    margin-top: 6px;
+  }
+  
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+  
+  .movie-rating,
+  .movie-year,
+  .movie-genre {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 2px 6px;
+    line-height: 1;
+  }
+  
+  
+  .movie-stars {
+    color: #f5c518;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .category-bar-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .category-bar {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE/Edge */
+    padding-bottom: 6px;
+  }
+  
+  .category-bar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+  
+  .category-fade {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.6));
+    pointer-events: none; /* let clicks go through */
+  }
+  
+  .vertical-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .top-badges {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
   }
   

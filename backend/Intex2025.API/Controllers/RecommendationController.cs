@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Intex2025.API.Helpers;
 
 namespace Intex2025.API.Controllers
 {
@@ -12,10 +13,12 @@ namespace Intex2025.API.Controllers
 public class RecommendationController : ControllerBase
 {
     private readonly IRecommendationService _recommendationService;
+    private readonly IMovieService _movieService;
 
-    public RecommendationController(IRecommendationService recommendationService)
+    public RecommendationController(IRecommendationService recommendationService, IMovieService movieService)
     {
         _recommendationService = recommendationService;
+        _movieService = movieService;
     }
 
     [HttpGet("similar/{title}")]
@@ -46,7 +49,42 @@ public class RecommendationController : ControllerBase
         return Ok(results);
     }
 
+    [HttpGet("by-title/{title}")]
+    public async Task<IActionResult> GetMovieByTitle(string title)
+    {
+        var movie = await _movieService.GetMovieByTitleAsync(title);
+        if (movie == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(movie);
+    }
+    [HttpGet("recommendations/cluster/{userId}")]
+    public async Task<IActionResult> GetClusterRecommendations(int userId)
+    {
+        using (var httpClient = new HttpClient())
+        {
+            try
+            {
+                // Replace with your FastAPI URL
+                var fastApiUrl = $"https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/recommendations/cluster/{userId}";
+                var response = await httpClient.GetAsync(fastApiUrl);
+
+                if (!response.IsSuccessStatusCode)
+                    return NotFound("Recommendations not found for this user.");
+
+                var content = await response.Content.ReadAsStringAsync();
+                return Content(content, "application/json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching recommendations: {ex.Message}");
+            }
+        }
+    }
+}
 }
 
-}
+
 
