@@ -22,24 +22,29 @@ import { UserContext } from './context/UserContext';
 
 function App() {
   const [role, setRole] = useState<string | null>(null);
-
+  const [userId, setUserId] = useState<number | null>(null);
+  const [email, setEmail] = useState<string>('');
   // Grabs the user's role from the backend
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const response = await fetch('/api/movie/user/role', {
+        const response = await fetch('https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net/api/movie/role', {
           method: 'GET',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
 
         if (response.ok) {
           const data = await response.json();
-          setRole(data.role); // Set the user's role (e.g., 'admin' or 'user')
-        } else {
-          setRole(null); // Clear the role if the request fails
+          setRole(data.role || '');
+        setEmail(data.email || '');
+        setUserId(data.userId || null); // only if your backend sends this
+      } else {
+        setRole('');
+        setEmail('');
+        setUserId(null);
         }
       } catch (error) {
         console.error('Error fetching user role:', error);
@@ -51,7 +56,16 @@ function App() {
   }, []);
 
   return (
-    <UserContext.Provider value={{ userId: 42 }}>
+    <UserContext.Provider value={{
+      userId: userId ?? 0,
+      email: email,
+      role: role,
+      setUser: (user) => {
+        setUserId(user.userId ? parseInt(user.userId) : null);
+        setEmail(user.email ?? '');
+        setRole(user.role);
+      }
+    }}>
       <Router>
         <ConditionalHeader role={role} />
         <Routes>

@@ -15,7 +15,7 @@ const convertBooleansToInts = (movie: Movie) => {
 };
 
 export const API_URL =
-  'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net';
+  'https://mango-forest-0265fa21e.6.azurestaticapps.net';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
   try {

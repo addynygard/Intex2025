@@ -19,7 +19,7 @@ function LoginPage() {
             <input type="password" id="password" name="password" required />
           </div>
 
-          <button type="submit" className="btn btn-primary">Log In</button>
+          <button type="button" className="btn btn-primary" onClick={() => navigate('/Movie')}>Log In</button>
 
           <p className="text-center">
             Don't have an account? <a onClick={() => navigate('/CreateAccount')}>Create one here</a>

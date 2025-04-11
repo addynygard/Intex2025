@@ -27,9 +27,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalFrontend",
         policy => policy
-            .WithOrigins("http://localhost:5173", "https://mango-forest-0265fa21e.6.azurestaticapps.net", "https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net")
+            .WithOrigins("http://localhost:5173", "https://mango-forest-0265fa21e.6.azurestaticapps.net", "https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net", "https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net")
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowAnyMethod()
+            .AllowCredentials());
 });
 
 // === IDENTITY ===

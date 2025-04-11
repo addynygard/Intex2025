@@ -15,11 +15,11 @@ export interface UserContextType {
 }
 
 export const UserContext = createContext<UserContextType>({
-  userId: null,
+  userId: 42,
 
-  email: null,
+  email: '',
 
-  role: null,
+  role: '',
 
   setUser: () => {},
 });
