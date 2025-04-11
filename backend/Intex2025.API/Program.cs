@@ -81,64 +81,64 @@ var app = builder.Build();
 
 // === INITIAL ROLE & USER SETUP ===
 using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+// {
+//     var services = scope.ServiceProvider;
+//     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+//     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
-    string[] roles = new[] { "Admin", "User" };
+//     string[] roles = new[] { "Admin", "User" };
 
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            await roleManager.CreateAsync(new IdentityRole(role));
-            Console.WriteLine($"✅ Created role: {role}");
-        }
-    }
+//     foreach (var role in roles)
+//     {
+//         if (!await roleManager.RoleExistsAsync(role))
+//         {
+//             await roleManager.CreateAsync(new IdentityRole(role));
+//             Console.WriteLine($"✅ Created role: {role}");
+//         }
+//     }
 
-    // ✅ Seed a default test user
-    var testEmail = "test@test.com";
-    var testPassword = "P@ssword123!";
-    var testUser = await userManager.FindByEmailAsync(testEmail);
+//     // ✅ Seed a default test user
+//     var testEmail = "test@test.com";
+//     var testPassword = "P@ssword123!";
+//     var testUser = await userManager.FindByEmailAsync(testEmail);
 
-    if (testUser == null)
-    {
-        var newUser = new IdentityUser
-        {
-            UserName = testEmail,
-            Email = testEmail,
-            EmailConfirmed = true
-        };
+//     if (testUser == null)
+//     {
+//         var newUser = new IdentityUser
+//         {
+//             UserName = testEmail,
+//             Email = testEmail,
+//             EmailConfirmed = true
+//         };
 
-        var createResult = await userManager.CreateAsync(newUser, testPassword);
+//         var createResult = await userManager.CreateAsync(newUser, testPassword);
 
-        if (createResult.Succeeded)
-        {
-            await userManager.AddToRoleAsync(newUser, "User");
-            Console.WriteLine($"✅ Seeded user: {testEmail} with password: {testPassword}");
-        }
-        else
-        {
-            Console.WriteLine("❌ Failed to seed test user:");
-            foreach (var error in createResult.Errors)
-                Console.WriteLine($"   - {error.Description}");
-        }
-    }
-    else
-    {
-        Console.WriteLine("ℹ️ Test user already exists.");
-    }
-        // ✅ Promote test user to Admin if not already
-    testUser ??= await userManager.FindByEmailAsync(testEmail);
+//         if (createResult.Succeeded)
+//         {
+//             await userManager.AddToRoleAsync(newUser, "User");
+//             Console.WriteLine($"✅ Seeded user: {testEmail} with password: {testPassword}");
+//         }
+//         else
+//         {
+//             Console.WriteLine("❌ Failed to seed test user:");
+//             foreach (var error in createResult.Errors)
+//                 Console.WriteLine($"   - {error.Description}");
+//         }
+//     }
+//     else
+//     {
+//         Console.WriteLine("ℹ️ Test user already exists.");
+//     }
+//         // ✅ Promote test user to Admin if not already
+//     testUser ??= await userManager.FindByEmailAsync(testEmail);
 
-    if (testUser != null && !await userManager.IsInRoleAsync(testUser, "Admin"))
-    {
-        await userManager.AddToRoleAsync(testUser, "Admin");
-        Console.WriteLine("👑 test@test.com promoted to Admin!");
-    }
+//     if (testUser != null && !await userManager.IsInRoleAsync(testUser, "Admin"))
+//     {
+//         await userManager.AddToRoleAsync(testUser, "Admin");
+//         Console.WriteLine("👑 test@test.com promoted to Admin!");
+//     }
 
-}
+// }
 
 // === MIDDLEWARE ===
 
