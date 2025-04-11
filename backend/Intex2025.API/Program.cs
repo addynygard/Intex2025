@@ -137,6 +137,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // === MIDDLEWARE ===
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -144,9 +145,29 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHsts();
+
 app.UseHttpsRedirection();
+
+// ✅ Add CSP header middleware here
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Content-Security-Policy",
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com; " +
+        "style-src 'self' 'unsafe-inline' fonts.googleapis.com https://accounts.google.com; " +
+        "img-src 'self' https://ashleestreamimages.blob.core.windows.net data:; " +
+        "connect-src 'self' https://localhost:5000 http://localhost:8000 https://accounts.google.com https://oauth2.googleapis.com; " +
+        "font-src 'self' fonts.gstatic.com data:; " +
+        "frame-src 'self' https://accounts.google.com https://oauth2.googleapis.com; " +
+        "frame-ancestors 'none'; " +
+        "object-src 'none'; " +
+        "form-action 'self'; " +
+        "base-uri 'self';"
+    );
+    await next();
+});
 app.UseRouting();
-Console.WriteLine("✅ CORS policy is being applied");
+
 app.UseCors("AllowLocalFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
