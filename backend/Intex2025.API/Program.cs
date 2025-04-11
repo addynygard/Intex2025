@@ -165,7 +165,7 @@ app.Use(async (context, next) =>
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com; " +
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com https://accounts.google.com; " +
         "img-src 'self' https://ashleestreamimages.blob.core.windows.net data:; " +
-        "connect-src 'self' https://localhost:5000 http://localhost:8000 https://accounts.google.com https://oauth2.googleapis.com; " +
+        "connect-src 'self' https://localhost:5000 http://localhost:8000 https://accounts.google.com https://oauth2.googleapis.com; https://mango-forest-0265fa21e.6.azurestaticapps.net https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net" +
         "font-src 'self' fonts.gstatic.com data:; " +
         "frame-src 'self' https://accounts.google.com https://oauth2.googleapis.com; " +
         "frame-ancestors 'none'; " +
