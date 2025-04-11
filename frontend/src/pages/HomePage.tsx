@@ -17,7 +17,7 @@ interface Movie {
   type: string;
 }
 
-function HomePage() {
+function HomePage({ language }: { language: string }) {
   const navigate = useNavigate();
   const [topRated, setTopRated] = useState<Movie[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -74,42 +74,52 @@ function HomePage() {
   return (
     <div className="main-container home-layout">
       <div className="home-left">
-        <img
-          src={Logo}
-          alt="CineNiche Logo"
-          className="home-logo"
-        />
+        <img src={Logo} alt="CineNiche Logo" className="home-logo" />
 
-        <p className="home-subtitle">Your personalized movie platform</p>
+        <p className="home-subtitle">
+          {language === 'en'
+            ? 'Your personalized movie platform'
+            : 'Tu plataforma de películas personalizada'}
+        </p>
 
         <div className="home-description">
           <p>
-            Discover movies tailored to your taste, explore niche genres, and
-            connect with fellow movie lovers by logging in or creating a free
-            account.
+            {language === 'en'
+              ? 'Discover movies tailored to your taste, explore niche genres, and connect with fellow movie lovers by logging in or creating a free account.'
+              : 'Descubre películas según tus gustos, explora géneros únicos y conéctate con otros amantes del cine iniciando sesión o creando una cuenta gratuita.'}
           </p>
         </div>
 
         <div className="card home-actions">
-          <p>Join us now and start your cinematic journey!</p>
+          <p>
+            {language === 'en'
+              ? 'Join us now and start your cinematic journey!'
+              : '¡Únete ahora y comienza tu viaje cinematográfico!'}
+          </p>
           <button
             className="btn btn-primary"
             onClick={() => navigate('/CreateAccount')}
           >
-            Get Started
+            {language === 'en' ? 'Get Started' : 'Comenzar'}
           </button>
-          <p>Already have an account?</p>
+          <p>
+            {language === 'en'
+              ? 'Already have an account?'
+              : '¿Ya tienes una cuenta?'}
+          </p>
           <button
             className="btn btn-secondary"
             onClick={() => navigate('/Login')}
           >
-            Login
+            {language === 'en' ? 'Login' : 'Iniciar sesión'}
           </button>
         </div>
       </div>
 
       <div className="home-right">
-        <h2 className="text-center home-image-title">Top Trending Movies</h2>
+        <h2 className="text-center home-image-title">
+          {language === 'en' ? 'Top Trending Movies' : 'Películas Populares'}
+        </h2>
         <div className="featured-movie-wrapper">
           <button className="arrow-btn" onClick={goLeft}>
             <FaChevronLeft />
