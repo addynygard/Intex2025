@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../api/movieAPI'; // or authAPI if you split it
+import { API_URL, loginUser } from '../api/movieAPI'; // or authAPI if you split it
 import { useUser } from '../context/UserContext';
 import React, { useEffect, useState } from 'react';
 
@@ -30,7 +30,7 @@ function LoginPage() {
       console.log('✅ Login successful:', response);
 
       // 🔄 Reconfirm role with pingauth before updating context or navigating
-      const ping = await fetch('https://localhost:5000/pingauth', {
+      const ping = await fetch(`${API_URL}/pingauth`, {
         credentials: 'include',
       });
 

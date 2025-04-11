@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { API_URL } from '../api/movieAPI';
 
 export interface UserContextType {
   userId: number | null;
@@ -31,7 +32,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const res = await fetch('https://localhost:5000/pingauth', {
+        const res = await fetch(`${API_URL}/pingauth`, {
           credentials: 'include',
         });
 

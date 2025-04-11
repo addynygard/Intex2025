@@ -67,7 +67,7 @@ public class RecommendationController : ControllerBase
             try
             {
                 // Replace with your FastAPI URL
-                var fastApiUrl = $"http://localhost:8000/recommendations/cluster/{userId}";
+                var fastApiUrl = $"{REC_URL}/recommendations/cluster/{userId}";
                 var response = await httpClient.GetAsync(fastApiUrl);
 
                 if (!response.IsSuccessStatusCode)
