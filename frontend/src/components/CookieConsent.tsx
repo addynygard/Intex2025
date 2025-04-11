@@ -1,5 +1,5 @@
 // src/components/CookieConsent.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false);
   useEffect(() => {

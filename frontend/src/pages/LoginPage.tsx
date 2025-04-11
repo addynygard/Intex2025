@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { API_URL, loginUser } from '../api/movieAPI'; // or authAPI if you split it
 import { useUser } from '../context/UserContext';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { userId, role, setUser } = useUser();
+  const { setUser } = useUser();
 
   // useEffect(() => {
   //   if (userId && role) {
