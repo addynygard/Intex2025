@@ -4,6 +4,7 @@ import { API_URL } from '../api/movieAPI';
 // User info interface and context
 interface User {
   email: string;
+  roles?: string[];
 }
 const UserContext = createContext<User | null>(null);
 // === Protected Route Wrapper ===
@@ -21,7 +22,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
         }
         const data = await response.json();
         if (data.email) {
-          setUser({ email: data.email });
+          setUser({ email: data.email, roles: data.roles ?? [] });
           setAuthorized(true);
         } else {
           throw new Error('Invalid user session');

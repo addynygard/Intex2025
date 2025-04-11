@@ -6,7 +6,7 @@ namespace RootkitAuth.API.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-[Authorize(Roles = "admin")]
+[Authorize(Roles = "Admin")]
 public class RoleController : Controller
 {
     private readonly RoleManager<IdentityRole> _roleManager;

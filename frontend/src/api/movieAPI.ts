@@ -15,7 +15,7 @@ const convertBooleansToInts = (movie: Movie) => {
 };
 
 // export const API_URL =
-//   'https://mango-forest-0265fa21e.6.azurestaticapps.net';
+//   'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net';
 export const API_URL = 'https://localhost:5000';
 
 export const fetchMovies = async (): Promise<Movie[]> => {
@@ -92,5 +92,46 @@ export const deleteMovie = async (movieID: string): Promise<void> => {
   } catch (error) {
     console.error('Error deleting movie:', error);
     throw error;
+  }
+};
+
+export const loginUser = async (email: string, password: string) => {
+  try {
+    const response = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // 🔒 important for auth cookies
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Login failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
+};
+
+export const getUserRoles = async (): Promise<string[]> => {
+  try {
+    const response = await fetch(`${API_URL}/pingauth`, {
+      credentials: 'include', // 🔒 ensures cookies are sent
+    });
+
+    if (!response.ok) {
+      throw new Error('Not authorized');
+    }
+
+    const data = await response.json();
+    console.log('🎭 User roles:', data.roles);
+    return data.roles;
+  } catch (error) {
+    console.error('Failed to fetch user roles:', error);
+    return []; // return empty array if it fails
   }
 };
