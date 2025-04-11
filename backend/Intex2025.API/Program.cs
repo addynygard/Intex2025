@@ -240,4 +240,34 @@ app.MapGet("/pingauth", async (
     return Results.Json(new { email = email, roles = roles });
 }).RequireAuthorization();
 
+app.MapPost("/createAccount", async (
+    UserManager<IdentityUser> userManager,
+    [FromBody] RegisterRequest register
+) =>
+{
+    var newUser = new IdentityUser
+    {
+        UserName = register.Email,
+        Email = register.Email,
+        EmailConfirmed = true
+    };
+
+    var result = await userManager.CreateAsync(newUser, register.Password);
+
+    if (!result.Succeeded)
+    {
+        Console.WriteLine("❌ Failed to create account:");
+        foreach (var error in result.Errors)
+            Console.WriteLine($"   - {error.Description}");
+        return Results.BadRequest(result.Errors);
+    }
+
+    // ✅ Automatically add to "User" role
+    await userManager.AddToRoleAsync(newUser, "User");
+    Console.WriteLine($"✅ Created new user {register.Email} and assigned 'User' role");
+
+    return Results.Ok(new { message = "Account created successfully" });
+});
+
+
 app.Run();

@@ -135,3 +135,26 @@ export const getUserRoles = async (): Promise<string[]> => {
     return []; // return empty array if it fails
   }
 };
+
+export const createAccount = async (email: string, password: string) => {
+  try {
+    const response = await fetch(`${API_URL}/createAccount`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // 🔒 if you want to log them in right after
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error[0]?.description || 'Failed to create account');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating account:', error);
+    throw error;
+  }
+};
