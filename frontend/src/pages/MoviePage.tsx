@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './MoviePage.css';
 import { Movie } from '../types/Movie';
 import Carousel from '../components/Carousel';
@@ -7,6 +7,8 @@ import { useUser } from '../context/UserContext';
 import { API_URL } from '../api/movieAPI';
 import PageWrapper from '../components/PageWrapper'; // ✅ Import it
 import { getUserRoles } from '../api/movieAPI';
+import { UserContext } from '../components/AuthorizeView';
+import { Navigate } from 'react-router-dom';
 
 const MoviePage = () => {
   const [topRated, setTopRated] = useState<Movie[]>([]);
@@ -16,6 +18,17 @@ const MoviePage = () => {
   const [thrillerTop, setThrillerTop] = useState<Movie[]>([]);
   const { userId } = useUser();
   const [roles, setRoles] = useState<string[]>([]);
+  const user = useContext(UserContext);
+  const userRoles = user?.roles ?? [];
+
+  // ✅ Check for "User" role
+  if (!roles.includes('User')) {
+    return (
+      <div>
+        You must be a User to view this page. <Navigate to="/Login" />
+      </div>
+    );
+  }
 
   // ✅ Fetch Top 10 from top_rated_movies
   useEffect(() => {

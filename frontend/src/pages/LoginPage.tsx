@@ -1,24 +1,58 @@
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/movieAPI'; // or authAPI if you split it
-
-import React, { useState } from 'react';
+import { useUser } from '../context/UserContext';
+import React, { useEffect, useState } from 'react';
 
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { userId, role, setUser } = useUser();
+
+  // useEffect(() => {
+  //   if (userId && role) {
+  //     if (role.includes('Admin')) {
+  //       navigate('/AdminPage');
+  //     } else {
+  //       navigate('/Movie');
+  //     }
+  //   }
+  // }, [userId, role, navigate]);
 
   const handleLogin = async () => {
     try {
       const response = await loginUser(email, password);
+
+      if (!response || !response.email || !response.roles) {
+        throw new Error('Login failed: missing user data.');
+      }
+
       console.log('✅ Login successful:', response);
 
-      // 👑 If the user is an Admin, redirect to Admin page
-      const roles = response.roles || [];
-      if (roles.includes('Admin')) {
-        navigate('/AdminPage');
+      // 🔄 Reconfirm role with pingauth before updating context or navigating
+      const ping = await fetch('https://localhost:5000/pingauth', {
+        credentials: 'include',
+      });
+
+      if (ping.ok) {
+        const data = await ping.json();
+        console.log('🔄 Reconfirmed roles from /pingauth:', data.roles);
+
+        setUser({
+          userId: data.userId ?? null,
+          email: data.email,
+          role: data.roles,
+        });
+
+        if (Array.isArray(data.roles) && data.roles.includes('Admin')) {
+          console.log('🔐 Admin detected. Navigating to AdminPage.');
+          navigate('/AdminPage');
+        } else {
+          console.log('👤 Regular user detected. Navigating to Movie.');
+          navigate('/Movie');
+        }
       } else {
-        navigate('/Movie');
+        alert('Login succeeded, but role check failed.');
       }
     } catch (err) {
       console.error('❌ Login failed:', err);

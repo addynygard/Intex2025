@@ -95,25 +95,35 @@ export const deleteMovie = async (movieID: string): Promise<void> => {
   }
 };
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (
+  email: string,
+  password: string,
+): Promise<{ message: string; email: string; roles: string[] } | null> => {
+  const loginUrl = `${API_URL}/login?useCookies=true`;
+
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(loginUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include', // 🔒 important for auth cookies
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) {
-      throw new Error('Login failed');
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      console.warn('No JSON body returned');
     }
 
-    return await response.json();
-  } catch (error) {
-    console.error('Error logging in:', error);
-    throw error;
+    if (!response.ok) {
+      throw new Error(data?.message || 'Invalid email or password.');
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error('Login error:', error);
+    return null;
   }
 };
 

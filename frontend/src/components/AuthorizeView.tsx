@@ -6,7 +6,7 @@ interface User {
   email: string;
   roles?: string[];
 }
-const UserContext = createContext<User | null>(null);
+export const UserContext = createContext<User | null>(null);
 // === Protected Route Wrapper ===
 function AuthorizeView(props: { children: React.ReactNode }) {
   const [authorized, setAuthorized] = useState(false);
@@ -40,6 +40,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
   }, []);
   if (loading) {
     // return <FullScreenSpinner />; // :white_check_mark: show loading spinner
+    return null; 
   }
   if (authorized) {
     return (

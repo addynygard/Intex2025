@@ -18,48 +18,16 @@ import { useEffect, useState } from 'react';
 import UserAccountPage from './pages/UserAccountPage';
 import MovieCollection from './pages/MovieCollection';
 import ShowCollection from './pages/ShowCollection';
-import { UserContext } from './context/UserContext';
+import { UserProvider } from './context/UserContext'; // ✅ Use your updated UserProvider
 import CookieConsent from './components/CookieConsent';
 import Cookies from 'js-cookie';
+import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
-  const [role, setRole] = useState<string | null>(null);
-  const [userId, setUserId] = useState<number | null>(null);
-  const [email, setEmail] = useState<string>('');
   const [language, setLanguage] = useState<string>('en'); // Default language
-  // Grabs the user's role from the backend
+
   useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const response = await fetch(
-          'https://intex2025-group3-5-2nd-backend-ehfjgfbkgpddatfk.eastus-01.azurewebsites.net/api/movie/role',
-          {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setRole(data.role || '');
-          setEmail(data.email || '');
-          setUserId(data.userId || null); // only if your backend sends this
-        } else {
-          setRole('');
-          setEmail('');
-          setUserId(null);
-        }
-      } catch (error) {
-        console.error('Error fetching user role:', error);
-        setRole(null);
-      }
-    };
-
-    fetchUserRole();
-    // Set language from cookie
     const cookieLang = Cookies.get('language');
     setLanguage(cookieLang === 'es' ? 'es' : 'en');
   }, []);
@@ -71,67 +39,109 @@ function App() {
   };
 
   return (
-    <UserContext.Provider
-      value={{
-        userId: userId ?? 0,
-        email: email,
-        role: role,
-        setUser: (user) => {
-          setUserId(user.userId ? parseInt(user.userId) : null);
-          setEmail(user.email ?? '');
-          setRole(user.role);
-        },
-      }}
-    >
+    <UserProvider>
       <Router>
         <ConditionalHeader
-          role={role}
           language={language}
           toggleLanguage={toggleLanguage}
         />
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage language={language} />} />
           <Route path="/CreateAccount" element={<CreateAccountPage />} />
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/Movie" element={<MoviePage />} />
-          <Route path="/MovieDetail" element={<MovieDetailPage />} />
-          <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
-          <Route path="/account" element={<UserAccountPage />} />
-          <Route path="/MovieCollection" element={<MovieCollection />} />
-          <Route path="/ShowCollection" element={<ShowCollection />} />
-          <Route path="/adminpage" element={<AdminPage />} />
-          <Route path="/movie/:id" element={<MovieDetailPage />} />
+
+          {/* User Routes */}
+          <Route
+            path="/Movie"
+            element={
+              <PrivateRoute>
+                <MoviePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/MovieDetail"
+            element={
+              <PrivateRoute>
+                <MovieDetailPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/PrivacyPolicy"
+            element={
+              <PrivateRoute>
+                <PrivacyPolicyPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <PrivateRoute>
+                <UserAccountPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/MovieCollection"
+            element={
+              <PrivateRoute>
+                <MovieCollection />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ShowCollection"
+            element={
+              <PrivateRoute>
+                <ShowCollection />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/movie/:id"
+            element={
+              <PrivateRoute>
+                <MovieDetailPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Admin Routes */}
+          <Route
+            path="/adminpage"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
         </Routes>
         <Footer />
       </Router>
       <CookieConsent />
-    </UserContext.Provider>
+    </UserProvider>
   );
 }
 
-// Conditional Header Component
 function ConditionalHeader({
-  role,
   language,
   toggleLanguage,
 }: {
-  role: string | null;
   language: string;
   toggleLanguage: () => void;
 }) {
   const location = useLocation();
 
-  // Don't render the Header on the HomePage or Privacy Policy if not logged in
-  if (
-    location.pathname === '/' ||
-    (location.pathname === '/PrivacyPolicy' && !role)
-  ) {
+  if (location.pathname === '/') {
     return null;
   }
 
   return (
     <Header
-      role={role}
+      role={''} // You can remove this if Header no longer needs it
       language={language}
       toggleLanguage={toggleLanguage}
     />

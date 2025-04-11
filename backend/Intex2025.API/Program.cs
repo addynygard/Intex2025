@@ -237,8 +237,15 @@ app.MapGet("/pingauth", async (
     var roles = await userManager.GetRolesAsync(user);
     Console.WriteLine($"Authenticated User: {email} with roles: {string.Join(", ", roles)}");
 
-    return Results.Json(new { email = email, roles = roles });
+    return Results.Json(new
+    {
+        email = email,
+        userId = user.Id, // ✅ Add this
+        roles = roles     // ✅ Use "roles", not "role"
+    });
 }).RequireAuthorization();
+
+
 
 app.MapPost("/createAccount", async (
     UserManager<IdentityUser> userManager,

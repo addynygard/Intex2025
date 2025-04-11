@@ -3,7 +3,7 @@ import { useUser } from '../context/UserContext';
 
 function Logout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { setUser } = useUser(); // ✅ Correct function here
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ function Logout({ children }: { children: React.ReactNode }) {
     setUser({
       userId: null,
       email: null,
-      role: null,
+      role: [],
     });
 
     // ✅ Redirect to login
