@@ -6,6 +6,9 @@ import TopCarousel from '../components/TopCarousel';
 import { useUser } from '../context/UserContext';
 import { API_URL } from '../api/movieAPI';
 import PageWrapper from '../components/PageWrapper'; // ✅ Import it
+// import { getUserRoles } from '../api/movieAPI';
+// import { UserContext } from '../components/AuthorizeView';
+import { Navigate } from 'react-router-dom';
 
 const MoviePage = () => {
   const [topRated, setTopRated] = useState<Movie[]>([]);
@@ -13,16 +16,26 @@ const MoviePage = () => {
   const [actionTop, setActionTop] = useState<Movie[]>([]);
   const [comedyTop, setComedyTop] = useState<Movie[]>([]);
   const [thrillerTop, setThrillerTop] = useState<Movie[]>([]);
+  const { userId, role: roles } = useUser();
 
-  const { userId } = useUser();
+  // const userRoles = user?.roles ?? [];
+  console.log('🔍 userId:', userId);
+  console.log('🔍 roles:', roles);
+
+  // // ✅ Check for "User" role
+  // if (roles === null) {
+  //   return <div>Loading...</div>; // Or use a spinner component
+  // }
+
+  if (!roles || !roles.includes('User')) {
+    return <Navigate to="/Login" replace />;
+  }
 
   // ✅ Fetch Top 10 from top_rated_movies
   useEffect(() => {
     const fetchTopRated = async () => {
       try {
-        const res = await fetch(
-          `${API_URL}/api/recommendation/top-rated`,
-        );
+        const res = await fetch(`${API_URL}/api/recommendation/top-rated`);
         const data = await res.json();
         setTopRated(data);
       } catch (err) {
@@ -33,13 +46,20 @@ const MoviePage = () => {
     fetchTopRated();
   }, []);
 
+  // useEffect(() => {
+  //   const fetchRoles = async () => {
+  //     const userRoles = await getUserRoles();
+  //     // setRoles(userRoles);
+  //   };
+
+  //   fetchRoles();
+  // }, []);
+
   // ✅ Fetch User-Based Recs
   useEffect(() => {
     const fetchUserRecs = async () => {
       try {
-        const res = await fetch(
-          `${API_URL}/api/recommendation/user/${userId}`,
-        );
+        const res = await fetch(`${API_URL}/api/recommendation/user/${userId}`);
         const data = await res.json();
         setUserRecs(data);
       } catch (err) {
@@ -59,9 +79,7 @@ const MoviePage = () => {
       setter: React.Dispatch<React.SetStateAction<Movie[]>>,
     ) => {
       try {
-        const res = await fetch(
-          `${API_URL}/api/recommendation/genre/${genre}`,
-        );
+        const res = await fetch(`${API_URL}/api/recommendation/genre/${genre}`);
         const data = await res.json();
         setter(data);
       } catch (err) {
@@ -82,38 +100,52 @@ const MoviePage = () => {
       <div className="movie-page">
         {/* 🎯 Personalized Recommendations */}
         {userRecs.length > 0 && (
-          <Carousel genre="Recommended For You" movies={userRecs} onMovieClick={function (): void {
-            throw new Error('Function not implemented.');
-          } } />
+          <Carousel
+            genre="Recommended For You"
+            movies={userRecs}
+            onMovieClick={function (): void {
+              throw new Error('Function not implemented.');
+            }}
+          />
         )}
 
         {/* 🎬 Genre Sections from Recommender Models */}
         {actionTop.length > 0 && (
           <div style={{ marginTop: '2rem' }}>
-            <Carousel genre="Action Picks" movies={actionTop} onMovieClick={function (): void {
-              throw new Error('Function not implemented.');
-            } } />
+            <Carousel
+              genre="Action Picks"
+              movies={actionTop}
+              onMovieClick={function (): void {
+                throw new Error('Function not implemented.');
+              }}
+            />
           </div>
         )}
 
         {comedyTop.length > 0 && (
           <div style={{ marginTop: '2rem' }}>
-            <Carousel genre="Laugh Out Loud" movies={comedyTop} onMovieClick={function (): void {
-              throw new Error('Function not implemented.');
-            } } />
+            <Carousel
+              genre="Laugh Out Loud"
+              movies={comedyTop}
+              onMovieClick={function (): void {
+                throw new Error('Function not implemented.');
+              }}
+            />
           </div>
         )}
 
         {thrillerTop.length > 0 && (
           <div style={{ marginTop: '2rem' }}>
-            <Carousel genre="Terrific Thrillers" movies={thrillerTop} onMovieClick={function (): void {
-              throw new Error('Function not implemented.');
-            } } />
+            <Carousel
+              genre="Terrific Thrillers"
+              movies={thrillerTop}
+              onMovieClick={function (): void {
+                throw new Error('Function not implemented.');
+              }}
+            />
           </div>
         )}
       </div>
-
-
     </PageWrapper>
   );
 };

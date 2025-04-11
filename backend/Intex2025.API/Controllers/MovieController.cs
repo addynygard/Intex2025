@@ -2,18 +2,24 @@
 using Intex2025.API.Data;
 using Intex2025.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Intex2025.API.Controllers
 {
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MovieController : ControllerBase
     {
         private readonly MovieDbContext _movieContext;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MovieController(MovieDbContext context)
+        public MovieController(MovieDbContext context, UserManager<IdentityUser> userManager)
         {
             _movieContext = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -133,6 +139,20 @@ namespace Intex2025.API.Controllers
             }
         }
 
+            [HttpGet("role")]
+            public async Task<IActionResult> GetUserRole()
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(new { role = roles.FirstOrDefault() ?? "user" });
+            }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<movies_title>> GetMovie(string id)
         {
@@ -142,7 +162,7 @@ namespace Intex2025.API.Controllers
 
             return movie;
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
         {
@@ -150,7 +170,7 @@ namespace Intex2025.API.Controllers
             await _movieContext.SaveChangesAsync();
             return CreatedAtAction(nameof(GetMovie), new { id = movie.show_id }, movie);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(string id)
         {
@@ -213,7 +233,7 @@ namespace Intex2025.API.Controllers
 
             return Ok(movie);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(string id, [FromBody] movies_title updatedMovie)
         {

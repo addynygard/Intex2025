@@ -66,17 +66,39 @@ public class RecommendationService : IRecommendationService
     /// </summary>
     private async Task<List<movies_title>> FetchAndMapTitlesAsync(string requestUrl)
     {
-        var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(requestUrl);
+        try
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<RecommendationResult>>(requestUrl);
 
-        if (response == null || response.Count == 0)
+            if (response == null || response.Count == 0)
+            {
+                Console.WriteLine($"❌ No recommendations returned from: {requestUrl}");
+                return new List<movies_title>();
+            }
+
+            var titles = response.Select(r => r.Title.ToLower()).ToList();
+
+            return await _context.movies_titles
+                .Where(m => m.title != null && titles.Contains(m.title.ToLower()))
+                .ToListAsync();
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"❌ HTTP error when calling recommendation API: {httpEx.Message}");
             return new List<movies_title>();
-
-        var titles = response.Select(r => r.Title.ToLower()).ToList();
-
-        return await _context.movies_titles
-            .Where(m => m.title != null && titles.Contains(m.title.ToLower()))
-            .ToListAsync();
+        }
+        catch (NotSupportedException nsEx)
+        {
+            Console.WriteLine($"❌ Response is not valid JSON: {nsEx.Message}");
+            return new List<movies_title>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Unexpected error: {ex.Message}");
+            return new List<movies_title>();
+        }
     }
+
 
     private class RecommendationResult
     {
