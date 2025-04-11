@@ -55,7 +55,7 @@ function App() {
       <Router>
         <ConditionalHeader role={role} />
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage language={''} />} />
           <Route path="/CreateAccount" element={<CreateAccountPage />} />
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/Movie" element={<MoviePage />} />
@@ -85,7 +85,15 @@ function ConditionalHeader({ role }: { role: string | null }) {
     return null;
   }
 
-  return <Header role={role} />;
+  return (
+    <Header
+      role={role}
+      language={''}
+      toggleLanguage={function (): void {
+        throw new Error('Function not implemented.');
+      }}
+    />
+  );
 }
 
 export default App;

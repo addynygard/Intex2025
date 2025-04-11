@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function CreateAccountPage() {
   const navigate = useNavigate();
@@ -23,10 +23,13 @@ function CreateAccountPage() {
             <input type="password" id="password" name="password" required />
           </div>
 
-          <button type="submit" className="btn btn-primary">Create Account</button>
+          <button type="submit" className="btn btn-primary">
+            Create Account
+          </button>
 
           <p className="text-center">
-            Already have an account? <a onClick={() => navigate('/Login')}>Log in here</a>
+            Already have an account?{' '}
+            <a onClick={() => navigate('/Login')}>Log in here</a>
           </p>
         </form>
       </div>
