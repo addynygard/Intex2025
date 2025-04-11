@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-
 namespace Intex2025.API.Controllers
 {
-    // [Authorize]
+    // [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class MovieController : ControllerBase
@@ -139,30 +138,24 @@ namespace Intex2025.API.Controllers
             }
         }
 
-            [HttpGet("role")]
-            public async Task<IActionResult> GetUserRole()
-            {
-                var user = await _userManager.GetUserAsync(User);
+        [HttpGet("role")]
+        public async Task<IActionResult> GetUserRole()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
 
-                if (user == null)
-                {
-                    return Unauthorized();
-                }
-
-                var roles = await _userManager.GetRolesAsync(user);
-                return Ok(new { role = roles.FirstOrDefault() ?? "user" });
-            }
+            var roles = await _userManager.GetRolesAsync(user);
+            return Ok(new { role = roles.FirstOrDefault() ?? "user" });
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<movies_title>> GetMovie(string id)
         {
             var movie = await _movieContext.movies_titles.FindAsync(id);
-            if (movie == null)
-                return NotFound();
-
-            return movie;
+            return movie == null ? NotFound() : movie;
         }
-        [Authorize(Roles = "admin")]
+
         [HttpPost]
         public async Task<ActionResult<movies_title>> CreateMovie(movies_title movie)
         {
@@ -170,7 +163,23 @@ namespace Intex2025.API.Controllers
             await _movieContext.SaveChangesAsync();
             return CreatedAtAction(nameof(GetMovie), new { id = movie.show_id }, movie);
         }
-        [Authorize(Roles = "admin")]
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(string id, [FromBody] movies_title updatedMovie)
+        {
+            if (id != updatedMovie.show_id)
+                return BadRequest("ID mismatch between URL and body");
+
+            var existingMovie = await _movieContext.movies_titles.FindAsync(id);
+            if (existingMovie == null)
+                return NotFound();
+
+            _movieContext.Entry(existingMovie).CurrentValues.SetValues(updatedMovie);
+            await _movieContext.SaveChangesAsync();
+
+            return Ok(updatedMovie);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(string id)
         {
@@ -199,6 +208,7 @@ namespace Intex2025.API.Controllers
         {
             var existing = await _movieContext.movies_ratings
                 .FirstOrDefaultAsync(r => r.user_id == model.user_id && r.show_id == model.show_id);
+
             if (existing != null)
             {
                 existing.rating = model.rating;
@@ -207,6 +217,7 @@ namespace Intex2025.API.Controllers
             {
                 _movieContext.movies_ratings.Add(model);
             }
+
             await _movieContext.SaveChangesAsync();
             return Ok();
         }
@@ -217,6 +228,7 @@ namespace Intex2025.API.Controllers
             var avg = await _movieContext.movies_ratings
                 .Where(r => r.show_id == showId && r.rating != null)
                 .AverageAsync(r => (double?)r.rating) ?? 0.0;
+
             return Ok(new { average = avg });
         }
 
@@ -226,35 +238,9 @@ namespace Intex2025.API.Controllers
             var movie = await _movieContext.movies_titles
                 .FirstOrDefaultAsync(m => m.title.ToLower() == title.ToLower());
 
-            if (movie == null)
-            {
-                return NotFound($"No movie found with title: {title}");
-            }
-
-            return Ok(movie);
+            return movie == null
+                ? NotFound($"No movie found with title: {title}")
+                : Ok(movie);
         }
-        [Authorize(Roles = "admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMovie(string id, [FromBody] movies_title updatedMovie)
-        {
-            if (id != updatedMovie.show_id)
-            {
-                return BadRequest("ID mismatch between URL and body");
-            }
-
-            var existingMovie = await _movieContext.movies_titles.FindAsync(id);
-            if (existingMovie == null)
-            {
-                return NotFound();
-            }
-
-            // Update all properties
-            _movieContext.Entry(existingMovie).CurrentValues.SetValues(updatedMovie);
-            await _movieContext.SaveChangesAsync();
-
-            return Ok(updatedMovie); // Or NoContent() if you don’t need to return the data
-        }
-
     }
 }
-
