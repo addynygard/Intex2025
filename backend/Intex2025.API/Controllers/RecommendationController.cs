@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Intex2025.API.Helpers;
 
 namespace Intex2025.API.Controllers
 {
@@ -67,7 +68,7 @@ public class RecommendationController : ControllerBase
             try
             {
                 // Replace with your FastAPI URL
-                var fastApiUrl = $"{REC_URL}/recommendations/cluster/{userId}";
+                var fastApiUrl = $"https://recommendation-api-intex2025-bvhebjanhyfbeafy.eastus-01.azurewebsites.net/recommendations/cluster/{userId}";
                 var response = await httpClient.GetAsync(fastApiUrl);
 
                 if (!response.IsSuccessStatusCode)
